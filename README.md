@@ -13,7 +13,7 @@ git merge <name of branch to merge with main> #merge the two branches
 git branch -d <branch name> #this deletes a branch
 git checkout <branch> #checks out a branch
 git branch <branch> #creates a branch 
-
+git log --all --graph --oneline 
 
 
 
