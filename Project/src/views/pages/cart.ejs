@@ -1,0 +1,54 @@
+<%- include ('../partials/header') %>
+<main>
+    <div class="container">
+        <h1><%= user.username %>'s Cart</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Flight</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Car</th>
+                    <th>Hotel</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                var total;
+                <% key.forEach(function(keyitem) { %>
+                    total += cart.total
+                    <var></var>
+                    <td><%=cart.location %></td>
+                    <td><%=cart.car%></td>
+                    <td><%=cart.credit_hours%></td>
+                    <td>
+                    <% if (locals.action === 'delete') { %>
+                        <form action ="/cart/delete" method="POST">
+                            <input type="hidden" name="course_id" value=<%=course.course_id%>>
+                            <button type="submit" style="background-color: red">DELETE</button>
+                        </form>
+                    <%} else {%>
+                        <form action ="/courses/add" method="POST">
+                            <input type="hidden" name="course_id" value= <%= cart.course_id %> >
+                            <%if(course.taken){ %>
+                                <button type="submit" style="background-color: aquamarine;" disabled> ADD</button>
+                            <%} else { %>
+                                <button type="submit" style="background-color: aquamarine;"> ADD</button>
+                            <%}%>
+                        </form>
+                    <%}%>
+                </td>
+            </tbody>
+            
+        <%}); %>
+        <!-- adding up tot -->
+
+        <p class="total"></p>
+
+    <button>Checkout</button>
+
+</body>
+
+
+<%- include ('../partials/footer') %>

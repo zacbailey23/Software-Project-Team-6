@@ -98,6 +98,11 @@ app.post('/register', async (req, res) => {
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
+app.
+
+app.get("/cart", (req,res) => {
+  res.render('pages/cart');
+});
 
 app.post('/login', async (req, res) => {
   try {
