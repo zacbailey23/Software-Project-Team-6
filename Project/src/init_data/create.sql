@@ -14,7 +14,16 @@ CREATE TABLE cars(
 CREATE TABLE planner(
     username VARCHAR(50),
     description LONGTEXT,
+    cart_id FOREIGN KEY
+);
+
+CREATE TABLE cart(
+    cart_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) FOREIGN KEY,
+    location VARCHAR(50),
+    ticket_price DECIMAL,
+    car_id FOREIGN KEY,
     date DATE,
     time TIME,
-    cart_id FOREIGN KEY
+    total Decimal
 );
