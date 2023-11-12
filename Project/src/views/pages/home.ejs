@@ -2,8 +2,17 @@
 
 <main>
   <div class="container">
-    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-  </div>
+    <% if (user) { %>
+      <!-- Content for logged-in users -->
+      <h1>Welcome, <%= user.username %>!</h1>
+      <a href="/logout">Logout</a>
+    <% } else { %>
+      <!-- Content for visitors -->
+      <h1>Welcome to Our Site!</h1>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    <% } %>
+      </div>
 </main>
 
 <%- include ('../partials/footer') %>
