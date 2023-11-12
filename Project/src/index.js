@@ -91,7 +91,7 @@ app.post('/register', async (req, res) => {
 
 
 app.get('/login', (req, res) => {
-  res.render('pages/login');
+  res.render('Project/pages/login');
 });
 
 app.post('/login', async (req, res) => {
