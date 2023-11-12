@@ -72,6 +72,9 @@ app.get('/welcome', (req, res) => {
 app.get('/', (req, res) => {
   res.redirect('pages/home');
 });
+app.get('/home', (req, res) => {
+  res.render('pages/home');
+});
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
@@ -114,7 +117,7 @@ app.post('/login', async (req, res) => {
     req.session.user = user;
     req.session.save();
 
-    res.redirect('/discover');
+    res.redirect('/home');
   } catch (error) {
     console.error('Error during login:', error);
     res.render('pages/login', { error: 'An error occurred. Please try again.' });
