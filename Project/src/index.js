@@ -64,17 +64,43 @@ app.use(
 // *****************************************************
 
 // TODO - Include your API routes here
+const defaultData = {
+  destinations: ["New York", "Paris", "Tokyo", "Sydney"],
+  message: "Welcome to our travel site!"
+};
 
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
 app.get('/', (req, res) => {
-  res.redirect('pages/home');
+  res.redirect('pages/login');
 });
-app.get('/home', (req, res) => {
-  res.render('pages/home');
-});
+
+app.get('/homepage', (req, res) => {
+    res.render('pages/homepage', { data: defaultData });
+  });
+
+app.post('/search', (req, res) => {
+  const query = req.body.destination; // Assuming the input name is 'destination'
+
+  const options = {
+    method: 'GET',
+    url: 'https://travel-advisor.p.rapidapi.com/locations/v2/search',
+    params: { query: query, currency: 'USD', units: 'km', lang: 'en_US' },
+    headers: {
+      'X-RapidAPI-Key':   '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+      'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
+    }
+  };  
+    axios.request(options).then(apiResponse => {
+      res.render('pages/homepage', { data: defaultData, searchResults: apiResponse.data });
+    }).catch(error => {
+      console.error(error);
+      res.render('pages/homepage', { data: defaultData, error: 'An error occurred while fetching data' });
+    });
+  });
+  
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
@@ -117,7 +143,7 @@ app.post('/login', async (req, res) => {
     req.session.user = user;
     req.session.save();
 
-    res.redirect('/home');
+    res.redirect('/homepage');
   } catch (error) {
     console.error('Error during login:', error);
     res.render('pages/login', { error: 'An error occurred. Please try again.' });
@@ -131,33 +157,6 @@ const auth = (req, res, next) => {
   }
   next();
 };
-// app.get('/discover', async (req, res) => {
-//   try {
-//     const response = await axios({
-//       url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-//       method: 'GET',
-//       dataType: 'json',
-//       headers: {
-//         'Accept-Encoding': 'application/json',
-//       },
-
-
-//       params: {
-//         apikey: process.env.API_KEY,
-//         keyword: 'Phoenix Suns',
-//         size: 10
-//       },
-//     });
-
-//     const events = response.data._embedded.events;
-//     res.render('pages/discover', { events: events });
-
-//   } catch (error) {
-//     console.error("Error fetching from Ticketmaster API:", error.message);
-//     res.render('pages/discover', { events: [], error: error.message });
-//   }
-// });
-
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
