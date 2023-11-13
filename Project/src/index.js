@@ -89,12 +89,16 @@ async function fetchData(query) {
 app.get('/homepage', async (req, res) => {
   const defaultQuery = 'New York'; // Replace with your desired default query
   const data = await fetchData(defaultQuery);
-  res.render('/pages/homepage', { data: data });
+  const topHotelsAndFlights = extractTopHotelsAndFlights(data);
+
+  res.render('/pages/homepage', { data: topHotelsAndFlights });
 });
 app.post('/search', async (req, res) => {
   const query = req.body.destination;
   const data = await fetchData(query);
-  res.render('/homepage', { data: data });
+  const topHotelsAndFlights = extractTopHotelsAndFlights(data);
+
+  res.render('/homepage', { data: topHotelsAndFlights  });
 });
 
 app.get('/welcome', (req, res) => {

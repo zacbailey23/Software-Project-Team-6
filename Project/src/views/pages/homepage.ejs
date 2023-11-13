@@ -6,14 +6,15 @@
     <title>Travel Search</title>
 </head>
 <body>
-    <h1><%= data.message %></h1>
-    <ul>
-        <% data.destinations.forEach(function(destination) { %>
-            <li><%= destination %></li>
-        <% }); %>
-    </ul>
-    <% if (searchResults) { %>
-
-        <% } %>
+   
+    <div class="cards-container">
+        <% topHotelsAndFlights.forEach(item => { %>
+            <div class="card">
+                <h3><%= item.appSearchCardContent.cardTitle.string %></h3>
+                <p><%= item.appSearchCardContent.primaryInfo.text %></p>
+                <!-- Add more details as per your design -->
+            </div>
+        <% }) %>
+    </div>
 </body>
 </html>
