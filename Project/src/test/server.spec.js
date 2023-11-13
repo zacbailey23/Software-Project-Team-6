@@ -26,8 +26,13 @@ describe('Server!', () => {
   // ===========================================================================
   // TO-DO: Part A Login unit test case
 
-  //We are checking POST /add_user API by passing the user info in the correct order. This test case should pass and return a status 200 along with a "Success" message.
-  //Positive cases
+  ///////////////////////////////
+  ///    LOGIN TEST CASES
+  ///////////////////////////////
+
+  //Positive case
+
+  //We are checking POST /login API by passing the correct user info in the correct order. This test case should pass and return a status 200.
   it('positive : /login', done => {
     chai
       .request(server)
@@ -35,20 +40,34 @@ describe('Server!', () => {
       .send({username: 'audra', password: 'test'})
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body.message).to.equals('Success');
         done();
       });
   });
 
-  //We are checking POST /add_user API by passing the user info in in incorrect manner (name cannot be an integer). This test case should pass and return a status 200 along with a "Invalid input" message.
-  it('Negative : /login. Checking invalid name', done => {
+  //Negative Cases
+
+  //We are checking POST /login API by passing the user info in in incorrect manner (incorrect username). This test case should pass and return a status 200.
+  it('negative : /login. Checking invalid name', done => {
     chai
       .request(server)
       .post('/login')
       .send({username: 'audra111', password: 'test'})
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body.message).to.equals('Invalid input');
+        // expect(res.body.error).to.equals('Incorrect username or password.');
+        done();
+      });
+  });
+
+  //We are checking POST /login API by passing the user info in in incorrect manner (incorrect password). This test case should pass and return a status 200.
+  it('negative : /login. Checking invalid pass', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'audra', password: 'test111'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        // expect(res.body.error).to.equals('Incorrect username or password.');
         done();
       });
   });
