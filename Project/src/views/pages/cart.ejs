@@ -19,9 +19,11 @@
                 <% key.forEach(function(keyitem) { %>
                     total += cart.total
                     <var></var>
+                    <td><%=cart.flight%></td>
                     <td><%=cart.location %></td>
                     <td><%=cart.car%></td>
                     <td><%=cart.credit_hours%></td>
+                    <td><%=cart.price%></td>
                     <td>
                     <% if (locals.action === 'delete') { %>
                         <form action ="/cart/delete" method="POST">
