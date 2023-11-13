@@ -71,6 +71,30 @@ describe('Server!', () => {
         done();
       });
   });
+  //-----------------------------------------------------
+  //part B
+  it('positive : /cartItem/add', done => {
+    chai
+      .request(server)
+      .post('/cartItem/add')
+      .send({item_id: 2, username: 'noah', location: 'Tokyo', ticket_price: 2400.89, car_id: 2, date: 2023-11-13, time: 12:0o0:0o0, total: 3000.00})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+
+  it('negative : /cartItem/add. checking delete function', done => {
+    chai
+      .request(server)
+      .post('/cartItem/delete')
+      .send({item_id: 2, username: 'noah', location: 'Tokyo', ticket_price: 2400.89, car_id: 2, date: 2023-11-13, time: 12:0o0:0o0, total: 3000.00})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        // expect(res.body.error).to.equals('Incorrect username or password.');
+        done();
+      });
+  });
 
 
 });
