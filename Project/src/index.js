@@ -10,7 +10,7 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcrypt'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 const path = require('path');
-app.set('views', path.join(__dirname, 'views'));
+// app.set('views', path.join(__dirname, 'views'));
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
@@ -63,8 +63,31 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-// TODO - Include your API routes here
-
+const defaultData = {
+  destinations: ["New York", "Paris", "Tokyo", "Sydney"],
+  message: "Welcome to our travel site!"
+};
+app.get('/homepage', (req, res) => {
+  res.render('pages/homepage', { data: defaultData });
+});
+app.post('/search', (req, res) => {
+  const query = req.body.destination; 
+  const options = {
+    method: 'GET',
+    url: 'https://travel-advisor.p.rapidapi.com/locations/v2/search',
+    params: { query: query, currency: 'USD', units: 'km', lang: 'en_US' },
+    headers: {
+      'X-RapidAPI-Key':   '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+      'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
+    }
+  };  
+    axios.request(options).then(apiResponse => {
+      res.render('pages/homepage', { data: defaultData, searchResults: apiResponse.data });
+    }).catch(error => {
+      console.error(error);
+      res.render('pages/homepage', { data: defaultData, error: 'An error occurred while fetching data' });
+    });
+  });
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
@@ -98,7 +121,6 @@ app.post('/register', async (req, res) => {
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
-app.
 
 app.get("/cart", (req,res) => {
   res.render('pages/cart');
