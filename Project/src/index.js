@@ -67,27 +67,36 @@ const defaultData = {
   destinations: ["New York", "Paris", "Tokyo", "Sydney"],
   message: "Welcome to our travel site!"
 };
-app.get('/homepage', (req, res) => {
-  res.render('pages/homepage', { data: defaultData });
-});
-app.post('/search', (req, res) => {
-  const query = req.body.destination; 
+async function fetchData(query) {
   const options = {
     method: 'GET',
     url: 'https://travel-advisor.p.rapidapi.com/locations/v2/search',
     params: { query: query, currency: 'USD', units: 'km', lang: 'en_US' },
     headers: {
-      'X-RapidAPI-Key':   '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+      'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
       'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
     }
-  };  
-    axios.request(options).then(apiResponse => {
-      res.render('pages/homepage', { data: defaultData, searchResults: apiResponse.data });
-    }).catch(error => {
-      console.error(error);
-      res.render('pages/homepage', { data: defaultData, error: 'An error occurred while fetching data' });
-    });
-  });
+  };
+
+  try {
+    const response = await axios.request(options);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null;
+  }
+}
+app.get('/homepage', async (req, res) => {
+  const defaultQuery = 'New York'; // Replace with your desired default query
+  const data = await fetchData(defaultQuery);
+  res.render('/pages/homepage', { data: data });
+});
+app.post('/search', async (req, res) => {
+  const query = req.body.destination;
+  const data = await fetchData(query);
+  res.render('/homepage', { data: data });
+});
+
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
