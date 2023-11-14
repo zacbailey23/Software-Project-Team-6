@@ -277,7 +277,9 @@ app.post("/cartItem/add", (req,res) => {
   });
 });
 
-app.post("/cartItem/deleteItem")
+app.post("/cartItem/delete", {
+
+})
 //add item 
 //delete item
 //

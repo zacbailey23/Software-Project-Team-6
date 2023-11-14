@@ -73,23 +73,22 @@ describe('Server!', () => {
   });
   //-----------------------------------------------------
   //part B
-  it('positive : /cartItem/add', done => {
+  it('positive : /register', done => {
     chai
       .request(server)
-      .post('/cartItem/add')
-      .send({item_id: '2', username: noah , location: 12, ticket_price: '2400.89', car_id: 3, date: 42, time: '8th', total: 'One'})
+      .post('/register')
+      .send({username: 'noah', password: 'noah123'})
       .end((err, res) => {
         expect(res).to.have.status(200);
-        expect(res.body.message).to.equals('Invalid input');
         done();
       });
   });
 
-  it('negative : /cartItem/add. checking delete function', done => {
+  it('negative : /register. checking register function', done => {
     chai
       .request(server)
-      .post('/cartItem/delete')
-      .send({item_id: 2, username: 'noah', location: 'Tokyo', ticket_price: 2400.89, car_id: 2, date: 2023-11-13, time: 12:0o0:0o0, total: 3000.00})
+      .post('/register')
+    .send({username: 2 , password: '',})
       .end((err, res) => {
         expect(res).to.have.status(200);
         // expect(res.body.error).to.equals('Incorrect username or password.');
