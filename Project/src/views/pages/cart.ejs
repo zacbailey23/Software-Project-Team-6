@@ -1,7 +1,7 @@
 <%- include ('../partials/header') %>
 <main>
     <div class="container">
-        <h1><%= user.username %>'s Cart</h1>
+        <h1><%= users.username %>'s Cart</h1>
         <table>
             <thead>
                 <tr>
@@ -19,11 +19,12 @@
                 <% key.forEach(function(keyitem) { %>
                     total += cart.total
                     <var></var>
-                    <td><%=cart.flight%></td>
+                    <td><%=cart.ticket_price%></td>
                     <td><%=cart.location %></td>
-                    <td><%=cart.car%></td>
-                    <td><%=cart.credit_hours%></td>
-                    <td><%=cart.price%></td>
+                    <td><%=cart.car_id%></td>
+                    <td><%=cart.date%></td>
+                    <td><%=cart.time%></td>
+                    <td><%=cart.time%></td>
                     <td>
                     <% if (locals.action === 'delete') { %>
                         <form action ="/cart/delete" method="POST">
