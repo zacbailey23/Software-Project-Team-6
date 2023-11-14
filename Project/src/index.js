@@ -67,16 +67,64 @@ const defaultData = {
   destinations: ["New York", "Paris", "Tokyo", "Sydney"],
   message: "Welcome to our travel site!"
 };
+
 async function fetchData(query) {
-  const options = {
-    method: 'GET',
-    url: 'https://travel-advisor.p.rapidapi.com/locations/v2/search',
-    params: { query: query, currency: 'USD', units: 'km', lang: 'en_US' },
-    headers: {
-      'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
-      'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
-    }
-  };
+  let options;
+
+  if (query.queryType === 'flightSearchTwoWay') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
+      params: {
+        location_arrival: query.destination,
+        sort_order: 'PRICE',
+        date_departure: query.departureDate,
+        itinerary_type: 'ROUND_TRIP',
+        class_type: query.class,
+        location_departure: query.origin,
+        date_departure_return: query.returnDate
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
+  } else if (query.queryType === 'hotelSearch') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
+      params: {
+        string: query.location,
+        get_airports: 'true',
+        combine_regions: 'true',
+        get_pois: 'true',
+        get_regions: 'true',
+        get_cities: 'true',
+        show_all_cities: 'true',
+        get_hotels: 'true'
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
+  } else if (query.queryType === 'flightSearchOneWay') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
+      params: {
+        adults: '1',
+        sid: 'iSiX639',
+        departure_date: query.date,
+        origin_airport_code: query.origin,
+        destination_airport_code: query.destination
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
+  }
 
   try {
     const response = await axios.request(options);
@@ -86,8 +134,17 @@ async function fetchData(query) {
     return null;
   }
 }
+
 app.get('/homepage', async (req, res) => {
-  const defaultQuery = 'New York'; // Replace with your desired default query
+  // Example of a default query for a flight search
+  const defaultQuery = {
+    queryType: 'flightSearch',
+    destination: 'LAX',  // Destination airport code
+    origin: 'NYC',       // Origin airport code
+    departureDate: '2024-02-11', // Example departure date
+    returnDate: '2024-02-15',    // Example return date
+  };
+
   const data = await fetchData(defaultQuery);
   const topHotelsAndFlights = extractTopHotelsAndFlights(data);
 
@@ -171,33 +228,6 @@ const auth = (req, res, next) => {
   }
   next();
 };
-// app.get('/discover', async (req, res) => {
-//   try {
-//     const response = await axios({
-//       url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-//       method: 'GET',
-//       dataType: 'json',
-//       headers: {
-//         'Accept-Encoding': 'application/json',
-//       },
-
-
-//       params: {
-//         apikey: process.env.API_KEY,
-//         keyword: 'Phoenix Suns',
-//         size: 10
-//       },
-//     });
-
-//     const events = response.data._embedded.events;
-//     res.render('pages/discover', { events: events });
-
-//   } catch (error) {
-//     console.error("Error fetching from Ticketmaster API:", error.message);
-//     res.render('pages/discover', { events: [], error: error.message });
-//   }
-// });
-
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
