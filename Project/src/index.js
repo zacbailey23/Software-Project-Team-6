@@ -94,7 +94,7 @@ async function fetchData(query) {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
-        string: query.location,
+        string: query.location, // Assuming 'query' has a 'location' property
         get_airports: 'true',
         combine_regions: 'true',
         get_pois: 'true',
