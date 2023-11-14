@@ -249,28 +249,32 @@ app.post("/cartItem/add", (req,res) => {
     //     course_id = $1`,
     //   [course_id]
     // );
-    await t.none(
-      "INSERT INTO cartItem "
-    )
-
-  // }) //this might need to go on home page where 
-  //the user will see all the options and wants to add one
-    .then(() => {
-  //   res.render("pages/cart", {
-  //     cartItem,
-  //     message: `Successfully added course ${req.body.item_id}`,
-  //     action: "add",
-  //   });
-    })
-    .catch((err) => {
+    // }) //this might need to go on home page where 
+    //the user will see all the options and wants to add one
+    //.then(() => {
+    //   res.render("pages/cart", {
+    //     cartItem,
+    //     message: `Successfully added course ${req.body.item_id}`,
+    //     action: "add",
+    //   });
+    try{
+      await t.none(
+        "INSERT INTO cartItem(item_id) VALUES (1$)",
+        [item_id]
+      );
+      res.render("pages/cartItem", {
+        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+        message: `Successfully added item ${req.body.item_id} to cart`,
+        action: "add",
+      });
+    } catch(err) {
       res.render("pages/homepage", {
         item: [],
         error: true,
         message: err.message,
       });
-    });
+    }
   });
-
 });
 
 app.post("/cartItem/deleteItem")
