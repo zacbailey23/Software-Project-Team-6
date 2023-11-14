@@ -68,19 +68,19 @@ const defaultData = {
   message: "Welcome to our travel site!"
 };
 
-async function fetchData(queryType, query) {
+async function fetchData(query) {
   let options;
 
-  if (queryType === 'flightSearch') {
+  if (query.queryType === 'flightSearchTwoWay') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
       params: {
         location_arrival: query.destination,
-        sort_order: 'ARRIVETIME',
+        sort_order: 'PRICE',
         date_departure: query.departureDate,
         itinerary_type: 'ROUND_TRIP',
-        class_type: 'ECO',
+        class_type: query.class,
         location_departure: query.origin,
         date_departure_return: query.returnDate
       },
@@ -89,7 +89,7 @@ async function fetchData(queryType, query) {
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (queryType === 'hotelSearch') {
+  } else if (query.queryType === 'hotelSearch') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
@@ -104,12 +104,26 @@ async function fetchData(queryType, query) {
         get_hotels: 'true'
       },
       headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44', 
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else {
-    // Handle other types of queries or provide a default behavior
+  } else if (query.queryType === 'flightSearchOneWay') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
+      params: {
+        adults: '1',
+        sid: 'iSiX639',
+        departure_date: query.date,
+        origin_airport_code: query.origin,
+        destination_airport_code: query.destination
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
   }
 
   try {
@@ -121,20 +135,16 @@ async function fetchData(queryType, query) {
   }
 }
 
-// Sample usage in your Express routes
-// For flight search
-app.get('/searchFlights', async (req, res) => {
-  const flightData = await fetchData('flightSearch', req.body);
-  // Process and render flightData as needed
-});
-
-// For hotel search
-app.get('/searchHotels', async (req, res) => {
-  const hotelData = await fetchData('hotelSearch', req.body);
-  // Process and render hotelData as needed
-});
 app.get('/homepage', async (req, res) => {
-  const defaultQuery = 'New York'; // Replace with your desired default query
+  // Example of a default query for a flight search
+  const defaultQuery = {
+    queryType: 'flightSearch',
+    destination: 'LAX',  // Destination airport code
+    origin: 'NYC',       // Origin airport code
+    departureDate: '2024-02-11', // Example departure date
+    returnDate: '2024-02-15',    // Example return date
+  };
+
   const data = await fetchData(defaultQuery);
   const topHotelsAndFlights = extractTopHotelsAndFlights(data);
 
@@ -218,33 +228,6 @@ const auth = (req, res, next) => {
   }
   next();
 };
-// app.get('/discover', async (req, res) => {
-//   try {
-//     const response = await axios({
-//       url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-//       method: 'GET',
-//       dataType: 'json',
-//       headers: {
-//         'Accept-Encoding': 'application/json',
-//       },
-
-
-//       params: {
-//         apikey: process.env.API_KEY,
-//         keyword: 'Phoenix Suns',
-//         size: 10
-//       },
-//     });
-
-//     const events = response.data._embedded.events;
-//     res.render('pages/discover', { events: events });
-
-//   } catch (error) {
-//     console.error("Error fetching from Ticketmaster API:", error.message);
-//     res.render('pages/discover', { events: [], error: error.message });
-//   }
-// });
-
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
