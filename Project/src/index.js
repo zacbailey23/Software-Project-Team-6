@@ -106,11 +106,11 @@ app.get('/welcome', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('pages/home');
+  res.redirect('pages/homepage');
 });
-app.get('/home', (req, res) => {
-  res.render('pages/home');
-});
+// app.get('/home', (req, res) => {
+//   res.render('pages/home');
+// });
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
@@ -135,9 +135,6 @@ app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-app.get("/cart", (req,res) => {
-  res.render('pages/cart');
-});
 
 app.post('/login', async (req, res) => {
   try {
@@ -157,7 +154,7 @@ app.post('/login', async (req, res) => {
     req.session.user = user;
     req.session.save();
 
-    res.redirect('/home');
+    res.redirect('/homepage');
   } catch (error) {
     console.error('Error during login:', error);
     res.render('pages/login', { error: 'An error occurred. Please try again.' });
@@ -203,6 +200,55 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login");
 });
+
+app.get("/cartItem", (req,res) =>{
+  res.render('pages/cart');
+});
+
+app.post("/cartItem/add", (req,res) => {
+  const item_id = parseInt(req.body.item_id);
+  db.tx(async (t) => {
+    //only needed if there is something simlar to prereq
+    //but for a cartItem
+    // const { num_prerequisites } = await t.one(
+    //   `SELECT
+    //     num_prerequisites
+    //    FROM
+    //     course_prerequisite_count
+    //    WHERE
+    //     course_id = $1`,
+    //   [course_id]
+    // );
+    await t.none(
+      "INSERT INTO cartItem "
+    )
+
+  // }) //this might need to go on home page where 
+  //the user will see all the options and wants to add one
+    .then(() => {
+  //   res.render("pages/cart", {
+  //     cartItem,
+  //     message: `Successfully added course ${req.body.item_id}`,
+  //     action: "add",
+  //   });
+    })
+    .catch((err) => {
+      res.render("pages/homepage", {
+        item: [],
+        error: true,
+        message: err.message,
+      });
+    });
+  });
+
+});
+
+app.post("/cartItem/deleteItem")
+//add item 
+//delete item
+//
+
+app.post("/cart", (req,res) => {})
 // Authentication Required
 app.use(auth);
 // *****************************************************

@@ -77,9 +77,10 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/cartItem/add')
-      .send({item_id: 2, username: 'noah', location: 'Tokyo', ticket_price: 2400.89, car_id: 2, date: 2023-11-13, time: 12:0o0:0o0, total: 3000.00})
+      .send({item_id: '2', username: noah , location: 12, ticket_price: '2400.89', car_id: 3, date: 42, time: '8th', total: 'One'})
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res.body.message).to.equals('Invalid input');
         done();
       });
   });
