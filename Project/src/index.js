@@ -67,16 +67,50 @@ const defaultData = {
   destinations: ["New York", "Paris", "Tokyo", "Sydney"],
   message: "Welcome to our travel site!"
 };
-async function fetchData(query) {
-  const options = {
-    method: 'GET',
-    url: 'https://travel-advisor.p.rapidapi.com/locations/v2/search',
-    params: { query: query, currency: 'USD', units: 'km', lang: 'en_US' },
-    headers: {
-      'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
-      'X-RapidAPI-Host': 'travel-advisor.p.rapidapi.com'
-    }
-  };
+
+async function fetchData(queryType, query) {
+  let options;
+
+  if (queryType === 'flightSearch') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
+      params: {
+        location_arrival: query.destination,
+        sort_order: 'ARRIVETIME',
+        date_departure: query.departureDate,
+        itinerary_type: 'ROUND_TRIP',
+        class_type: 'ECO',
+        location_departure: query.origin,
+        date_departure_return: query.returnDate
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
+  } else if (queryType === 'hotelSearch') {
+    options = {
+      method: 'GET',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
+      params: {
+        string: query.location, // Assuming 'query' has a 'location' property
+        get_airports: 'true',
+        combine_regions: 'true',
+        get_pois: 'true',
+        get_regions: 'true',
+        get_cities: 'true',
+        show_all_cities: 'true',
+        get_hotels: 'true'
+      },
+      headers: {
+        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44', 
+        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
+      }
+    };
+  } else {
+    // Handle other types of queries or provide a default behavior
+  }
 
   try {
     const response = await axios.request(options);
@@ -86,6 +120,19 @@ async function fetchData(query) {
     return null;
   }
 }
+
+// Sample usage in your Express routes
+// For flight search
+app.get('/searchFlights', async (req, res) => {
+  const flightData = await fetchData('flightSearch', req.body);
+  // Process and render flightData as needed
+});
+
+// For hotel search
+app.get('/searchHotels', async (req, res) => {
+  const hotelData = await fetchData('hotelSearch', req.body);
+  // Process and render hotelData as needed
+});
 app.get('/homepage', async (req, res) => {
   const defaultQuery = 'New York'; // Replace with your desired default query
   const data = await fetchData(defaultQuery);
