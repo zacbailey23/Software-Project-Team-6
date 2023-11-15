@@ -62,6 +62,122 @@ app.use(
 // *****************************************************
 // <!-- Section 4 : API Routes -->
 // *****************************************************
+function extractTopHotelsAndFlights(query, data) {
+  if (query.queryType === 'flightSearchTwoWay') {
+    function extractFlightInformation(data) {
+      const flightsInfo = [];
+      const maxFlights = 20; // Maximum number of flights to extract
+
+      if (data && data.getAirFlightRoundTrip && data.getAirFlightRoundTrip.results && data.getAirFlightRoundTrip.results.result && data.getAirFlightRoundTrip.results.result.itinerary_data) {
+        const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data;
+
+        for (const itineraryKey in itineraries) {
+          if (itineraries.hasOwnProperty(itineraryKey) && flightsInfo.length < maxFlights) {
+            const itinerary = itineraries[itineraryKey];
+
+            // Extracting the last flight from the flight_data object
+            const flightDataKeys = Object.keys(itinerary.slice_data.slice_0.flight_data);
+            const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
+            const lastFlight = itinerary.slice_data.slice_0.flight_data[lastFlightKey];
+
+            const flightInfo = {
+              departureTime: itinerary.slice_data.slice_0.departure.datetime.time_24h,
+              departureLocation: itinerary.slice_data.slice_0.departure.airport.name,
+              arrivalTime: lastFlight.arrival.datetime.time_12h,
+              arrivalLocation: lastFlight.arrival.airport.name,
+              airline: itinerary.slice_data.slice_0.airline.name,
+              departureAirport: itinerary.slice_data.slice_0.departure.airport.code,
+              arrivalAirport: lastFlight.arrival.airport.code,
+              departureCity: itinerary.slice_data.slice_0.departure.airport.city,
+              arrivalCity: lastFlight.arrival.airport.city,
+              totalMinimumFare: itinerary.price_details.display_total_fare,
+              city: itinerary.slice_data.slice_0.departure.airport.city, // Assuming 'city' refers to the departure city
+              numberOfConnections: flightDataKeys.length - 1
+            };
+
+            flightsInfo.push(flightInfo);
+          }
+
+          if (flightsInfo.length >= maxFlights) {
+            break;
+          }
+        }
+        return flightsInfo;
+      }
+    }
+  } else if (query.queryType === 'hotelSearch') {
+    const hotelsInfo = [];
+
+    if (data && data.getHotelAutoSuggestV2 && data.getHotelAutoSuggestV2.results && data.getHotelAutoSuggestV2.results.result && data.getHotelAutoSuggestV2.results.result.hotels) {
+      const hotels = data.getHotelAutoSuggestV2.results.result.hotels;
+
+      for (const key in hotels) {
+        if (hotels.hasOwnProperty(key)) {
+          const hotel = hotels[key];
+
+          const hotelInfo = {
+            name: hotel.hotel_name,
+            starRating: hotel.star_rating || 'Not available', // Default value if star rating is not available
+            address: {
+              cityName: hotel.address.city_name,
+              addressLineOne: hotel.address.address_line_one,
+              stateCode: hotel.address.state_code,
+              countryCode: hotel.address.country_code,
+              zip: hotel.address.zip
+            },
+          };
+
+          hotelsInfo.push(hotelInfo);
+        }
+      }
+    }
+
+    return hotelsInfo;
+  } else if (query.queryType === 'anotherQueryType') {
+    const hotelsInfo = [];
+
+    if (data && data.getAirFlightRoundTrip && data.getAirFlightRoundTrip.results && data.getAirFlightRoundTrip.results.result && data.getAirFlightRoundTrip.results.result.itinerary_data) {
+      const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data;
+
+      for (const itineraryKey in itineraries) {
+        if (itineraries.hasOwnProperty(itineraryKey) && flightsInfo.length < maxFlights) {
+          const itinerary = itineraries[itineraryKey];
+          const slice = itinerary.slice_data.slice_0;
+
+          // Extracting the last flight from the flight_data object
+          const flightDataKeys = Object.keys(slice.flight_data);
+          const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
+          const lastFlight = slice.flight_data[lastFlightKey];
+
+          const flightInfo = {
+            departureTime: slice.departure.datetime.time_12h,
+            departureLocation: slice.departure.airport.name,
+            arrivalTime: lastFlight.arrival.datetime.time_12h,
+            arrivalLocation: lastFlight.arrival.airport.name,
+            airline: slice.airline.name,
+            departureAirport: slice.departure.airport.code,
+            arrivalAirport: lastFlight.arrival.airport.code,
+            departureCity: slice.departure.airport.city,
+            arrivalCity: lastFlight.arrival.airport.city,
+            totalMinimumFare: itinerary.price_details.display_total_fare,
+            city: slice.departure.airport.city,
+            numberOfConnections: flightDataKeys.length - 1
+          };
+
+          flightsInfo.push(flightInfo);
+        }
+
+        if (flightsInfo.length >= maxFlights) {
+          break;
+        }
+      }
+    }
+
+    return flightsInfo;
+  }
+
+}
+
 
 const defaultData = {
   destinations: ["New York", "Paris", "Tokyo", "Sydney"],
@@ -76,13 +192,13 @@ async function fetchData(query) {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
       params: {
-        location_arrival: query.destination,
+        location_arrival: query.destination, //airport code
         sort_order: 'PRICE',
-        date_departure: query.departureDate,
+        date_departure: query.departureDate, // YYYY-MM-DD
         itinerary_type: 'ROUND_TRIP',
-        class_type: query.class,
-        location_departure: query.origin,
-        date_departure_return: query.returnDate
+        class_type: query.class, // options are: economy, premium, business, first
+        location_departure: query.origin, //airport code
+        date_departure_return: query.returnDate // YYYY-MM-DD
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
@@ -94,7 +210,7 @@ async function fetchData(query) {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
-        string: query.location, // Assuming 'query' has a 'location' property
+        string: query.location, // must be a city
         get_airports: 'true',
         combine_regions: 'true',
         get_pois: 'true',
@@ -111,11 +227,11 @@ async function fetchData(query) {
   } else if (query.queryType === 'flightSearchOneWay') {
     options = {
       method: 'GET',
-      url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/flight/departures',
       params: {
         adults: '1',
         sid: 'iSiX639',
-        departure_date: query.date,
+        departure_date: query.date, // YYYY-MM-DD
         origin_airport_code: query.origin,
         destination_airport_code: query.destination
       },
@@ -151,15 +267,18 @@ app.get('/homepage', async (req, res) => {
   res.render('/pages/homepage', { data: topHotelsAndFlights });
 });
 app.post('/search', async (req, res) => {
+  if (!query || typeof query !== 'object' || !query.location) {
+    return res.status(400).send('Invalid search query');
+  }
   const query = req.body.destination;
   const data = await fetchData(query);
   const topHotelsAndFlights = extractTopHotelsAndFlights(data);
 
-  res.render('/homepage', { data: topHotelsAndFlights  });
+  res.render('/homepage', { data: topHotelsAndFlights });
 });
 
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 app.get('/', (req, res) => {
@@ -231,11 +350,11 @@ app.get("/logout", (req, res) => {
   res.render("pages/login");
 });
 
-app.get("/cartItem", (req,res) =>{
+app.get("/cartItem", (req, res) => {
   res.render('pages/cart');
 });
 
-app.post("/cartItem/add", (req,res) => {
+app.post("/cartItem/add", (req, res) => {
   const item_id = parseInt(req.body.item_id);
   db.tx(async (t) => {
     //only needed if there is something simlar to prereq
@@ -257,7 +376,7 @@ app.post("/cartItem/add", (req,res) => {
     //     message: `Successfully added course ${req.body.item_id}`,
     //     action: "add",
     //   });
-    try{
+    try {
       await t.none(
         "INSERT INTO cartItem(item_id) VALUES (1$)",
         [item_id]
@@ -267,7 +386,7 @@ app.post("/cartItem/add", (req,res) => {
         message: `Successfully added item ${req.body.item_id} to cart`,
         action: "add",
       });
-    } catch(err) {
+    } catch (err) {
       res.render("pages/homepage", {
         item: [],
         error: true,
@@ -284,7 +403,7 @@ app.post("/cartItem/delete", {
 //delete item
 //
 
-app.post("/cart", (req,res) => {})
+app.post("/cart", (req, res) => { })
 // Authentication Required
 app.use(auth);
 // *****************************************************
