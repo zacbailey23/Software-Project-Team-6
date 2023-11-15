@@ -116,7 +116,9 @@ function extractTopHotelsAndFlights(query, data) {
           const hotel = hotels[key];
 
           const hotelInfo = {
+            id: hotel.id,
             name: hotel.hotel_name,
+            area_name: hotel.area_name,
             starRating: hotel.star_rating || 'Not available', // Default value if star rating is not available
             address: {
               cityName: hotel.address.city_name,
@@ -187,7 +189,7 @@ const defaultData = {
 async function fetchData(query) {
   let options;
 
-  if (query.queryType === 'flightSearchTwoWay') {
+  if (query.searchType === 'flightSearchTwoWay') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
@@ -205,26 +207,22 @@ async function fetchData(query) {
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (query.queryType === 'hotelSearch') {
+  } else if (query.searchType === 'hotelSearch') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
         string: query.location, // must be a city
-        get_airports: 'true',
-        combine_regions: 'true',
         get_pois: 'true',
-        get_regions: 'true',
-        get_cities: 'true',
-        show_all_cities: 'true',
-        get_hotels: 'true'
+        get_hotels: 'true',
+        max_results: '20'
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (query.queryType === 'flightSearchOneWay') {
+  } else if (query.searchType === 'flightSearchOneWay') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/flight/departures',
@@ -251,30 +249,38 @@ async function fetchData(query) {
   }
 }
 
-app.get('/homepage', async (req, res) => {
-  // Example of a default query for a flight search
-  const defaultQuery = {
-    queryType: 'flightSearch',
-    destination: 'LAX',  // Destination airport code
-    origin: 'NYC',       // Origin airport code
-    departureDate: '2024-02-11', // Example departure date
-    returnDate: '2024-02-15',    // Example return date
-  };
+// app.get('/homepage', async (req, res) => {
+//   // Example of a default query for a flight search
+//   const defaultQuery = {
+//     queryType: 'flightSearch',
+//     destination: 'LAX',  // Destination airport code
+//     origin: 'NYC',       // Origin airport code
+//     departureDate: '2024-02-11', // Example departure date
+//     returnDate: '2024-02-15',    // Example return date
+//   };
 
-  const data = await fetchData(defaultQuery);
-  const topHotelsAndFlights = extractTopHotelsAndFlights(data);
+//   const data = await fetchData(defaultQuery);
+//   const topHotelsAndFlights = extractTopHotelsAndFlights(data);
 
-  res.render('/pages/homepage', { data: topHotelsAndFlights });
-});
+//   res.render('/pages/homepage', { data: topHotelsAndFlights });
+// });
+
 app.post('/search', async (req, res) => {
-  if (!query || typeof query !== 'object' || !query.location) {
-    return res.status(400).send('Invalid search query');
-  }
-  const query = req.body.destination;
-  const data = await fetchData(query);
-  const topHotelsAndFlights = extractTopHotelsAndFlights(data);
+  const query = req.body;
+  
+  try {
+    // Fetch data based on the query type
+    const data = await fetchData(query);
 
-  res.render('/homepage', { data: topHotelsAndFlights });
+    // Use extractTopHotelsAndFlights to process the data
+    const topHotelsAndFlights = extractTopHotelsAndFlights(query, data);
+
+    // Send the processed data back to the client
+    res.json(topHotelsAndFlights);
+  } catch (error) {
+    console.error('Error processing search:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.get('/welcome', (req, res) => {

@@ -5,16 +5,30 @@
 <head>
     <title>Travel Search</title>
 </head>
-<body>
-   
-    <div class="cards-container">
-        <% topHotelsAndFlights.forEach(item => { %>
-            <div class="card">
-                <h3><%= item.appSearchCardContent.cardTitle.string %></h3>
-                <p><%= item.appSearchCardContent.primaryInfo.text %></p>
-                <!-- Add more details as per your design -->
-            </div>
-        <% }) %>
+<form id="searchForm">
+    <select id="searchType" name="searchType">
+        <option value="flightSearchTwoWay">Flight</option>
+        <option value="hotelSearch">Hotel</option>
+    </select>
+
+    <div id="flightFields" style="display: none;">
+        <!-- Flight-specific input fields -->
+        <input type="text" name="origin" placeholder="Origin Airport Code">
+        <input type="text" name="destination" placeholder="Destination Airport Code">
+        <input type="date" name="departureDate" placeholder="Departure Date">
+        <input type="date" name="returnDate" placeholder="Return Date">
+        <!-- Additional flight fields can be added here -->
     </div>
+
+    <div id="hotelFields" style="display: none;">
+        <!-- Hotel-specific input fields -->
+        <input type="text" name="location" placeholder="City">
+        <!-- Additional hotel fields can be added here -->
+    </div>
+
+    <button type="submit">Search</button>
+</form>
+
+<script src="path/to/your/script.js"></script>
 </body>
 </html>
