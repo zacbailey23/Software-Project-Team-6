@@ -40,23 +40,28 @@ CREATE TABLE hotels(
 DROP TABLE IF EXISTS cartItem CASCADE;
 CREATE TABLE cartItem(
     cart_id SERIAL PRIMARY KEY,
-    user_id FOREIGN KEY, 
+    user_id int, 
     location VARCHAR(50),
     --need some sort of "flight" ascept or something that connects with the ticket price so prolly another table for flights
-    flight_destination FOREIGN KEY,
-    hotel_location FOREIGN KEY,
+    flight_destination VARCHAR(50),
+    hotel_location VARCHAR(50),
     ticket_price DECIMAL,
-    car_id FOREIGN KEY,
+    car_id int,
     date DATE,
     time TIME,
-    total Decimal
+    total Decimal,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (flight_destination) REFERENCES flights(flight_destination),
+    FOREIGN KEY (hotel_location) REFERENCES hotels(hotel_location),
+    FOREIGN KEY (car_id) REFERENCES cars(car_id)
 );
 
 DROP TABLE IF EXISTS planner CASCADE;
 CREATE TABLE planner(
     username VARCHAR(50),
-    description LONGTEXT,
-    cart_id FOREIGN KEY
+    description TEXT,
+    cart_id int, 
+    FOREIGN KEY (cart_id) REFERENCES cartItem(cart_id)
 );
 
 
