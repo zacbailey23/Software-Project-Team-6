@@ -91,7 +91,7 @@ function extractTopHotelsAndFlights(query, data) {
               departureCity: itinerary.slice_data.slice_0.departure.airport.city,
               arrivalCity: lastFlight.arrival.airport.city,
               totalMinimumFare: itinerary.price_details.display_total_fare,
-              city: itinerary.slice_data.slice_0.departure.airport.city, // Assuming 'city' refers to the departure city
+              city: itinerary.slice_data.slice_0.departure.airport.city,
               numberOfConnections: flightDataKeys.length - 1
             };
 
@@ -119,7 +119,7 @@ function extractTopHotelsAndFlights(query, data) {
             id: hotel.id,
             name: hotel.hotel_name,
             area_name: hotel.area_name,
-            starRating: hotel.star_rating || 'Not available', // Default value if star rating is not available
+            starRating: hotel.star_rating || 'Not available',
             address: {
               cityName: hotel.address.city_name,
               addressLineOne: hotel.address.address_line_one,
@@ -421,7 +421,7 @@ app.get("/planner", (req, res) => {
         res.render("pages/planner", {cartItem});
       }
       else { // if the cart is empty
-        res.render("pages/planner", {
+        res.redirect("pages/planner", {
           items: [],
           error: true,
           message: "You have not purchased any items. Purchase an item to view it here.",
@@ -429,7 +429,7 @@ app.get("/planner", (req, res) => {
       }
     })
     .catch((err) => {
-      res.render("pages/planner", {
+      res.redirect("pages/planner", {
         items: [],
         error: true,
         message: "Error loading cart information.",
