@@ -402,7 +402,7 @@ app.post("/cartItem/add", (req, res) => {
   });
 });
 
-app.post("/cartItem/delete", {
+app.post("/cartItem/delete", (req, res) => {
 
 })
 //add item 
