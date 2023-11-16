@@ -421,7 +421,7 @@ app.get("/planner", (req, res) => {
         res.render("pages/planner", {cartItem});
       }
       else { // if the cart is empty
-        res.render("pages/planner", {
+        res.redirect("pages/planner", {
           items: [],
           error: true,
           message: "You have not purchased any items. Purchase an item to view it here.",
@@ -429,7 +429,7 @@ app.get("/planner", (req, res) => {
       }
     })
     .catch((err) => {
-      res.render("pages/planner", {
+      res.redirect("pages/planner", {
         items: [],
         error: true,
         message: "Error loading cart information.",

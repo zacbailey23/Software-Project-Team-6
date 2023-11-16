@@ -3,29 +3,46 @@
 <main>
     <div class="container">
 
-        <!-- if the cart is empty -->
-        <div class="row">
-            <div class="card">
-                <div class="card-body">
-                  Your cart is currently empty! Add an item to see your travel plans.
-                </div>
-              </div>
+      <% if (locals.message) { %>
+        <div
+          class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
+          role="alert">
+          <%= message %>
         </div>
+        <% } %>
 
-        <!-- if the cart has items, have a card for each item -->
-        <!-- for each item, order the items based on the date -->
-        <div class="row">
+
+        <% var vector = [] %>
+        <% if (cartItem) { 
+          // create vector and sort each item
+          cartItem.forEach( cartItem => {
+            vector.push(cartItem);
+          });
+          }; 
+          
+          vector.sort();
+        %>
+
+        <% // print out vector
+        for(int i = 0; i < vector.length(); i++) {
+          <div class="row">
             <div class="card">
                 <div class="card-header">
-                  <!-- date -->
+                  <%= vector.cartItem.date %>
                 </div>
                 <div class="card-body">
-                  <h5 class="card-title"> <!-- Reservation Title / Type --> </h5>
-                  <p class="card-text"><!-- Reservation Info / Description --></p>
-                  <a href="#" class="btn btn-primary"> <!-- Link to More Reservation Info --> </a>
+                  <h5 class="card-title">  Reservation Title / Type
+                    
+                  </h5>
+                  <p class="card-text">
+                    Location: <%= vector.cartItem.location %> <br>
+                    Time: <%= vector.cartItem.time %>
+                  </p>
+                  <a href="/cartItem" class="btn btn-primary"> See More Info </a>
                 </div>
               </div>
         </div>
+        } %>
 
     </div>
   </main>
