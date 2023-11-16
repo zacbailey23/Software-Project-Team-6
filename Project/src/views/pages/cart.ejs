@@ -27,12 +27,12 @@
                     <td><%=cart.time%></td>
                     <td>
                     <% if (locals.action === 'delete') { %>
-                        <form action ="/cart/delete" method="POST">
+                        <form action ="/cartItem/delete" method="POST">
                             <input type="hidden" name="course_id" value=<%=course.course_id%>>
                             <button type="submit" style="background-color: red">DELETE</button>
                         </form>
                     <%} else {%>
-                        <form action ="/courses/add" method="POST">
+                        <form action ="/cartItem/add" method="POST">
                             <input type="hidden" name="course_id" value= <%= cart.course_id %> >
                             <%if(course.taken){ %>
                                 <button type="submit" style="background-color: aquamarine;" disabled> ADD</button>
