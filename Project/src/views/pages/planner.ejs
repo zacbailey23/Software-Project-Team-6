@@ -5,8 +5,7 @@
 
       <% if (locals.message) { %>
         <div
-          class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
-          role="alert">
+          class="alert alert-<%- locals.error ? 'danger' : 'success' %>" role="alert">
           <%= message %>
         </div>
         <% } %>
@@ -20,8 +19,7 @@
           });
           }; 
           
-          vector.sort();
-        %>
+          vector.sort((a, b) => a.getDate() - b.getDate()); %>
 
         <% // print out vector
         for(int i = 0; i < vector.length(); i++) {
