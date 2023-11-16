@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS user CASCADE ;
-CREATE TABLE user(
+DROP TABLE IF EXISTS users CASCADE;
+CREATE TABLE users(
     username VARCHAR(50),
     password CHAR(60) NOT NULL,
     user_id SERIAL PRIMARY KEY
@@ -14,11 +14,27 @@ CREATE TABLE cars(
     car_id INT PRIMARY KEY
 );
 
-DROP TABLE IF EXISTS planner CASCADE;
-CREATE TABLE planner(
-    username VARCHAR(50),
-    description LONGTEXT,
-    cart_id FOREIGN KEY
+DROP TABLE IF EXISTS flights CASCADE;
+CREATE TABLE flights(
+    flight_destination VARCHAR(50) PRIMARY KEY,
+    sort_by VARCHAR(50),
+    departure TIME,
+    type VARCHAR(50), --one-way/Round-trip
+    class VARCHAR(50),
+    departure_location VARCHAR(50),
+    price Decimal,
+    flight_duration INT --Time given in minutes
+);
+
+DROP TABLE IF EXISTS hotels CASCADE;
+CREATE TABLE hotels(
+    hotel_location VARCHAR(50) PRIMARY KEY,
+    checkout TIME,
+    checkin TIME,
+    hotel_sort VARCHAR(50),
+    location_id INT,
+    rooms INT,
+    rating decimal
 );
 
 DROP TABLE IF EXISTS cartItem CASCADE;
@@ -36,28 +52,14 @@ CREATE TABLE cartItem(
     total Decimal
 );
 
-DROP TABLE IF EXISTS flights CASCADE;
-CREATE TABLE flights(
-    flight_destination VARCHAR(50) PRIMARY KEY,
-    sort_by VARCHAR(50),
-    departure TIME,
-    type VARCHAR(50), --one-way/Round-trip
-    class VARCHAR(50),
-    departure_location VARCHAR(50),
-    price Decimal,
-    flight_duration INT, --Time given in minutes
+DROP TABLE IF EXISTS planner CASCADE;
+CREATE TABLE planner(
+    username VARCHAR(50),
+    description LONGTEXT,
+    cart_id FOREIGN KEY
 );
 
-DROP TABLE IF EXISTS hotels CASCADE;
-CREATE TABLE hotels(
-    hotel_location VARCHAR(50) PRIMARY KEY,
-    checkout TIME,
-    checkin TIME,
-    hotel_sort VARCHAR(50),
-    location_id INT,
-    rooms INT,
-    rating decimal
-);
+
 --my idea for this table is that we will have two seperate flight tables - one for sending information to the database and one with the 
 --retrieved information from the database. Same idea with hotel.
 -- DROP TABLE IF EXISTS flights CASCADE;
