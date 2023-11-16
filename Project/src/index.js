@@ -308,7 +308,7 @@ app.post('/register', async (req, res) => {
 
   } catch (error) {
     console.error('Error during registration:', error);
-    res.redirect('/register');
+    res.redirect('/register', {message: 'Register error!'});
   }
 });
 
@@ -322,11 +322,6 @@ app.post('/login', async (req, res) => {
   try {
     const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
 
-    if (!user) {
-      res.redirect('/register');
-      return;
-    }
-
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
@@ -339,7 +334,7 @@ app.post('/login', async (req, res) => {
     res.redirect('/homepage');
   } catch (error) {
     console.error('Error during login:', error);
-    res.render('pages/login', { error: 'An error occurred. Please try again.' });
+    res.render('pages/login', { message: 'An error occurred. Please try again.' });
   }
 });
 
