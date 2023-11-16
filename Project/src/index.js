@@ -412,6 +412,32 @@ app.post("/cartItem/delete", {
 app.post("/cart", (req, res) => { })
 // Authentication Required
 app.use(auth);
+
+app.get("/planner", (req, res) => {
+  const query = `SELECT * FROM cartItem WHERE user_id = ${req.query.user_id}`;
+  db.any(query)
+    .then((cartItem) => {
+      if(data) { // if the cart is not empty
+        res.render("pages/planner", {cartItem});
+      }
+      else { // if the cart is empty
+        res.render("pages/planner", {
+          items: [],
+          error: true,
+          message: "You have not purchased any items. Purchase an item to view it here.",
+        });
+      }
+    })
+    .catch((err) => {
+      res.render("pages/planner", {
+        items: [],
+        error: true,
+        message: "Error loading cart information.",
+      });
+    });
+});
+
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
