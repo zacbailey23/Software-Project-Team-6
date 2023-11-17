@@ -44,9 +44,8 @@ db.connect()
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
-// app.use(express.static('./resources'));
+app.use(express.static(__dirname + '/resources'));
 
-app.use('resources', express.static(path.join(__dirname, '/resources')))
 
 
 // initialize session variables
@@ -180,7 +179,6 @@ function extractTopHotelsAndFlights(query, data) {
         }
       }
     }
-
     return flightsInfo;
   }
 
