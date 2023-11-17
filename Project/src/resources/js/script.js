@@ -46,7 +46,7 @@ function createFlightCard(flight) {
 }
 
 // Function to handle changes in the search type dropdown
-function handleSearchTypeChange() {
+function handleSearchTypeChange(value) {
     const flightFields = document.getElementById('flightFields');
     const hotelFields = document.getElementById('hotelFields');
     const returnDateField = document.getElementById('returnDateField');
