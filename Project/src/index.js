@@ -268,7 +268,7 @@ app.post('/search', async (req, res) => {
     // Send the processed data back to the client
     res.json(topHotelsAndFlights);
   } catch (error) {
-    console.error('Error processing search:', error);
+    console.errosr('Error processing search:', error);
     res.status(500).send('Internal Server Error');
   }
 });
