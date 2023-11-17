@@ -44,6 +44,10 @@ db.connect()
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
+app.use(express.static(__dirname + '/resources'));
+
+
+
 // initialize session variables
 app.use(
   session({
@@ -68,8 +72,9 @@ function extractTopHotelsAndFlights(query, data) {
       const flightsInfo = [];
       const maxFlights = 20; // Maximum number of flights to extract
 
-      if (data && data.getAirFlightRoundTrip && data.getAirFlightRoundTrip.results && data.getAirFlightRoundTrip.results.result && data.getAirFlightRoundTrip.results.result.itinerary_data) {
-        const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data;
+      if (data.getAirFlightRoundTrip.results.result.itinerary_data) {
+        const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data ?? undefined;
+        const something = true ? true : false
 
         for (const itineraryKey in itineraries) {
           if (itineraries.hasOwnProperty(itineraryKey) && flightsInfo.length < maxFlights) {
@@ -174,7 +179,6 @@ function extractTopHotelsAndFlights(query, data) {
         }
       }
     }
-
     return flightsInfo;
   }
 
