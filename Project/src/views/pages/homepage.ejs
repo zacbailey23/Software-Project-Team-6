@@ -7,7 +7,7 @@
     <title>Travel Search</title>
 </head>
 <form id="searchForm">
-    <select id="searchType" name="searchType">
+    <select class= "form-control" id="searchType" name="searchType" required onchange="handleSearchTypeChange(this.value)">
         <option value="flightSearchTwoWay">Flight</option>
         <option value="hotelSearch">Hotel</option>
     </select>
