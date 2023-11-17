@@ -249,21 +249,7 @@ async function fetchData(query) {
   }
 }
 
-// app.get('/homepage', async (req, res) => {
-//   // Example of a default query for a flight search
-//   const defaultQuery = {
-//     queryType: 'flightSearch',
-//     destination: 'LAX',  // Destination airport code
-//     origin: 'NYC',       // Origin airport code
-//     departureDate: '2024-02-11', // Example departure date
-//     returnDate: '2024-02-15',    // Example return date
-//   };
 
-//   const data = await fetchData(defaultQuery);
-//   const topHotelsAndFlights = extractTopHotelsAndFlights(data);
-
-//   res.render('/pages/homepage', { data: topHotelsAndFlights });
-// });
 
 app.post('/search', async (req, res) => {
   const query = req.body;
@@ -288,11 +274,12 @@ app.get('/welcome', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.redirect('pages/homepage');
+  res.redirect('/homepage');
 });
-// app.get('/home', (req, res) => {
-//   res.render('pages/home');
-// });
+app.get('/homepage', (req, res) => {
+   res.render('pages/homepage');
+});
+
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
@@ -360,9 +347,9 @@ app.post("/cartItem/add", async (req, res) => {
   db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
     try {
       res.render("pages/cartItem", {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action: "add",
+        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+        message: `Successfully added item ${req.body.item_id} to cart`,
+        action: "add",
       });
     } catch (err) {
       res.render("pages/homepage", {
@@ -374,7 +361,21 @@ app.post("/cartItem/add", async (req, res) => {
 });
 
 app.post("/cartItem/delete", (req, res) => {
-
+  const item_id = parseInt(req.body.item_id);
+  db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
+    try {
+      res.render("pages/cartItem", {
+        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+        message: `Successfully added item ${req.body.item_id} to cart`,
+        action: "add",
+      });
+    } catch (err) {
+      res.render("pages/homepage", {
+        item: [],
+        error: true,
+        message: err.message,
+      });
+    }
 })
 //add item 
 //delete item
