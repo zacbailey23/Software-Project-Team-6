@@ -91,7 +91,7 @@ function extractTopHotelsAndFlights(query, data) {
               departureCity: itinerary.slice_data.slice_0.departure.airport.city,
               arrivalCity: lastFlight.arrival.airport.city,
               totalMinimumFare: itinerary.price_details.display_total_fare,
-              city: itinerary.slice_data.slice_0.departure.airport.city,
+              city: itinerary.slice_data.slice_0.departure.airport.city, // Assuming 'city' refers to the departure city
               numberOfConnections: flightDataKeys.length - 1
             };
 
@@ -119,7 +119,7 @@ function extractTopHotelsAndFlights(query, data) {
             id: hotel.id,
             name: hotel.hotel_name,
             area_name: hotel.area_name,
-            starRating: hotel.star_rating || 'Not available',
+            starRating: hotel.star_rating || 'Not available', // Default value if star rating is not available
             address: {
               cityName: hotel.address.city_name,
               addressLineOne: hotel.address.address_line_one,
@@ -308,7 +308,7 @@ app.post('/register', async (req, res) => {
 
   } catch (error) {
     console.error('Error during registration:', error);
-    res.redirect('/register', {message: 'Register error!'});
+    res.redirect('/register');
   }
 });
 
@@ -334,7 +334,7 @@ app.post('/login', async (req, res) => {
     res.redirect('/homepage');
   } catch (error) {
     console.error('Error during login:', error);
-    res.render('pages/login', { message: 'An error occurred. Please try again.' });
+    res.render('pages/login', { message: 'Incorrect Username or Password! Please try again.' });
   }
 });
 
@@ -355,14 +355,37 @@ app.get("/cartItem", (req, res) => {
   res.render('pages/cart');
 });
 
-app.post("/cartItem/add", async (req, res) => {
+app.post("/cartItem/add", (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
+  db.tx(async (t) => {
+    //only needed if there is something simlar to prereq
+    //but for a cartItem
+    // const { num_prerequisites } = await t.one(
+    //   `SELECT
+    //     num_prerequisites
+    //    FROM
+    //     course_prerequisite_count
+    //    WHERE
+    //     course_id = $1`,
+    //   [course_id]
+    // );
+    // }) //this might need to go on home page where 
+    //the user will see all the options and wants to add one
+    //.then(() => {
+    //   res.render("pages/cart", {
+    //     cartItem,
+    //     message: `Successfully added course ${req.body.item_id}`,
+    //     action: "add",
+    //   });
     try {
+      await t.none(
+        "INSERT INTO cartItem(item_id) VALUES (1$)",
+        [item_id]
+      );
       res.render("pages/cartItem", {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action: "add",
+        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+        message: `Successfully added item ${req.body.item_id} to cart`,
+        action: "add",
       });
     } catch (err) {
       res.render("pages/homepage", {
@@ -371,6 +394,7 @@ app.post("/cartItem/add", async (req, res) => {
         message: err.message,
       });
     }
+  });
 });
 
 app.post("/cartItem/delete", (req, res) => {
@@ -392,7 +416,7 @@ app.get("/planner", (req, res) => {
         res.render("pages/planner", {cartItem});
       }
       else { // if the cart is empty
-        res.redirect("pages/planner", {
+        res.render("pages/planner", {
           items: [],
           error: true,
           message: "You have not purchased any items. Purchase an item to view it here.",
@@ -400,7 +424,7 @@ app.get("/planner", (req, res) => {
       }
     })
     .catch((err) => {
-      res.redirect("pages/planner", {
+      res.render("pages/planner", {
         items: [],
         error: true,
         message: "Error loading cart information.",
