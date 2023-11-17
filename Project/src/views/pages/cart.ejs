@@ -1,4 +1,5 @@
 <%- include ('../partials/header') %>
+<%- include ('../partials/nav') %>
 <main>
     <div class="container">
         <h1><%= users.username %>'s Cart</h1>
@@ -15,9 +16,9 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                var total;
+                <% var total;%>
                 <% key.forEach(function(keyitem) { %>
-                    total += cart.total
+                   <% total += cart.total %>
                     <var></var>
                     <td><%=cart.ticket_price%></td>
                     <td><%=cart.location %></td>
