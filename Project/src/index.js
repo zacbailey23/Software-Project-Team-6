@@ -346,37 +346,14 @@ app.get("/cartItem", (req, res) => {
   res.render('pages/cart');
 });
 
-app.post("/cartItem/add", (req, res) => {
+app.post("/cartItem/add", async (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  db.tx(async (t) => {
-    //only needed if there is something simlar to prereq
-    //but for a cartItem
-    // const { num_prerequisites } = await t.one(
-    //   `SELECT
-    //     num_prerequisites
-    //    FROM
-    //     course_prerequisite_count
-    //    WHERE
-    //     course_id = $1`,
-    //   [course_id]
-    // );
-    // }) //this might need to go on home page where 
-    //the user will see all the options and wants to add one
-    //.then(() => {
-    //   res.render("pages/cart", {
-    //     cartItem,
-    //     message: `Successfully added course ${req.body.item_id}`,
-    //     action: "add",
-    //   });
+  db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
     try {
-      await t.none(
-        "INSERT INTO cartItem(item_id) VALUES (1$)",
-        [item_id]
-      );
       res.render("pages/cartItem", {
-        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-        message: `Successfully added item ${req.body.item_id} to cart`,
-        action: "add",
+      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+      message: `Successfully added item ${req.body.item_id} to cart`,
+      action: "add",
       });
     } catch (err) {
       res.render("pages/homepage", {
@@ -385,12 +362,13 @@ app.post("/cartItem/add", (req, res) => {
         message: err.message,
       });
     }
-  });
 });
+
 
 app.post("/cartItem/delete", (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
+  const query = ("DELETE cartItem(item_id) VALUES (1$)",[item_id]);
+  db.any(del);
     try {
       res.render("pages/cartItem", {
         cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
