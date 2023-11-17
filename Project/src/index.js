@@ -391,28 +391,22 @@ app.post("/cart", (req, res) => { })
 // Authentication Required
 app.use(auth);
 
-app.get("/planner", (req, res) => {
-  const query = `SELECT * FROM cartItem WHERE user_id = ${req.query.user_id}`;
-  db.any(query)
-    .then((cartItem) => {
-      if(data) { // if the cart is not empty
-        res.render("pages/planner", {cartItem});
+app.get("/planner", async (req, res) => {
+    try {
+      const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
+    
+      const planner = await db.one(query, req.body.users.user_id);
+      if(planner) {
+        res.render("pages/planner", data);
       }
-      else { // if the cart is empty
-        res.render("pages/planner", {
-          items: [],
-          error: true,
-          message: "You have not purchased any items. Purchase an item to view it here.",
-        });
+      else {
+        const errorMessage = "You have not purchased any items. Purchase an item to view it here.";
+        res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
       }
-    })
-    .catch((err) => {
-      res.render("pages/planner", {
-        items: [],
-        error: true,
-        message: "Error loading cart information.",
-      });
-    });
+    } catch (error) {
+      const errorMessage = "Error loading planner.";
+      res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
+    }
 });
 
 
