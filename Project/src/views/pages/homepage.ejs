@@ -7,10 +7,11 @@
     <title>Travel Search</title>
 </head>
 <body onload="initializeContent()">
-    <form id="searchForm" onsubmit="handleFormSubmit(event)">
-        <select class="form-control" id="searchType" name="searchType" required onchange="handleSearchTypeChange(this.value)">
+    <form id="searchForm" action="/search" method="GET">
+        <select class="form-control" id="queryType" name="queryType" required onchange="handleSearchTypeChange(this.value)">
             <option value="" disabled selected>Search for Flight or Hotel</option>
-            <option value="flightSearchTwoWay">Flight</option>
+            <option value="flightSearchTwoWay">Flight Round Trip</option>
+            <option value="flightSearchOneWay">Flight One Way</option>
             <option value="hotelSearch">Hotel</option>
         </select>
 
@@ -30,6 +31,7 @@
         </div>
 
         <button type="submit" id="submitBtn" style="display: none;">Search</button>
+        
     </form>
     <div id="cardsContainer"></div> <!-- Adjusted ID to match your JavaScript function -->
     <div id="searchResultsContainer"></div>

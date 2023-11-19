@@ -67,123 +67,75 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 function extractTopHotelsAndFlights(query, data) {
-  if (query.queryType === 'flightSearchTwoWay') {
-    function extractFlightInformation(data) {
-      const flightsInfo = [];
-      const maxFlights = 20; // Maximum number of flights to extract
+  const maxFlights = 20; // Move this constant outside of the sub-functions as it's used in multiple places
 
-      if (data.getAirFlightRoundTrip.results.result.itinerary_data) {
-        const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data ?? undefined;
-        const something = true ? true : false
+  // Function to extract flight information
+  function extractFlightInformation(itineraries) {
+    return Object.values(itineraries)
+      .slice(0, maxFlights)
+      .map(itinerary => {
+        const flightDataKeys = Object.keys(itinerary.slice_data.slice_0.flight_data);
+        const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
+        const lastFlight = itinerary.slice_data.slice_0.flight_data[lastFlightKey];
 
-        for (const itineraryKey in itineraries) {
-          if (itineraries.hasOwnProperty(itineraryKey) && flightsInfo.length < maxFlights) {
-            const itinerary = itineraries[itineraryKey];
-
-            // Extracting the last flight from the flight_data object
-            const flightDataKeys = Object.keys(itinerary.slice_data.slice_0.flight_data);
-            const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
-            const lastFlight = itinerary.slice_data.slice_0.flight_data[lastFlightKey];
-
-            const flightInfo = {
-              departureTime: itinerary.slice_data.slice_0.departure.datetime.time_24h,
-              departureLocation: itinerary.slice_data.slice_0.departure.airport.name,
-              arrivalTime: lastFlight.arrival.datetime.time_12h,
-              arrivalLocation: lastFlight.arrival.airport.name,
-              airline: itinerary.slice_data.slice_0.airline.name,
-              departureAirport: itinerary.slice_data.slice_0.departure.airport.code,
-              arrivalAirport: lastFlight.arrival.airport.code,
-              departureCity: itinerary.slice_data.slice_0.departure.airport.city,
-              arrivalCity: lastFlight.arrival.airport.city,
-              totalMinimumFare: itinerary.price_details.display_total_fare,
-              city: itinerary.slice_data.slice_0.departure.airport.city, // Assuming 'city' refers to the departure city
-              numberOfConnections: flightDataKeys.length - 1
-            };
-
-            flightsInfo.push(flightInfo);
-          }
-
-          if (flightsInfo.length >= maxFlights) {
-            break;
-          }
-        }
-        return flightsInfo;
-      }
-    }
-  } else if (query.queryType === 'hotelSearch') {
-    const hotelsInfo = [];
-
-    if (data && data.getHotelAutoSuggestV2 && data.getHotelAutoSuggestV2.results && data.getHotelAutoSuggestV2.results.result && data.getHotelAutoSuggestV2.results.result.hotels) {
-      const hotels = data.getHotelAutoSuggestV2.results.result.hotels;
-
-      for (const key in hotels) {
-        if (hotels.hasOwnProperty(key)) {
-          const hotel = hotels[key];
-
-          const hotelInfo = {
-            id: hotel.id,
-            name: hotel.hotel_name,
-            area_name: hotel.area_name,
-            starRating: hotel.star_rating || 'Not available', // Default value if star rating is not available
-            address: {
-              cityName: hotel.address.city_name,
-              addressLineOne: hotel.address.address_line_one,
-              stateCode: hotel.address.state_code,
-              countryCode: hotel.address.country_code,
-              zip: hotel.address.zip
-            },
-          };
-
-          hotelsInfo.push(hotelInfo);
-        }
-      }
-    }
-
-    return hotelsInfo;
-  } else if (query.queryType === 'anotherQueryType') {
-    const hotelsInfo = [];
-
-    if (data && data.getAirFlightRoundTrip && data.getAirFlightRoundTrip.results && data.getAirFlightRoundTrip.results.result && data.getAirFlightRoundTrip.results.result.itinerary_data) {
-      const itineraries = data.getAirFlightRoundTrip.results.result.itinerary_data;
-
-      for (const itineraryKey in itineraries) {
-        if (itineraries.hasOwnProperty(itineraryKey) && flightsInfo.length < maxFlights) {
-          const itinerary = itineraries[itineraryKey];
-          const slice = itinerary.slice_data.slice_0;
-
-          // Extracting the last flight from the flight_data object
-          const flightDataKeys = Object.keys(slice.flight_data);
-          const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
-          const lastFlight = slice.flight_data[lastFlightKey];
-
-          const flightInfo = {
-            departureTime: slice.departure.datetime.time_12h,
-            departureLocation: slice.departure.airport.name,
-            arrivalTime: lastFlight.arrival.datetime.time_12h,
-            arrivalLocation: lastFlight.arrival.airport.name,
-            airline: slice.airline.name,
-            departureAirport: slice.departure.airport.code,
-            arrivalAirport: lastFlight.arrival.airport.code,
-            departureCity: slice.departure.airport.city,
-            arrivalCity: lastFlight.arrival.airport.city,
-            totalMinimumFare: itinerary.price_details.display_total_fare,
-            city: slice.departure.airport.city,
-            numberOfConnections: flightDataKeys.length - 1
-          };
-
-          flightsInfo.push(flightInfo);
-        }
-
-        if (flightsInfo.length >= maxFlights) {
-          break;
-        }
-      }
-    }
-    return flightsInfo;
+        return {
+          departureTime: itinerary.slice_data.slice_0.departure.datetime.time_24h,
+          departureLocation: itinerary.slice_data.slice_0.departure.airport.name,
+          arrivalTime: lastFlight.arrival.datetime.time_12h,
+          arrivalLocation: lastFlight.arrival.airport.name,
+          airline: itinerary.slice_data.slice_0.airline.name,
+          departureAirport: itinerary.slice_data.slice_0.departure.airport.code,
+          arrivalAirport: lastFlight.arrival.airport.code,
+          departureCity: itinerary.slice_data.slice_0.departure.airport.city,
+          arrivalCity: lastFlight.arrival.airport.city,
+          totalMinimumFare: itinerary.price_details.display_total_fare,
+          numberOfConnections: flightDataKeys.length - 1
+        };
+      });
   }
 
-}
+  // Function to extract hotel information
+  function extractHotelInformation(hotelsData) {
+    let hotels = [];
+    for (let key in hotelsData) {
+      if (hotelsData.hasOwnProperty(key)) {
+        let hotel = hotelsData[key];
+        hotels.push({
+          id: hotel.id,
+          name: hotel.hotel_name,
+          areaName: hotel.area_name,
+          starRating: hotel.star_rating || 'Not available',
+          address: {
+            cityName: hotel.address.city_name,
+            addressLineOne: hotel.address.address_line_one,
+            stateCode: hotel.address.state_code,
+            countryCode: hotel.address.country_code,
+            zip: hotel.address.zip
+          },
+          // Include any other relevant fields
+        });
+      }
+    }
+    return hotels;
+  }
 
+  // Handle different query types
+  if (query.queryType === 'flightSearchTwoWay') {
+    const itineraries = data?.getAirFlightRoundTrip?.results?.result?.itinerary_data;
+    if (itineraries) {
+      return extractFlightInformation(itineraries);
+    }
+  } else if (query.queryType === 'hotelSearch') {
+    const hotelsData = data?.getHotelAutoSuggestV2?.results?.result?.hotels;
+    if (hotelsData) {
+      return extractHotelInformation(hotelsData);
+    }
+  } else if (query.queryType === 'anotherQueryType') {
+    // Similar logic for another query type can be added here
+  }
+
+  return []; // Return an empty array if no data matches the query type
+}
 
 const defaultData = {
   destinations: ["New York", "Paris", "Tokyo", "Sydney"],
@@ -193,7 +145,7 @@ const defaultData = {
 async function fetchData(query) {
   let options;
 
-  if (query.searchType === 'flightSearchTwoWay') {
+  if (query.queryType === 'flightSearchTwoWay') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
@@ -211,22 +163,21 @@ async function fetchData(query) {
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (query.searchType === 'hotelSearch') {
+  } else if (query.queryType === 'hotelSearch') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
         string: query.location, // must be a city
-        get_pois: 'true',
         get_hotels: 'true',
-        max_results: '20'
+        max_results: '21'
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (query.searchType === 'flightSearchOneWay') {
+  } else if (query.queryType === 'flightSearchOneWay') {
     options = {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/flight/departures',
@@ -246,6 +197,7 @@ async function fetchData(query) {
 
   try {
     const response = await axios.request(options);
+    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -253,25 +205,34 @@ async function fetchData(query) {
   }
 }
 
+app.get('/search', async (req, res) => {
+  // Assume req.query contains your query parameters
+  let query = req.query;
 
+  // Sample data structure - this should be replaced with your actual data retrieval logic
+  let data = await fetchData(query);
 
-app.post('/search', async (req, res) => {
-  const query = req.body;
-  
-  try {
-    // Fetch data based on the query type
-    const data = await fetchData(query);
+  // Use the extractTopHotelsAndFlights function to process the data
+  let results = extractTopHotelsAndFlights(query, data);
+  console.log('Processed Results:', results);
 
-    // Use extractTopHotelsAndFlights to process the data
-    const topHotelsAndFlights = extractTopHotelsAndFlights(query, data);
+  // Prepare the data to be passed to the EJS template
+  let templateData = {
+      hotelsInfo: [],
+      flightsInfo: []
+  };
 
-    // Send the processed data back to the client
-    res.json(topHotelsAndFlights);
-  } catch (error) {
-    console.errosr('Error processing search:', error);
-    res.status(500).send('Internal Server Error');
+  if (query.queryType === 'hotelSearch') {
+      templateData.hotelsInfo = results;
+  } else if (query.queryType === 'flightSearchTwoWay') {
+      templateData.flightsInfo = results;
   }
+  // Handle other query types similarly
+
+  // Render the EJS template with the extracted data
+  res.render('pages/searchResults', { data: templateData });
 });
+
 
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
