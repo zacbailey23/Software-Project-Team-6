@@ -201,38 +201,17 @@ function handleSearchTypeChange(value) {
     const flightFields = document.getElementById('flightFields');
     const hotelFields = document.getElementById('hotelFields');
     const returnDateField = document.getElementById('returnDateField');
-    const searchType = document.getElementById('searchType').value;
+    const queryType = document.getElementById('queryType').value;
     submitBtn.style.display = 'block'; // Show the button
 
-    if (searchType === 'flightSearchTwoWay') {
+    if (queryType === 'flightSearchTwoWay') {
         flightFields.style.display = 'block';
         hotelFields.style.display = 'none';
-    } else if (searchType === 'flightSearchOneWay') {
+    } else if (queryType === 'flightSearchOneWay') {
         flightFields.style.display = 'block';
         hotelFields.style.display = 'none';
-    } else if (searchType === 'hotelSearch') {
+    } else if (queryType === 'hotelSearch') {
         flightFields.style.display = 'none';
         hotelFields.style.display = 'block';
     }
 }
-function handleFormSubmit(event) {
-    event.preventDefault();
-  
-    const formData = new FormData(event.target);
-    fetch('/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(Object.fromEntries(formData))
-    })
-    .then(response => response.json())
-    .then(data => {
-      renderSearchResults(data); // Function to display results as cards
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
-  
-

@@ -1,0 +1,55 @@
+<%- include ('../partials/header') %> 
+<%- include ('../partials/nav') %>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <style>
+        .card {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <h2>Hotels</h2>
+    <div id="searchResultsContainer">
+        <% if(data.hotelsInfo) { %>
+            <% data.hotelsInfo.forEach(hotel => { %>
+                <div class="card">
+                    <h2><%= hotel.name %></h2>
+                    <p>Star Rating: <%= hotel.starRating %></p>
+                    <p>Address: <%= hotel.address.addressLineOne %>, <%= hotel.address.cityName %></p>
+                    <!-- Add more hotel details as needed -->
+                    <button onclick="submitHotelData('<%= hotel.id %>')">Submit</button>
+                </div>
+            <% }); %>
+        <% } %>
+        <h2>Flights</h2>
+        <% if(data.flightsInfo) { %>
+            <% data.flightsInfo.forEach(flight => { %>
+                <div class="card">
+                    <h2><%= flight.airline %></h2>
+                    <p>Departure: <%= flight.departureTime %> from <%= flight.departureLocation %></p>
+                    <p>Arrival: <%= flight.arrivalTime %> at <%= flight.arrivalLocation %></p>
+                    <!-- Add more flight details as needed -->
+                    <button onclick="submitFlightData('<%= flight.id %>')">Submit</button>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <script>
+        function submitHotelData(hotelId) {
+            // Implementation for submitting hotel data
+        }
+
+        function submitFlightData(flightId) {
+            // Implementation for submitting flight data
+        }
+    </script>
+</body>
+</html>

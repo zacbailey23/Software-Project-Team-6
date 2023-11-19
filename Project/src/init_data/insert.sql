@@ -7,3 +7,5 @@ VALUES
     (2017, 'Honda', 'Civic', 200, 4),
     (2002, 'Honda', 'Accord', 200, 5);
 
+INSERT INTO users (username, password)
+VALUES ('audra', 'test'),
