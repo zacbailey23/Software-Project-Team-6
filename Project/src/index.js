@@ -130,10 +130,13 @@ function extractTopHotelsAndFlights(query, data) {
     if (hotelsData) {
       return extractHotelInformation(hotelsData);
     }
-  } else if (query.queryType === 'anotherQueryType') {
-    // Similar logic for another query type can be added here
+    // } else if (query.queryType === 'flightSearchOneWay') {
+    //   // Similar logic for another query type can be added here
+    //   const itineraries = data?.getAirFlightRoundTrip?.results?.result?.itinerary_data;
+    //   if (itineraries) {
+    //     return extractFlightInformation(itineraries);
+    // }
   }
-
   return []; // Return an empty array if no data matches the query type
 }
 
@@ -148,15 +151,16 @@ async function fetchData(query) {
   if (query.queryType === 'flightSearchTwoWay') {
     options = {
       method: 'GET',
-      url: 'https://priceline-com-provider.p.rapidapi.com/community/v1/flights/search',
+      url: 'https://priceline-com-provider.p.rapidapi.com/v2/flight/roundTrip',
       params: {
-        location_arrival: query.destination, //airport code
-        sort_order: 'PRICE',
-        date_departure: query.departureDate, // YYYY-MM-DD
-        itinerary_type: 'ROUND_TRIP',
-        class_type: query.class, // options are: economy, premium, business, first
-        location_departure: query.origin, //airport code
-        date_departure_return: query.returnDate // YYYY-MM-DD
+        sid: 'iSiX639',
+        adults: '1',
+        departure_date: query.departureDate,
+        destination_airport_code: query.destination,
+        cabin_class: query.cabinClass,
+        origin_airport_code: query.origin,
+        number_of_itineraries: '21',
+        currency: 'USD'
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
@@ -184,7 +188,7 @@ async function fetchData(query) {
       params: {
         adults: '1',
         sid: 'iSiX639',
-        departure_date: query.date, // YYYY-MM-DD
+        departure_date: query.departureDate, // YYYY-MM-DD
         origin_airport_code: query.origin,
         destination_airport_code: query.destination
       },
@@ -197,7 +201,6 @@ async function fetchData(query) {
 
   try {
     const response = await axios.request(options);
-    console.log(response.data)
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -211,24 +214,22 @@ app.get('/search', async (req, res) => {
 
   // Sample data structure - this should be replaced with your actual data retrieval logic
   let data = await fetchData(query);
-
+  console.log('Returned Data:', data)
   // Use the extractTopHotelsAndFlights function to process the data
   let results = extractTopHotelsAndFlights(query, data);
   console.log('Processed Results:', results);
 
   // Prepare the data to be passed to the EJS template
   let templateData = {
-      hotelsInfo: [],
-      flightsInfo: []
+    hotelsInfo: [],
+    flightsInfo: []
   };
 
   if (query.queryType === 'hotelSearch') {
-      templateData.hotelsInfo = results;
+    templateData.hotelsInfo = results;
   } else if (query.queryType === 'flightSearchTwoWay') {
-      templateData.flightsInfo = results;
+    templateData.flightsInfo = results;
   }
-  // Handle other query types similarly
-
   // Render the EJS template with the extracted data
   res.render('pages/searchResults', { data: templateData });
 });
@@ -242,7 +243,7 @@ app.get('/', (req, res) => {
   res.redirect('/homepage');
 });
 app.get('/homepage', (req, res) => {
-   res.render('pages/homepage');
+  res.render('pages/homepage');
 });
 
 app.get('/register', (req, res) => {
@@ -309,40 +310,40 @@ app.get("/cartItem", (req, res) => {
 
 app.post("/cartItem/add", async (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  db.one("INSERT INTO cartItem(item_id) VALUES (1$)",[item_id]);
-    try {
-      res.render("pages/cartItem", {
+  db.one("INSERT INTO cartItem(item_id) VALUES (1$)", [item_id]);
+  try {
+    res.render("pages/cartItem", {
       cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
       message: `Successfully added item ${req.body.item_id} to cart`,
       action: "add",
-      });
-    } catch (err) {
-      res.render("pages/homepage", {
-        item: [],
-        error: true,
-        message: err.message,
-      });
-    }
+    });
+  } catch (err) {
+    res.render("pages/homepage", {
+      item: [],
+      error: true,
+      message: err.message,
+    });
+  }
 });
 
 
 app.post("/cartItem/delete", (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  const query = ("DELETE cartItem(item_id) VALUES (1$)",[item_id]);
+  const query = ("DELETE cartItem(item_id) VALUES (1$)", [item_id]);
   db.any(del);
-    try {
-      res.render("pages/cartItem", {
-        cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-        message: `Successfully added item ${req.body.item_id} to cart`,
-        action: "add",
-      });
-    } catch (err) {
-      res.render("pages/homepage", {
-        item: [],
-        error: true,
-        message: err.message,
-      });
-    }
+  try {
+    res.render("pages/cartItem", {
+      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
+      message: `Successfully added item ${req.body.item_id} to cart`,
+      action: "add",
+    });
+  } catch (err) {
+    res.render("pages/homepage", {
+      item: [],
+      error: true,
+      message: err.message,
+    });
+  }
 })
 //add item 
 //delete item
@@ -353,21 +354,21 @@ app.post("/cart", (req, res) => { })
 app.use(auth);
 
 app.get("/planner", async (req, res) => {
-    try {
-      const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
-    
-      const planner = await db.one(query, req.body.users.user_id);
-      if(planner) {
-        res.render("pages/planner", data);
-      }
-      else {
-        const errorMessage = "You have not purchased any items. Purchase an item to view it here.";
-        res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
-      }
-    } catch (error) {
-      const errorMessage = "Error loading planner.";
+  try {
+    const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
+
+    const planner = await db.one(query, req.body.users.user_id);
+    if (planner) {
+      res.render("pages/planner", data);
+    }
+    else {
+      const errorMessage = "You have not purchased any items. Purchase an item to view it here.";
       res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
     }
+  } catch (error) {
+    const errorMessage = "Error loading planner.";
+    res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
+  }
 });
 
 

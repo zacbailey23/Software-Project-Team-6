@@ -215,3 +215,19 @@ function handleSearchTypeChange(value) {
         hotelFields.style.display = 'block';
     }
 }
+function validateDateInput() {
+  var selectedQueryType = document.getElementById('queryType').value;
+
+  // Check if the selected query type is for flights
+  if (selectedQueryType.startsWith("flightSearch")) {
+      var departureDate = document.getElementById('departureDate').value;
+      var returnDate = document.getElementById('returnDate').value;
+      var dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+      if (!departureDate.match(dateRegex) || !returnDate.match(dateRegex)) {
+          alert('Please enter dates in YYYY-MM-DD format.');
+          return false;
+      }
+  }
+  return true;
+}
