@@ -5,19 +5,13 @@
 <html>
 <head>
     <title>Search Results</title>
-    <style>
-        .card {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
     <h1>Search Results</h1>
-    <h2>Hotels</h2>
     <div id="searchResultsContainer">
         <% if(data.hotelsInfo) { %>
+            <h2>Hotels</h2>
+
             <% data.hotelsInfo.forEach(hotel => { %>
                 <div class="card">
                     <h2><%= hotel.name %></h2>
@@ -28,8 +22,8 @@
                 </div>
             <% }); %>
         <% } %>
-        <h2>Flights</h2>
         <% if(data.flightsInfo) { %>
+            <h2>Flights</h2>
             <% data.flightsInfo.forEach(flight => { %>
                 <div class="card">
                     <h2><%= flight.airline %></h2>
