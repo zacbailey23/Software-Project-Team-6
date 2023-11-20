@@ -130,20 +130,10 @@ function extractTopHotelsAndFlights(query, data) {
     if (hotelsData) {
       return extractHotelInformation(hotelsData);
     }
-    // } else if (query.queryType === 'flightSearchOneWay') {
-    //   // Similar logic for another query type can be added here
-    //   const itineraries = data?.getAirFlightRoundTrip?.results?.result?.itinerary_data;
-    //   if (itineraries) {
-    //     return extractFlightInformation(itineraries);
-    // }
   }
   return []; // Return an empty array if no data matches the query type
 }
 
-const defaultData = {
-  destinations: ["New York", "Paris", "Tokyo", "Sydney"],
-  message: "Welcome to our travel site!"
-};
 
 async function fetchData(query) {
   let options;
@@ -181,24 +171,7 @@ async function fetchData(query) {
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } else if (query.queryType === 'flightSearchOneWay') {
-    options = {
-      method: 'GET',
-      url: 'https://priceline-com-provider.p.rapidapi.com/v2/flight/departures',
-      params: {
-        adults: '1',
-        sid: 'iSiX639',
-        departure_date: query.departureDate, // YYYY-MM-DD
-        origin_airport_code: query.origin,
-        destination_airport_code: query.destination
-      },
-      headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
-        'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
-      }
-    };
-  }
-
+  } 
   try {
     const response = await axios.request(options);
     return response.data;
@@ -214,11 +187,8 @@ app.get('/search', async (req, res) => {
 
   // Sample data structure - this should be replaced with your actual data retrieval logic
   let data = await fetchData(query);
-  console.log('Returned Data:', data)
   // Use the extractTopHotelsAndFlights function to process the data
   let results = extractTopHotelsAndFlights(query, data);
-  console.log('Processed Results:', results);
-
   // Prepare the data to be passed to the EJS template
   let templateData = {
     hotelsInfo: [],
@@ -230,7 +200,7 @@ app.get('/search', async (req, res) => {
   } else if (query.queryType === 'flightSearchTwoWay') {
     templateData.flightsInfo = results;
   }
-  // Render the EJS template with the extracted data
+  // Render the EJS template with the extracted  data
   res.render('pages/searchResults', { data: templateData });
 });
 
