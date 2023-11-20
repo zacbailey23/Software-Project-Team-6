@@ -9,7 +9,7 @@
 <body>
     <h1>Search Results</h1>
     <div id="searchResultsContainer">
-        <% if(data.hotelsInfo) { %>
+        <% if(data.hotelsInfo && data.hotelsInfo.length > 0) { %>
             <h2>Hotels</h2>
 
             <% data.hotelsInfo.forEach(hotel => { %>
@@ -22,7 +22,7 @@
                 </div>
             <% }); %>
         <% } %>
-        <% if(data.flightsInfo) { %>
+        <% if(data.flightsInfo && data.flightsInfo.length > 0) { %>
             <h2>Flights</h2>
             <% data.flightsInfo.forEach(flight => { %>
                 <div class="card">
@@ -33,6 +33,9 @@
                     <button onclick="submitFlightData('<%= flight.id %>')">Submit</button>
                 </div>
             <% }); %>
+        <% } %>
+        <% if(!data.hotelsInfo && !data.flightsInfo) { %>
+            <p>No results found.</p>
         <% } %>
     </div>
 
