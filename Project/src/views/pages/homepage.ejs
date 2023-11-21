@@ -10,24 +10,29 @@
 
         <body onload="initializeContent()">
             <form id="searchForm" action="/search" method="GET" onsubmit="return validateDateInput()">
-                <select class="form-control" id="queryType" name="queryType" required
-                    onchange="handleSearchTypeChange(this.value)">
+                <select class="form-control" id="queryType" name="queryType" required onchange="handleSearchTypeChange(this.value)">
                     <option value="" disabled selected>Search for Flight or Hotel</option>
                     <option value="flightSearchTwoWay">Flight</option>
                     <option value="hotelSearch">Hotel</option>
                 </select>
-
+            
                 <div id="flightFields" style="display: none;">
-                    <!-- Flight-specific input fields -->
+                    <!-- Dropdown for Origin Airport Code -->
                     <label for="origin">Origin Airport Code:</label>
-                    <input type="text" name="origin" placeholder="Airport Code">
-
+                    <select name="origin" id="origin">
+                        <option value="" disabled selected>Select Airport Code</option>
+                    </select>
+            
+                    <!-- Dropdown for Destination Airport Code -->
                     <label for="destination">Destination Airport Code:</label>
-                    <input type="text" name="destination" placeholder="Airport Code">
-
+                    <select name="destination" id="destination">
+                        <option value="" disabled selected>Select Airport Code</option>
+                    </select>
+            
+                    <!-- Other flight-specific fields -->
                     <label for="departureDate">Departure Date (YYYY-MM-DD):</label>
                     <input type="text" id="departureDate" name="departureDate" placeholder="YYYY-MM-DD">
-
+            
                     <!-- Cabin Class Selection -->
                     <label for="cabinClass">Cabin Class:</label>
                     <select name="cabinClass" id="cabin_class">
@@ -37,15 +42,15 @@
                         <option value="first">First Class</option>
                     </select>
                 </div>
-
+            
+                <!-- Hotel-specific fields -->
                 <div id="hotelFields" style="display: none;">
-                    <!-- Hotel-specific input fields -->
                     <input type="text" name="location" placeholder="City">
-                    <!-- Additional hotel fields can be added here -->
                 </div>
-
+            
                 <button type="submit" id="submitBtn" style="display: none;">Search</button>
             </form>
+            
 
             <div id="cardsContainer"></div> <!-- Adjusted ID to match your JavaScript function -->
             <div id="searchResultsContainer"></div>
