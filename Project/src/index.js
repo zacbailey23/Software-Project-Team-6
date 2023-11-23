@@ -235,6 +235,28 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// app.post('/register', async (req, res) => {
+//   try {
+//     const hash = await bcrypt.hash(req.body.password, 10);
+//     // Include the new fields in the query
+//     const query = `
+//       INSERT INTO users (username, password, first_name, last_name, date_of_birth, location)
+//       VALUES ($1, $2, $3, $4, $5, $6)
+//     `;
+//     await db.none(query, [
+//       req.body.username, 
+//       hash, 
+//       req.body.first_name,
+//       req.body.last_name,
+//       req.body.date_of_birth,
+//       req.body.location
+//     ]);
+//     res.redirect('/login');
+//   } catch (error) {
+//     console.error('Error during registration:', error);
+//     res.redirect('/register');
+//   }
+// });
 
 app.get('/login', (req, res) => {
   res.render('pages/login');
