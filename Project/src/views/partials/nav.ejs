@@ -14,19 +14,29 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/homepage">Home</a>
+              <a class="nav-link" href="/homepage">Home</a>
             </li>
-            <li class="nav-item">
+            <% if (user) { %>
+              <li class="nav-item">
                 <a class="nav-link" href="/cart">My Cart</a>
-            </li>
-            <li class="nav-item">
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="/planner">My Planner</a>
-            </li>
+              </li>
+            <% } %>
           </ul>
-          <div class="nav-item me-1">
-            <a class="nav-link" href="/logout">Log Out</a>
-          </div>
+          <% if (user) { %>
+            <div class="nav-item me-1">
+              <a class="nav-link" href="/logout">Log Out</a>
+            </div>
+          <% } else { %>
+            <div class="nav-item me-1">
+              <a class="nav-link" href="/login">Login</a>
+            </div>
+            <div class="nav-item me-1">
+              <a class="nav-link" href="/register">Register</a>
+            </div>
+          <% } %>
         </div>
-      </div>
-    </nav>
-   </header>
+      </nav>
+    </header>

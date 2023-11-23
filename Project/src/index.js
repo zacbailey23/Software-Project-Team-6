@@ -213,7 +213,7 @@ app.get('/', (req, res) => {
   res.redirect('/homepage');
 });
 app.get('/homepage', (req, res) => {
-  res.render('pages/homepage');
+  res.render('pages/homepage', { user: req.session.user });
 });
 
 app.get('/register', (req, res) => {
@@ -271,7 +271,7 @@ const auth = (req, res, next) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.render("pages/login");
+  res.render("pages/homepage");
 });
 
 app.get("/cartItem", (req, res) => {
