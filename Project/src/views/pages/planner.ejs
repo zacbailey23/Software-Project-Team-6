@@ -4,7 +4,10 @@
     <div class="container">
 
       <div class="col"><%- include ('../partials/message') %></div>
-
+      <% if (error) { %>
+        <p class="error-message"><%= error %></p>
+      <% } else { %>
+        <!-- Display planner information here -->
         <% var vector = []; %>
         <% if (cartItem) { %>
           <% cartItem.forEach( cartItem => { %>
@@ -32,6 +35,7 @@
                 </div>
               </div>
         </div>
+        <% } %>
         <% } %>
 
     </div>
