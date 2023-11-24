@@ -213,9 +213,14 @@ app.get('/', (req, res) => {
   res.redirect('/homepage');
 });
 app.get('/homepage', (req, res) => {
-  res.render('pages/homepage', { user: req.session.user });
+  // Check if the session and user exist
+  if(req.session && req.session.user) {
+    res.render('pages/homepage', { user: req.session.user });
+  } else {
+    // Handle the case where the session or user is not set
+    res.render('pages/homepage', { user: null });
+  }
 });
-
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
@@ -293,7 +298,7 @@ const auth = (req, res, next) => {
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
-  res.render("pages/homepage");
+  res.render("pages/login");
 });
 
 app.get("/cartItem", (req, res) => {
