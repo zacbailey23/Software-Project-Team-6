@@ -2,11 +2,7 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users(
     username VARCHAR(50),
     password CHAR(60) NOT NULL,
-    user_id SERIAL PRIMARY KEY,
-    -- date_of_birth DATE,
-    -- first_name VARCHAR(50),
-    -- last_name VARCHAR(50),
-    -- location VARCHAR(100)
+    user_id SERIAL PRIMARY KEY
 );
 
 DROP TABLE IF EXISTS cars CASCADE;
