@@ -42,13 +42,9 @@ CREATE TABLE planner(
     FOREIGN KEY (cart_id) REFERENCES cartItem(cart_id)
 );
 
-
-
--- my idea for this table is that we will have two seperate flight tables - one for sending information to the database and one with the 
--- retrieved information from the database. Same idea with hotel.
 DROP TABLE IF EXISTS flights CASCADE;
 CREATE TABLE flightsReturned (
-    flight_id INT AUTO_INCREMENT PRIMARY KEY,
+    flight_id SERIAL PRIMARY KEY,
     departureTime TIME,
     departureLocation VARCHAR(255),
     arrivalTime TIME,
@@ -72,9 +68,8 @@ CREATE TABLE hotels (
     cityName VARCHAR(255),
     stateCode VARCHAR(10),
     countryCode VARCHAR(10),
-    zip VARCHAR(20),
-    availableRooms INT
-);
+    zip VARCHAR(20)
+    );
 
 --Old tables. Do not uncomment unless necessary!!!
 -- CREATE TABLE flights(
