@@ -10,29 +10,26 @@
 
         <body onload="initializeContent()">
             <form id="searchForm" action="/search" method="GET" onsubmit="return validateDateInput()">
-                <select class="form-control" id="queryType" name="queryType" required onchange="handleSearchTypeChange(this.value)">
+                <select class="form-control" id="queryType" name="queryType" required
+                    onchange="handleSearchTypeChange(this.value)">
                     <option value="" disabled selected>Search for Flight or Hotel</option>
                     <option value="flightSearchTwoWay">Flight</option>
                     <option value="hotelSearch">Hotel</option>
                 </select>
-            
                 <div id="flightFields" style="display: none;">
                     <!-- Dropdown for Origin Airport Code -->
                     <label for="origin">Origin Airport Code:</label>
                     <select name="origin" id="origin">
                         <option value="" disabled selected>Select Airport Code</option>
                     </select>
-            
                     <!-- Dropdown for Destination Airport Code -->
                     <label for="destination">Destination Airport Code:</label>
                     <select name="destination" id="destination">
                         <option value="" disabled selected>Select Airport Code</option>
                     </select>
-            
                     <!-- Other flight-specific fields -->
                     <label for="departureDate">Departure Date (YYYY-MM-DD):</label>
                     <input type="text" id="departureDate" name="departureDate" placeholder="YYYY-MM-DD">
-            
                     <!-- Cabin Class Selection -->
                     <label for="cabinClass">Cabin Class:</label>
                     <select name="cabinClass" id="cabin_class">
@@ -42,15 +39,52 @@
                         <option value="first">First Class</option>
                     </select>
                 </div>
-            
                 <!-- Hotel-specific fields -->
                 <div id="hotelFields" style="display: none;">
                     <input type="text" name="location" placeholder="City">
                 </div>
-            
                 <button type="submit" id="submitBtn" style="display: none;">Search</button>
             </form>
-            
+            <div id="cardsContainer">
+                <% flights.forEach(function(flight) { %>
+                    <form method="POST" action="/submitFlightData">
+
+                    <div class="card">
+                        <h2><%= flight.airline %></h2>
+                        <p>Departure: <%= flight.departureTime %> from <%= flight.departureLocation %></p>
+                        <p>Arrival: <%= flight.arrivalTime %> at <%= flight.arrivalLocation %></p>
+                        <!-- Add more flight details as needed -->
+                        <input type="hidden" name="flightData" value='<%= JSON.stringify(flight) %>'>
+
+                        <% if(user) { %>
+                            <button type="submit">Add to Cart</button>
+                        <% } else { %>
+                            <p>Please login to add to cart.</p>
+                        <% } %>
+                    </div>
+                </form>
+
+                <% }) %>
+        
+                <% hotels.forEach(function(hotel) { %>
+                <form method="POST" action="/submitHotelData">
+                    <div class="card">
+                        <h2><%= hotel.name %></h2>
+                        <p>Star Rating: <%= hotel.starRating %></p>
+                        <p>Address: <%= hotel.address.addressLineOne %>, <%= hotel.address.cityName %></p>
+                        <!-- Add more hotel details as needed -->
+                        <input type="hidden" name="hotelData" value='<%= JSON.stringify(hotel) %>'>
+
+                        <% if(user) { %>
+                            <button type="submit">Add to Cart</button>
+                        <% } else { %>
+                            <p>Please login to add to cart.</p>
+                        <% } %>
+                    </div>
+                </form>
+
+                <% }) %>
+            </div>
 
             <div id="cardsContainer"></div> <!-- Adjusted ID to match your JavaScript function -->
             <div id="searchResultsContainer"></div>
