@@ -102,6 +102,6 @@ dist
 # TernJS port file
 .tern-port
 
-# ignoring .env to not get pushed
+# ignoring .env to not
 .env 
 

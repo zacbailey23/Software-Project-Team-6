@@ -1,23 +1,24 @@
+DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE "users" (
   "username" VARCHAR(50),
   "password" CHAR (60) NOT NULL,
   "user_id" SERIAL PRIMARY KEY
 );
-
+DROP TABLE IF EXISTS product CASCADE;
 CREATE TABLE "product" (
   "id" SERIAL PRIMARY KEY,
   "product_type" VARCHAR(50) NOT NULL,
   "name" TEXT NOT NULL,
   "price" DECIMAL(10,2) NOT NULL
 );
-
+DROP TABLE IF EXISTS cars CASCADE;
 CREATE TABLE "cars" (
   "id" INT PRIMARY KEY,
-  "year" "CHAR (12)",
+  "year" CHAR (12),
   "make" VARCHAR(50),
   "model" VARCHAR(50)
 );
-
+DROP TABLE IF EXISTS flights CASCADE;
 CREATE TABLE "flights" (
   "id" INT PRIMARY KEY,
   "departureTime" TIME,
@@ -33,7 +34,7 @@ CREATE TABLE "flights" (
   "city" VARCHAR(255),
   "numberOfConnections" INT
 );
-
+DROP TABLE IF EXISTS hotel CASCADE;
 CREATE TABLE "hotel" (
   "id" INT PRIMARY KEY,
   "areaName" VARCHAR(255),
@@ -44,7 +45,7 @@ CREATE TABLE "hotel" (
   "countryCode" VARCHAR(10),
   "zip" VARCHAR(20)
 );
-
+DROP TABLE IF EXISTS planner_item CASCADE;
 CREATE TABLE "planner_item" (
   id SERIAL PRIMARY KEY
   planner_id INT,
@@ -59,7 +60,7 @@ CREATE TABLE "planner_item" (
         REFERENCES `planner` (`id`)
         ON DELETE SET NULL
 );
-
+DROP TABLE IF EXISTS planner CASCADE;
 CREATE TABLE "planner" (
   id INT, 
   user_id INT,
