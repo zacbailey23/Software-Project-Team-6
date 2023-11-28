@@ -16,7 +16,8 @@ CREATE TABLE "cars" (
   "id" INT PRIMARY KEY,
   "year" CHAR (12),
   "make" VARCHAR(50),
-  "model" VARCHAR(50)
+  "model" VARCHAR(50),
+  "cars" ADD FOREIGN KEY ("id") REFERENCES "product" ("id")
 );
 DROP TABLE IF EXISTS flights CASCADE;
 CREATE TABLE "flights" (
@@ -32,7 +33,8 @@ CREATE TABLE "flights" (
   "arrivalCity" VARCHAR(255),
   "totalMinimumFare" DECIMAL(10,2),
   "city" VARCHAR(255),
-  "numberOfConnections" INT
+  "numberOfConnections" INT,
+  FOREIGN KEY ("id") REFERENCES "product" ("id")
 );
 DROP TABLE IF EXISTS hotel CASCADE;
 CREATE TABLE "hotel" (
@@ -43,7 +45,8 @@ CREATE TABLE "hotel" (
   "cityName" VARCHAR(255),
   "stateCode" VARCHAR(10),
   "countryCode" VARCHAR(10),
-  "zip" VARCHAR(20)
+  "zip" VARCHAR(20),
+  FOREIGN KEY ("id") REFERENCES "product" ("id")
 );
 DROP TABLE IF EXISTS planner_item CASCADE;
 CREATE TABLE "planner_item" (
@@ -70,16 +73,6 @@ CREATE TABLE "planner" (
         REFERENCES `user` (`id`)
         ON DELETE SET NULL
 );
-
-
-
-ALTER TABLE "flights" ADD FOREIGN KEY ("id") REFERENCES "product" ("id");
-
-ALTER TABLE "hotel" ADD FOREIGN KEY ("id") REFERENCES "product" ("id");
-
-ALTER TABLE "cars" ADD FOREIGN KEY ("year") REFERENCES "cars" ("id");
-
-ALTER TABLE "cars" ADD FOREIGN KEY ("id") REFERENCES "product" ("id");
 
 
 -- DROP TABLE IF EXISTS users CASCADE;
