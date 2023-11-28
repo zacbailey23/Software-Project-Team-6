@@ -794,10 +794,17 @@ app.get('/homepage', (req, res) => {
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
-
-// POST /register route
 app.post('/register', async (req, res) => {
   try {
+    // Check if username already exists
+    const existingUser = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
+
+    if (existingUser) {
+      // Username already exists
+      res.render('pages/register', { message: 'Username already exists. Please choose a different one.' });
+      return;
+    }
+
     // Hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = 'INSERT INTO users (username, password) VALUES ($1, $2)';
@@ -806,9 +813,10 @@ app.post('/register', async (req, res) => {
 
   } catch (error) {
     console.error('Error during registration:', error);
-    res.redirect('/register');
+    res.render('pages/register', { message: 'Error during registration. Please try again.' });
   }
 });
+
 
 // app.post('/register', async (req, res) => {
 //   try {
@@ -837,25 +845,35 @@ app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-
 app.post('/login', async (req, res) => {
   try {
     const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
 
+    // Check if user exists
+    if (!user) {
+      res.render('pages/login', { message: 'Incorrect username or password.' });
+      return;
+    }
+
     const match = await bcrypt.compare(req.body.password, user.password);
 
     if (!match) {
-      res.render('pages/login', { error: 'Incorrect username or password.' });
+      res.render('pages/login', { message: 'Incorrect username or password.' });
       return;
     }
+
     req.session.isLoggedIn = true;
     req.session.user = user;
-    req.session.save();
+    req.session.save(err => {
+      if (err) {
+        throw err;
+      }
+      res.redirect('/homepage');
+    });
 
-    res.redirect('/homepage');
   } catch (error) {
     console.error('Error during login:', error);
-    res.render('pages/login', { message: 'Incorrect Username or Password! Please try again.' });
+    res.render('pages/login', { message: 'Login failed. Please try again.' });
   }
 });
 
@@ -890,19 +908,21 @@ app.post('/submitFlightData', async (req, res) => {
       const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation, flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity, flightData.totalMinimumFare, flightData.city, flightData.numberOfConnections];
       
       // const flightInsertResult = await db.one(flightInsertQuery, flightValues);
-      
-      // const userId = /* Retrieve user id here */;
+
+      //we currently do not have a method of assigning a user id to the user upon registering
+      // const userId =
       // const flightId = flightInsertResult.flight_id;
 
       // // Insert data into cartItem table
       // const cartInsertQuery = 'INSERT INTO cartItem (user_id, flight_id) VALUES ($1, $2);';
       // const cartValues = [userId, flightId];
       // await db.none(cartInsertQuery, cartValues);
-
       res.send('Flight data submitted successfully');
+
   } catch (err) {
-      console.error('Error in submitting flight data', err);
-      res.status(500).send('Error in submitting flight data');
+     console.error('Error in submitting flight data', err);
+     res.status(500).send('Error in submitting flight data');
+
   }
 });
 
@@ -916,11 +936,12 @@ app.post('/submitHotelData', async (req, res) => {
       const { cityName, addressLineOne, stateCode, countryCode, zip } = hotelData.address;
 
       // Insert data into hotels table
-      const hotelInsertQuery = 'INSERT INTO hotels (name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip, availableRooms) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING hotel_id;';
+      const hotelInsertQuery = 'INSERT INTO hotels (name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING hotel_id;';
       const hotelValues = [hotelData.name, hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
       const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
-      
-      // const userId = /* Retrieve user id here */;
+
+      //we currently do not have a method of assigning a user id to the user upon registering
+      // const userId =
       // const hotelId = hotelInsertResult.hotel_id;
 
       // // Insert data into cartItem table

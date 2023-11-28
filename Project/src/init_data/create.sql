@@ -60,7 +60,7 @@ CREATE TABLE flightsReturned (
 );
 DROP TABLE IF EXISTS hotels CASCADE;
 CREATE TABLE hotels (
-    hotel_id INT AUTO_INCREMENT PRIMARY KEY,
+    hotel_id INT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     areaName  VARCHAR(255)
     starRating INT,

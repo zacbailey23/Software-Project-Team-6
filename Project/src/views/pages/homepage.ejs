@@ -1,6 +1,6 @@
 <%- include ('../partials/header') %>
     <%- include ('../partials/nav') %>
-
+<%- include ('../partials/message') %>
         <!DOCTYPE html>
         <html>
 
@@ -8,7 +8,7 @@
             <title>Travel Search</title>
         </head>
 
-        <body onload="initializeContent()">
+        <body>
             <form id="searchForm" action="/search" method="GET" onsubmit="return validateDateInput()">
                 <select class="form-control" id="queryType" name="queryType" required
                     onchange="handleSearchTypeChange(this.value)">
