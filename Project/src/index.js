@@ -233,6 +233,7 @@ app.get('/homepage', (req, res) => {
       totalMinimumFare: 250.00,
       city: "New York",
       numberOfConnections: 0,
+      ifCarorFlightorHotel: "flight"
     },
     {
       flight_id: 2,
@@ -867,12 +868,12 @@ const auth = (req, res, next) => {
   next();
 };
 
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.render("pages/login");
+  res.render('pages/login');
 });
 
-app.get("/cartItem", (req, res) => {
+app.get('/cartItem', (req, res) => {
   if(req.session && req.session.user) {
     res.render('pages/cart', { user: req.session.user});
   } else {
@@ -900,6 +901,7 @@ app.post('/submitFlightData', async (req, res) => {
       // await db.none(cartInsertQuery, cartValues);
 
       res.send('Flight data submitted successfully');
+      //res.redirect('pages/cartItem') do we want it to redirect to the home or cart page or something
   } catch (err) {
       console.error('Error in submitting flight data', err);
       res.status(500).send('Error in submitting flight data');
@@ -935,16 +937,22 @@ app.post('/submitHotelData', async (req, res) => {
   }
 });
 
+// add to cart {id, title, price, ifCarorFlightorHotel}
+// table cartitem {id, title, price, ifCarorFlightorHotel}
+// want info if(ifCarorFlightorHotel === car ) innerjoin with car using 
 
-
-app.post("/cartItem/add", async (req, res) => {
+app.post('/cartItem/add', async (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  db.one("INSERT INTO cartItem(item_id) VALUES (1$)", [item_id]);
+  const ifCarorFlightorHotel = req.body.ifCarorFlightorHotel
+  if(ifCarorFlightorHotel === "hotel"){
+    db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
+  }
+  db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
   try {
-    res.render("pages/cartItem", {
+    res.render('pages/cartItem', {
       cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
       message: `Successfully added item ${req.body.item_id} to cart`,
-      action: "add",
+      action:'add',
     });
   } catch (err) {
     res.render("pages/homepage", {
@@ -956,7 +964,7 @@ app.post("/cartItem/add", async (req, res) => {
 });
 
 
-app.post("/cartItem/delete", (req, res) => {
+app.post('/cartItem/delete', (req, res) => {
   const item_id = parseInt(req.body.item_id);
   const query = ("DELETE cartItem(item_id) VALUES (1$)", [item_id]);
   db.any(del);
