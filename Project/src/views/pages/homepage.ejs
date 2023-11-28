@@ -57,7 +57,9 @@
                         <input type="hidden" name="flightData" value='<%= JSON.stringify(flight) %>'>
 
                         <% if(user) { %>
-                            <button type="submit">Add to Cart</button>
+                            <form action= "cartItem/add" method="POST"> 
+                                <button type="submit">Add to Cart</button>
+                            </form>
                         <% } else { %>
                             <p>Please login to add to cart.</p>
                         <% } %>
