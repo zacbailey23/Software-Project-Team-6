@@ -919,11 +919,7 @@ app.post('/submitFlightData', async (req, res) => {
       // const cartValues = [userId, flightId];
       // await db.none(cartInsertQuery, cartValues);
       res.send('Flight data submitted successfully');
-<<<<<<< Updated upstream
       //res.redirect('pages/cartItem') do we want it to redirect to the home or cart page or something
-=======
-
->>>>>>> Stashed changes
   } catch (err) {
      console.error('Error in submitting flight data', err);
      res.status(500).send('Error in submitting flight data');
