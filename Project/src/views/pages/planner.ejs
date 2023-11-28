@@ -5,35 +5,37 @@
 
       <div class="col"><%- include ('../partials/message') %></div>
       
-        <!-- Display planner information here -->
-        <% let arr[]; %>
-        <% if (cartItem) { %>
-          <% cartItem.forEach( cartItem => { %>
-            <% arr.add(cartItem); %>
-          <% }); %>
-          <% }; %>
-          
-        <% arr.sort((a, b) => a.getDate() - b.getDate()); %>
-
-        <% for(int i = 0; i < arr.length(); i++) { %>
-          <div class="row">
-            <div class="card">
-                <div class="card-header">
-                  <%= arr[i].date %>
+        <!-- sorting the data array -->
+        <% data.sort((a, b) => a.date - b.date); %>
+        
+        <!-- printing the data array -->
+        <% if (data) { %>
+          <% data.forEach( cartItem => { %>
+            <div class="row">
+              <div class="card">
+                  <div class="card-header">
+                    <%= cartItem.date %>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">
+                      <% if(flight_id) { %>
+                        Reservation Type: Flight
+                      <% } else if(hotel_id) {%>
+                        Reservation Type: Hotel
+                      <% } else if(car_id) {%>
+                        Reservation Type: Car
+                      <% } %>
+                    </h5>
+                    <p class="card-text">
+                      Location: <%= cartItem.location %> <br>
+                      Time: <%= cartItem.time %>
+                    </p>
+                    <a href="/cartItem" class="btn btn-primary"> See More Info </a>
+                  </div>
                 </div>
-                <div class="card-body">
-                  <h5 class="card-title">  Reservation Title / Type
-                    <% %>
-                  </h5>
-                  <p class="card-text">
-                    Location: <%= arr[i].location %> <br>
-                    Time: <%= arr[i].time %>
-                  </p>
-                  <a href="/cartItem" class="btn btn-primary"> See More Info </a>
-                </div>
-              </div>
-        </div>
-        <% } %>
+          </div>
+        <% }); %>
+        <% }; %>
 
     </div>
   </main>

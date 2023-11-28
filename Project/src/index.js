@@ -986,9 +986,7 @@ app.get("/planner", async (req, res) => {
   try {
     const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
 
-    console.log(req.body);
-
-    let planner = await db.any(query, req.body.user_id);
+    let planner = await db.any(query, req.session.user_id);
     if (planner[0]) {
       res.render("pages/planner", planner);
     }
