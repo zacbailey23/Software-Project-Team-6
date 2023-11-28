@@ -986,9 +986,11 @@ app.get("/planner", async (req, res) => {
   try {
     const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
 
-    const planner = await db.one(query, req.body.users.user_id);
-    if (planner) {
-      res.render("pages/planner", data);
+    console.log(req.body);
+
+    let planner = await db.any(query, req.body.user_id);
+    if (planner[0]) {
+      res.render("pages/planner", planner);
     }
     else {
       const errorMessage = "You have not purchased any items. Purchase an item to view it here.";
@@ -996,7 +998,7 @@ app.get("/planner", async (req, res) => {
     }
   } catch (error) {
     const errorMessage = "Error loading planner.";
-    res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
+    res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
   }
 });
 
