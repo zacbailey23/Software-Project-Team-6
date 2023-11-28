@@ -992,9 +992,10 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
+    const user_id = await db.one(`SELECT user_id FROM users WHERE username = ${req.session.username}`);
     const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
 
-    let planner = await db.any(query, req.session.user_id);
+    let planner = await db.any(query, user_id);
     if (planner[0]) {
       res.render("pages/planner", planner);
     }
