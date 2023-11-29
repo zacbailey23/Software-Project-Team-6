@@ -899,56 +899,54 @@ app.get('/cartItem', (req, res) => {
     res.render('pages/cart', { user: null});
   }
 });
-
 app.post('/submitFlightData', async (req, res) => {
   try {
       const flightData = JSON.parse(req.body.flightData);
-      
-      // Insert data into flightsReturned table
-      const flightInsertQuery = 'INSERT INTO flightsReturned (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING flight_id;';
+      const username = req.session.user.username; // Assuming username is stored in session
+
+      // Insert data into flights table
+      const flightInsertQuery = 'INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id;';
       const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation, flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity, flightData.totalMinimumFare, flightData.city, flightData.numberOfConnections];
       
-      // const flightInsertResult = await db.one(flightInsertQuery, flightValues);
+      const flightInsertResult = await db.one(flightInsertQuery, flightValues);
+      const flightId = flightInsertResult.id;
 
-      //we currently do not have a method of assigning a user id to the user upon registering
-      // const userId =
-      // const flightId = flightInsertResult.flight_id;
+      // Retrieve user_id using username
+      const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+      const userId = userIdResult.user_id;
 
-      // // Insert data into cartItem table
-      // const cartInsertQuery = 'INSERT INTO cartItem (user_id, flight_id) VALUES ($1, $2);';
-      // const cartValues = [userId, flightId];
-      // await db.none(cartInsertQuery, cartValues);
+      // Insert data into planner_item table
+      const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+      await db.none(plannerInsertQuery, [userId, flightId, 1]); // Assuming quantity is 1
+
       res.send('Flight data submitted successfully');
-      //res.redirect('pages/cartItem') do we want it to redirect to the home or cart page or something
   } catch (err) {
      console.error('Error in submitting flight data', err);
      res.status(500).send('Error in submitting flight data');
-
   }
 });
-
-// Similar changes should be made to /submitHotelData
-
 app.post('/submitHotelData', async (req, res) => {
   try {
       const hotelData = JSON.parse(req.body.hotelData);
-      
+      const username = req.session.user.username; // Assuming username is stored in session
+
       // Extract address details from the nested structure
       const { cityName, addressLineOne, stateCode, countryCode, zip } = hotelData.address;
 
-      // Insert data into hotels table
-      const hotelInsertQuery = 'INSERT INTO hotels (name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING hotel_id;';
-      const hotelValues = [hotelData.name, hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
+      // Insert data into hotel table
+      const hotelInsertQuery = 'INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;';
+      const hotelValues = [hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
+      
       const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
+      const hotelId = hotelInsertResult.id;
 
-      //we currently do not have a method of assigning a user id to the user upon registering
-      // const userId =
-      // const hotelId = hotelInsertResult.hotel_id;
+      // Retrieve user_id using username
+      const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+      const userId = userIdResult.user_id;
 
-      // // Insert data into cartItem table
-      // const cartInsertQuery = 'INSERT INTO cartItem (user_id, hotel_id) VALUES ($1, $2);';
-      // const cartValues = [userId, hotelId];
-      // await db.none(cartInsertQuery, cartValues);
+      // Insert data into planner_item table
+      const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+      await db.none(plannerInsertQuery, [userId, hotelId, 1]); // Assuming quantity is 1
 
       res.send('Hotel data submitted successfully');
   } catch (err) {
@@ -956,6 +954,60 @@ app.post('/submitHotelData', async (req, res) => {
       res.status(500).send('Error in submitting hotel data');
   }
 });
+
+// app.post('/submitFlightData', async (req, res) => {
+//   try {
+//       const flightData = JSON.parse(req.body.flightData);
+      
+//       // Insert data into flightsReturned table
+//       // const flightInsertQuery = 'INSERT INTO flightsReturned (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING flight_id;';
+//       // const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation, flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity, flightData.totalMinimumFare, flightData.city, flightData.numberOfConnections];
+      
+//       // const flightInsertResult = await db.one(flightInsertQuery, flightValues);
+
+//       // const userId = 
+//       // const flightId = flightInsertResult.flight_id;
+
+//       // // Insert data into cartItem table
+//       // const cartInsertQuery = 'INSERT INTO cartItem (user_id, flight_id) VALUES ($1, $2);';
+//       // const cartValues = [userId, flightId];
+//       // await db.none(cartInsertQuery, cartValues);
+//       res.send('Flight data submitted successfully');
+//       //res.redirect('pages/cartItem') do we want it to redirect to the home or cart page or something
+//   } catch (err) {
+//      console.error('Error in submitting flight data', err);
+//      res.status(500).send('Error in submitting flight data');
+
+//   }
+// });
+
+// Similar changes should be made to /submitHotelData
+
+// app.post('/submitHotelData', async (req, res) => {
+//   try {
+//       const hotelData = JSON.parse(req.body.hotelData);
+      
+//       // Extract address details from the nested structure
+//       const { cityName, addressLineOne, stateCode, countryCode, zip } = hotelData.address;
+
+//       const hotelInsertQuery = 'INSERT INTO hotel (name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING hotel_id;';
+//       const hotelValues = [hotelData.name, hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
+//       const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
+
+//       const userId =
+//       const hotelId = hotelInsertResult.hotel_id;
+
+//       // Insert data into cartItem table
+//       const cartInsertQuery = 'INSERT INTO cartItem (user_id, hotel_id) VALUES ($1, $2);';
+//       const cartValues = [userId, hotelId];
+//       await db.none(cartInsertQuery, cartValues);
+
+//       res.send('Hotel data submitted successfully');
+//   } catch (err) {
+//       console.error('Error in submitting hotel data', err);
+//       res.status(500).send('Error in submitting hotel data');
+//   }
+// });
 
 // add to cart {id, title, price, ifCarorFlightorHotel}
 // table cartitem {id, title, price, ifCarorFlightorHotel}
