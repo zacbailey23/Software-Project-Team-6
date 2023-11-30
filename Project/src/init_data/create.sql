@@ -1,8 +1,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE "users" (
-  "username" VARCHAR(50),
-  "password" CHAR (60) NOT NULL,
-  "user_id" SERIAL PRIMARY KEY
+  "username" VARCHAR(50) SERIAL PRIMARY KEY,
+  "password" CHAR (60) NOT NULL
 );
 DROP TABLE IF EXISTS product CASCADE;
 CREATE TABLE "product" (
@@ -73,7 +72,7 @@ CREATE TABLE "planner" (
   "description" TEXT,
   CONSTRAINT `fk_user`
         FOREIGN KEY (`user_id`)
-        REFERENCES `user` (`id`)
+        REFERENCES `users` (`username`)
         ON DELETE SET NULL
 );
 
