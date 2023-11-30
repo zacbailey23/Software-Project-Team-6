@@ -1020,12 +1020,14 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
-    const user_id = await db.one(`SELECT user_id FROM users WHERE username = ${req.session.username}`);
-    const query = `SELECT * FROM cartItem WHERE cartItem.user_id = $1;`;
+    const user_planner = await db.one(`SELECT * FROM planner WHERE user_id = ${req.session.username}`);
+    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = $1;`;
 
-    let planner = await db.any(query, user_id);
-    if (planner[0]) {
-      res.render("pages/planner", planner);
+    console.log(req.session);
+
+    let data = await db.any(query, user_planner);
+    if (data[0]) {
+      res.render("pages/planner", data);
     }
     else {
       const errorMessage = "You have not purchased any items. Purchase an item to view it here.";

@@ -78,7 +78,7 @@ CREATE TABLE "planner" (
   "description" TEXT,
   CONSTRAINT `fk_user`
         FOREIGN KEY (`user_id`)
-        REFERENCES `user` (`id`)
+        REFERENCES `users` (`username`)
         ON DELETE SET NULL
 );
 
