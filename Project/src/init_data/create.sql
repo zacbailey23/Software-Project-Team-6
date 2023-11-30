@@ -74,7 +74,7 @@ CREATE TABLE "planner_item" (
 DROP TABLE IF EXISTS planner CASCADE;
 CREATE TABLE "planner" (
   id INT, 
-  user_id INT,
+  username VARCHAR(50),
   "description" TEXT,
   CONSTRAINT `fk_user`
         FOREIGN KEY (`user_id`)

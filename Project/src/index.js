@@ -1020,19 +1020,16 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
-    const user_planner = await db.one(`SELECT * FROM planner WHERE user_id = ${req.session.username}`);
-    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = $1;`;
+    const user_planner = await db.oneOrNone(`SELECT * FROM planner WHERE username = '${req.session.user.username}'`);
+    if(user_planner == NULL) {
+      const errorMessage = "You haven't added any items. Add an item to view it here.";
+      res.redirect(`pages/planner?error=${encodeURIComponent(errorMessage)}`);
+    }
 
-    console.log(req.session);
-
+    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
     let data = await db.any(query, user_planner);
-    if (data[0]) {
-      res.render("pages/planner", data);
-    }
-    else {
-      const errorMessage = "You have not purchased any items. Purchase an item to view it here.";
-      res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
-    }
+    res.render("pages/planner", data);
+
   } catch (error) {
     const errorMessage = "Error loading planner.";
     res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
