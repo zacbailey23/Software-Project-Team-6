@@ -3,7 +3,7 @@ CREATE TABLE "users" (
   "username" VARCHAR(50),
   "password" CHAR (60) NOT NULL,
   "DOB" DATE,
-  "Emial" VARCHAR(80),
+  "Email" VARCHAR(80),
   "Phone" VARCHAR(20),
   "First_name" VARCHAR(50),
   "Last_name" VARCHAR(50)
@@ -77,7 +77,7 @@ CREATE TABLE "planner" (
   "description" TEXT,
   CONSTRAINT `fk_user`
         FOREIGN KEY (`user_id`)
-        REFERENCES `user` (`id`)
+        REFERENCES `users` (`username`)
         ON DELETE SET NULL
 );
 
