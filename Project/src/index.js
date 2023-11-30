@@ -804,7 +804,7 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   try {
     // Check if username already exists
-    const existingUser = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
+    const existingUser = await db.oneOrNone('SELECT * FROM users WHERE username = $1;', req.body.username);
 
     if (existingUser) {
       // Username already exists
@@ -817,7 +817,7 @@ app.post('/register', async (req, res) => {
     await db.none(query, [req.body.username, hash, req.body.date_of_birth, req.body.email, req.body.phone, req.body.first_name, req.body.last_name, req.body.location]);
     res.redirect('/login');
 
-  } catch (error) {
+  } catch (error) { 
     console.error('Error during registration:', error);
     res.render('pages/register', { message: 'Error during registration. Please try again.' });
   }
@@ -853,7 +853,7 @@ app.get('/login', (req, res) => {
 
 app.post('/login', async (req, res) => {
   try {
-    const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
+    const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1;', [req.body.username]);
 
     // Check if user exists
     if (!user) {
@@ -1021,16 +1021,23 @@ app.use(auth);
 app.get("/planner", async (req, res) => {
   try {
     const user_planner = await db.oneOrNone(`SELECT * FROM planner WHERE username = '${req.session.user.username}'`);
-    if(user_planner == NULL) {
+
+    console.log(user_planner);
+
+    if(user_planner.length == 0) {
       const errorMessage = "You haven't added any items. Add an item to view it here.";
       res.redirect(`pages/planner?error=${encodeURIComponent(errorMessage)}`);
     }
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
-    let data = await db.any(query, user_planner);
+    let data = await db.any(query, user_planner.id);
+
+    console.log(query);
+
     res.render("pages/planner", data);
 
-  } catch (error) {
+  } catch (error) { 
+    console.log(error);
     const errorMessage = "Error loading planner.";
     res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
   }
