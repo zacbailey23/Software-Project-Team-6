@@ -2,11 +2,12 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE "users" (
   "username" VARCHAR(50),
   "password" CHAR (60) NOT NULL,
-  "DOB" DATE,
-  "Email" VARCHAR(80),
-  "Phone" VARCHAR(20),
-  "First_name" VARCHAR(50),
-  "Last_name" VARCHAR(50)
+  "dob" DATE,
+  "email" VARCHAR(80),
+  "phone" VARCHAR(20),
+  "first_name" VARCHAR(50),
+  "last_name" VARCHAR(50),
+  "location" VARCHAR(80)
 );
 DROP TABLE IF EXISTS product CASCADE;
 CREATE TABLE "product" (

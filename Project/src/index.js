@@ -813,8 +813,8 @@ app.post('/register', async (req, res) => {
     }
     // Hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
-    const query = 'INSERT INTO users (username, password) VALUES ($1, $2)';
-    await db.none(query, [req.body.username, hash]);
+    const query = 'INSERT INTO users (username, password, dob, email, phone, first_name, last_name, location) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);';
+    await db.none(query, [req.body.username, hash, req.body.date_of_birth, req.body.email, req.body.phone, req.body.first_name, req.body.last_name, req.body.location]);
     res.redirect('/login');
 
   } catch (error) {
