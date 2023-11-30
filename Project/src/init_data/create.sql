@@ -2,7 +2,11 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE "users" (
   "username" VARCHAR(50),
   "password" CHAR (60) NOT NULL,
-  "user_id" SERIAL PRIMARY KEY
+  "DOB" DATE,
+  "Emial" VARCHAR(80),
+  "Phone" VARCHAR(20),
+  "First_name" VARCHAR(50),
+  "Last_name" VARCHAR(50)
 );
 DROP TABLE IF EXISTS product CASCADE;
 CREATE TABLE "product" (
