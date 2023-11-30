@@ -19,23 +19,26 @@ CREATE TABLE "cars" (
   "model" VARCHAR(50),
   "cars" ADD FOREIGN KEY ("id") REFERENCES "product" ("id")
 );
-DROP TABLE IF EXISTS flights CASCADE;
 CREATE TABLE "flights" (
-  "id" INT PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "departureTime" TIME,
   "departureLocation" VARCHAR(255),
   "arrivalTime" TIME,
   "arrivalLocation" VARCHAR(255),
+  "arrivalDate" VARCHAR(255),
+  "departureDate" VARCHAR(255),
   "airline" VARCHAR(100),
   "departureAirport" VARCHAR(10),
   "arrivalAirport" VARCHAR(10),
   "departureCity" VARCHAR(255),
   "arrivalCity" VARCHAR(255),
   "totalMinimumFare" DECIMAL(10,2),
-  "city" VARCHAR(255),
-  "numberOfConnections" INT,
+  "flightNumber" VARCHAR(10),
+  "duration" VARCHAR(50),
+  
   FOREIGN KEY ("id") REFERENCES "product" ("id")
 );
+
 DROP TABLE IF EXISTS hotel CASCADE;
 CREATE TABLE "hotel" (
   "id" INT PRIMARY KEY,

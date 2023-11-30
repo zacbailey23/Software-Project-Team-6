@@ -69,32 +69,49 @@ app.use(
 
 
 function extractTopHotelsAndFlights(query, data) {
-  const maxFlights = 20; // Move this constant outside of the sub-functions as it's used in multiple places
+  const maxFlights = 50; // Move this constant outside of the sub-functions as it's used in multiple places
 
   // Function to extract flight information
   function extractFlightInformation(itineraries) {
     return Object.values(itineraries)
       .slice(0, maxFlights)
+      .filter(itinerary => {
+        // Filter for direct flights with no connections
+        return Object.keys(itinerary.slice_data.slice_0.flight_data).length === 1;
+      })
       .map(itinerary => {
-        const flightDataKeys = Object.keys(itinerary.slice_data.slice_0.flight_data);
-        const lastFlightKey = flightDataKeys[flightDataKeys.length - 1];
-        const lastFlight = itinerary.slice_data.slice_0.flight_data[lastFlightKey];
-
+        const firstFlight = itinerary.slice_data.slice_0.flight_data['flight_0'];
+  
+        // Extracting baggage allowances
+        let baggageAllowances = firstFlight.baggage_allowances.map(baggage => {
+          return {
+            type: baggage.type, // e.g., "CHECKED", "CARRY_ON"
+            quantity: baggage.quantity,
+            restrictions: baggage.restrictions // This might contain size, weight limits, etc.
+          };
+        });
+  
         return {
-          departureTime: itinerary.slice_data.slice_0.departure.datetime.time_24h,
+          departureTime: itinerary.slice_data.slice_0.departure.datetime.time_12h,
+          departureDate: itinerary.slice_data.slice_0.departure.datetime.date,
           departureLocation: itinerary.slice_data.slice_0.departure.airport.name,
-          arrivalTime: lastFlight.arrival.datetime.time_12h,
-          arrivalLocation: lastFlight.arrival.airport.name,
+          arrivalTime: firstFlight.arrival.datetime.time_12h,
+          arrivalDate: firstFlight.arrival.datetime.date,
+          arrivalLocation: firstFlight.arrival.airport.name,
           airline: itinerary.slice_data.slice_0.airline.name,
           departureAirport: itinerary.slice_data.slice_0.departure.airport.code,
-          arrivalAirport: lastFlight.arrival.airport.code,
+          arrivalAirport: firstFlight.arrival.airport.code,
           departureCity: itinerary.slice_data.slice_0.departure.airport.city,
-          arrivalCity: lastFlight.arrival.airport.city,
+          arrivalCity: firstFlight.arrival.airport.city,
           totalMinimumFare: itinerary.price_details.display_total_fare,
-          numberOfConnections: flightDataKeys.length - 1
+          flightNumber: firstFlight.info.flight_number,
+          duration: firstFlight.info.duration,
+          baggageAllowance: baggageAllowances
+          
         };
       });
   }
+  
 
   // Function to extract hotel information
   function extractHotelInformation(hotelsData) {
@@ -151,8 +168,9 @@ async function fetchData(query) {
         destination_airport_code: query.destination,
         cabin_class: query.cabinClass,
         origin_airport_code: query.origin,
-        number_of_itineraries: '21',
+        number_of_itineraries: '50',
         currency: 'USD'
+
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
@@ -166,7 +184,7 @@ async function fetchData(query) {
       params: {
         string: query.location, // must be a city
         get_hotels: 'true',
-        max_results: '21'
+        max_results: '30'
       },
       headers: {
         'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
@@ -203,9 +221,27 @@ app.get('/search', async (req, res) => {
     templateData.flightsInfo = results;
   }
   // Render the EJS template with the extracted  data
-  res.render('pages/searchResults', { data: templateData, userLoggedIn: req.session.isLoggedIn || false});
+  if(req.session && req.session.user) {
+    res.render('pages/searchResults', { data: templateData, user: req.session.user});
+  } else {
+    // Handle the case where the session or user is not set
+    res.render('pages/searchResults', { data: templateData, user: null});
+  }
 });
 
+
+app.get('/searchInternet', (req, res) => {
+  const searchQuery = req.query.searchQuery;
+  if (!searchQuery) {
+      return res.status(400).send('A search query is required.');
+  }
+
+  // Construct the Google search URL
+  const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`;
+
+  // Redirect the user to the Google search page
+  res.redirect(googleSearchUrl);
+});
 
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
@@ -220,307 +256,277 @@ app.get('/homepage', (req, res) => {
   // Check if the session and user exist
   const flightInfoArray = [
     {
-      flight_id: 1,
-      departureTime: "08:00:00",
+      departureTime: "09:45",
       departureLocation: "New York",
-      arrivalTime: "11:00:00",
+      arrivalTime: "13:30",
       arrivalLocation: "Los Angeles",
-      airline: "Delta Airlines",
+      arrivalDate: "2024-01-01",
+      departureDate: "2024-01-01",
+      airline: "American Airlines",
       departureAirport: "JFK",
       arrivalAirport: "LAX",
       departureCity: "New York",
       arrivalCity: "Los Angeles",
-      totalMinimumFare: 250.00,
-      city: "New York",
-      numberOfConnections: 0,
-      ifCarorFlightorHotel: "flight"
+      totalMinimumFare: 425.50,
+      flightNumber: "78",
+      duration: "04:45:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "50 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 2,
-      departureTime: "10:30:00",
-      departureLocation: "Chicago",
-      arrivalTime: "14:15:00",
-      arrivalLocation: "Miami",
-      airline: "American Airlines",
-      departureAirport: "ORD",
-      arrivalAirport: "MIA",
-      departureCity: "Chicago",
-      arrivalCity: "Miami",
-      totalMinimumFare: 300.50,
-      city: "Chicago",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 3,
-      departureTime: "13:45:00",
-      departureLocation: "San Francisco",
-      arrivalTime: "16:30:00",
-      arrivalLocation: "Seattle",
-      airline: "United Airlines",
-      departureAirport: "SFO",
-      arrivalAirport: "SEA",
-      departureCity: "San Francisco",
-      arrivalCity: "Seattle",
-      totalMinimumFare: 180.75,
-      city: "San Francisco",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 4,
-      departureTime: "09:15:00",
-      departureLocation: "Dallas",
-      arrivalTime: "12:30:00",
-      arrivalLocation: "Denver",
-      airline: "Southwest Airlines",
-      departureAirport: "DFW",
-      arrivalAirport: "DEN",
-      departureCity: "Dallas",
-      arrivalCity: "Denver",
-      totalMinimumFare: 150.25,
-      city: "Dallas",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 5,
-      departureTime: "07:30:00",
+      departureTime: "11:30",
       departureLocation: "Los Angeles",
-      arrivalTime: "10:45:00",
-      arrivalLocation: "New York",
-      airline: "JetBlue Airways",
+      arrivalTime: "15:15",
+      arrivalLocation: "London",
+      arrivalDate: "2024-01-02",
+      departureDate: "2024-01-02",
+      airline: "British Airways",
       departureAirport: "LAX",
-      arrivalAirport: "JFK",
+      arrivalAirport: "LHR",
       departureCity: "Los Angeles",
-      arrivalCity: "New York",
-      totalMinimumFare: 280.00,
-      city: "Los Angeles",
-      numberOfConnections: 0,
+      arrivalCity: "London",
+      totalMinimumFare: 725.75,
+      flightNumber: "234",
+      duration: "10:45:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "70 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 6,
-      departureTime: "11:20:00",
-      departureLocation: "Miami",
-      arrivalTime: "15:05:00",
-      arrivalLocation: "Chicago",
-      airline: "American Airlines",
-      departureAirport: "MIA",
-      arrivalAirport: "ORD",
-      departureCity: "Miami",
-      arrivalCity: "Chicago",
-      totalMinimumFare: 320.75,
-      city: "Miami",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 7,
-      departureTime: "14:00:00",
-      departureLocation: "Seattle",
-      arrivalTime: "17:45:00",
-      arrivalLocation: "San Francisco",
-      airline: "United Airlines",
-      departureAirport: "SEA",
-      arrivalAirport: "SFO",
-      departureCity: "Seattle",
-      arrivalCity: "San Francisco",
-      totalMinimumFare: 190.50,
-      city: "Seattle",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 8,
-      departureTime: "08:45:00",
-      departureLocation: "Denver",
-      arrivalTime: "12:00:00",
-      arrivalLocation: "Dallas",
-      airline: "Southwest Airlines",
-      departureAirport: "DEN",
-      arrivalAirport: "DFW",
-      departureCity: "Denver",
-      arrivalCity: "Dallas",
-      totalMinimumFare: 160.75,
-      city: "Denver",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 9,
-      departureTime: "07:15:00",
-      departureLocation: "New York",
-      arrivalTime: "10:15:00",
-      arrivalLocation: "Los Angeles",
-      airline: "Delta Airlines",
-      departureAirport: "JFK",
-      arrivalAirport: "LAX",
-      departureCity: "New York",
-      arrivalCity: "Los Angeles",
-      totalMinimumFare: 265.50,
-      city: "New York",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 10,
-      departureTime: "09:45:00",
-      departureLocation: "Chicago",
-      arrivalTime: "13:30:00",
-      arrivalLocation: "Miami",
-      airline: "American Airlines",
-      departureAirport: "ORD",
-      arrivalAirport: "MIA",
-      departureCity: "Chicago",
-      arrivalCity: "Miami",
-      totalMinimumFare: 310.25,
-      city: "Chicago",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 11,
-      departureTime: "12:30:00",
-      departureLocation: "San Francisco",
-      arrivalTime: "15:15:00",
-      arrivalLocation: "Seattle",
-      airline: "United Airlines",
-      departureAirport: "SFO",
-      arrivalAirport: "SEA",
-      departureCity: "San Francisco",
-      arrivalCity: "Seattle",
-      totalMinimumFare: 195.00,
-      city: "San Francisco",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 12,
-      departureTime: "10:00:00",
+      departureTime: "02:15",
       departureLocation: "Dallas",
-      arrivalTime: "13:15:00",
-      arrivalLocation: "Denver",
-      airline: "Southwest Airlines",
+      arrivalTime: "04:45",
+      arrivalLocation: "Tokyo",
+      arrivalDate: "2024-01-03",
+      departureDate: "2024-01-03",
+      airline: "Japan Airlines",
       departureAirport: "DFW",
-      arrivalAirport: "DEN",
+      arrivalAirport: "NRT",
       departureCity: "Dallas",
-      arrivalCity: "Denver",
-      totalMinimumFare: 155.25,
-      city: "Dallas",
-      numberOfConnections: 0,
+      arrivalCity: "Tokyo",
+      totalMinimumFare: 1090.00,
+      flightNumber: "567",
+      duration: "12:30:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "55 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 13,
-      departureTime: "08:30:00",
-      departureLocation: "Los Angeles",
-      arrivalTime: "11:45:00",
-      arrivalLocation: "New York",
-      airline: "JetBlue Airways",
-      departureAirport: "LAX",
-      arrivalAirport: "JFK",
-      departureCity: "Los Angeles",
-      arrivalCity: "New York",
-      totalMinimumFare: 275.00,
-      city: "Los Angeles",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 14,
-      departureTime: "11:45:00",
-      departureLocation: "Miami",
-      arrivalTime: "15:30:00",
-      arrivalLocation: "Chicago",
-      airline: "American Airlines",
-      departureAirport: "MIA",
-      arrivalAirport: "ORD",
-      departureCity: "Miami",
-      arrivalCity: "Chicago",
-      totalMinimumFare: 315.75,
-      city: "Miami",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 15,
-      departureTime: "14:30:00",
-      departureLocation: "Seattle",
-      arrivalTime: "18:15:00",
-      arrivalLocation: "San Francisco",
-      airline: "United Airlines",
-      departureAirport: "SEA",
-      arrivalAirport: "SFO",
-      departureCity: "Seattle",
-      arrivalCity: "San Francisco",
-      totalMinimumFare: 200.50,
-      city: "Seattle",
-      numberOfConnections: 0,
-    },
-    {
-      flight_id: 16,
-      departureTime: "09:45:00",
+      departureTime: "08:00",
       departureLocation: "Denver",
-      arrivalTime: "13:00:00",
-      arrivalLocation: "Dallas",
-      airline: "Southwest Airlines",
+      arrivalTime: "11:45",
+      arrivalLocation: "Sydney",
+      arrivalDate: "2024-01-04",
+      departureDate: "2024-01-04",
+      airline: "Qantas",
       departureAirport: "DEN",
-      arrivalAirport: "DFW",
+      arrivalAirport: "SYD",
       departureCity: "Denver",
-      arrivalCity: "Dallas",
-      totalMinimumFare: 165.75,
-      city: "Denver",
-      numberOfConnections: 0,
+      arrivalCity: "Sydney",
+      totalMinimumFare: 1300.25,
+      flightNumber: "890",
+      duration: "14:45:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "70 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 17,
-      departureTime: "08:15:00",
-      departureLocation: "New York",
-      arrivalTime: "11:15:00",
-      arrivalLocation: "Los Angeles",
-      airline: "Delta Airlines",
-      departureAirport: "JFK",
-      arrivalAirport: "LAX",
-      departureCity: "New York",
-      arrivalCity: "Los Angeles",
-      totalMinimumFare: 260.50,
-      city: "New York",
-      numberOfConnections: 0,
+      departureTime: "04:30",
+      departureLocation: "Seattle",
+      arrivalTime: "06:15",
+      arrivalLocation: "Dubai",
+      arrivalDate: "2024-01-05",
+      departureDate: "2024-01-05",
+      airline: "Emirates",
+      departureAirport: "SEA",
+      arrivalAirport: "DXB",
+      departureCity: "Seattle",
+      arrivalCity: "Dubai",
+      totalMinimumFare: 1025.50,
+      flightNumber: "123",
+      duration: "15:45:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "60 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 18,
-      departureTime: "10:30:00",
+      departureTime: "10:30",
       departureLocation: "Chicago",
-      arrivalTime: "14:15:00",
-      arrivalLocation: "Miami",
-      airline: "American Airlines",
+      arrivalTime: "14:00",
+      arrivalLocation: "Paris",
+      arrivalDate: "2024-01-06",
+      departureDate: "2024-01-06",
+      airline: "Air France",
       departureAirport: "ORD",
-      arrivalAirport: "MIA",
+      arrivalAirport: "CDG",
       departureCity: "Chicago",
-      arrivalCity: "Miami",
-      totalMinimumFare: 305.25,
-      city: "Chicago",
-      numberOfConnections: 0,
+      arrivalCity: "Paris",
+      totalMinimumFare: 865.60,
+      flightNumber: "345",
+      duration: "08:30:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "62 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 19,
-      departureTime: "13:15:00",
+      departureTime: "03:45",
       departureLocation: "San Francisco",
-      arrivalTime: "16:00:00",
-      arrivalLocation: "Seattle",
-      airline: "United Airlines",
+      arrivalTime: "05:30",
+      arrivalLocation: "Beijing",
+      arrivalDate: "2024-01-07",
+      departureDate: "2024-01-07",
+      airline: "Air China",
       departureAirport: "SFO",
-      arrivalAirport: "SEA",
+      arrivalAirport: "PEK",
       departureCity: "San Francisco",
-      arrivalCity: "Seattle",
-      totalMinimumFare: 185.00,
-      city: "San Francisco",
-      numberOfConnections: 0,
+      arrivalCity: "Beijing",
+      totalMinimumFare: 925.40,
+      flightNumber: "678",
+      duration: "10:45:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "57 lbs",
+            },
+          ],
+        },
+      ],
     },
     {
-      flight_id: 20,
-      departureTime: "11:00:00",
-      departureLocation: "Dallas",
-      arrivalTime: "14:15:00",
-      arrivalLocation: "Denver",
-      airline: "Southwest Airlines",
-      departureAirport: "DFW",
-      arrivalAirport: "DEN",
-      departureCity: "Dallas",
-      arrivalCity: "Denver",
-      totalMinimumFare: 155.50,
-      city: "Dallas",
-      numberOfConnections: 0,
+      departureTime: "07:15",
+      departureLocation: "Atlanta",
+      arrivalTime: "09:30",
+      arrivalLocation: "Rome",
+      arrivalDate: "2024-01-08",
+      departureDate: "2024-01-08",
+      airline: "Alitalia",
+      departureAirport: "ATL",
+      arrivalAirport: "FCO",
+      departureCity: "Atlanta",
+      arrivalCity: "Rome",
+      totalMinimumFare: 780.75,
+      flightNumber: "456",
+      duration: "08:15:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "64 lbs",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      departureTime: "13:00",
+      departureLocation: "Houston",
+      arrivalTime: "15:15",
+      arrivalLocation: "Hong Kong",
+      arrivalDate: "2024-01-09",
+      departureDate: "2024-01-09",
+      airline: "Cathay Pacific",
+      departureAirport: "IAH",
+      arrivalAirport: "HKG",
+      departureCity: "Houston",
+      arrivalCity: "Hong Kong",
+      totalMinimumFare: 975.90,
+      flightNumber: "789",
+      duration: "15:15:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "63 lbs",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      departureTime: "18:30",
+      departureLocation: "Miami",
+      arrivalTime: "20:45",
+      arrivalLocation: "Dublin",
+      arrivalDate: "2024-01-10",
+      departureDate: "2024-01-10",
+      airline: "Aer Lingus",
+      departureAirport: "MIA",
+      arrivalAirport: "DUB",
+      departureCity: "Miami",
+      arrivalCity: "Dublin",
+      totalMinimumFare: 620.25,
+      flightNumber: "890",
+      duration: "07:15:00",
+      baggageAllowance: [
+        {
+          type: "CHECKED",
+          restrictions: [
+            {
+              type: "WEIGHT",
+              value: "55 lbs",
+            },
+          ],
+        },
+      ],
     },
   ];
+
   const hotelInfoArray = [
     {
       id: 1,
@@ -805,7 +811,6 @@ app.post('/register', async (req, res) => {
       res.render('pages/register', { message: 'Username already exists. Please choose a different one.' });
       return;
     }
-
     // Hash the password using bcrypt library
     const hash = await bcrypt.hash(req.body.password, 10);
     const query = 'INSERT INTO users (username, password) VALUES ($1, $2)';
@@ -862,8 +867,6 @@ app.post('/login', async (req, res) => {
       res.render('pages/login', { message: 'Incorrect username or password.' });
       return;
     }
-
-    req.session.isLoggedIn = true;
     req.session.user = user;
     req.session.save(err => {
       if (err) {
@@ -901,52 +904,63 @@ app.get('/cartItem', (req, res) => {
 });
 app.post('/submitFlightData', async (req, res) => {
   try {
-      const flightData = JSON.parse(req.body.flightData);
-      const username = req.session.user.username; // Assuming username is stored in session
+    const flightData = JSON.parse(req.body.flightData);
+    const username = req.session.user.username;
 
-      // Insert data into flights table
-      const flightInsertQuery = 'INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING id;';
-      const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation, flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity, flightData.totalMinimumFare, flightData.city, flightData.numberOfConnections];
-      
-      const flightInsertResult = await db.one(flightInsertQuery, flightValues);
-      const flightId = flightInsertResult.id;
+    // Insert data into flights table
+    const flightInsertQuery = `
+      INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, 
+      departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, flightNumber, duration, baggageAllowance) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id;`;
+    const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation,
+      flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity,
+      flightData.totalMinimumFare, flightData.flightNumber, flightData.duration, flightData.baggageAllowance];
+    
+    const flightInsertResult = await db.one(flightInsertQuery, flightValues);
+    const flightId = flightInsertResult.id;
 
-      // Retrieve user_id using username
-      const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-      const userId = userIdResult.user_id;
+    // Retrieve user_id using username
+    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+    // const userId = userIdResult.user_id;
 
-      // Insert data into planner_item table
-      const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-      await db.none(plannerInsertQuery, [userId, flightId, 1]); // Assuming quantity is 1
+    // // Assuming planner_id is available or created
+    // const plannerId = await getOrCreatePlannerId(userId);
 
-      res.send('Flight data submitted successfully');
+    // // Insert data into planner_item table
+    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+    // await db.none(plannerInsertQuery, [plannerId, flightId, 1]); // Assuming quantity is 1
+
+    res.send('Flight data submitted successfully');
   } catch (err) {
-     console.error('Error in submitting flight data', err);
-     res.status(500).send('Error in submitting flight data');
+    console.error('Error in submitting flight data', err);
+    res.status(500).send('Error in submitting flight data');
   }
 });
+
 app.post('/submitHotelData', async (req, res) => {
   try {
-      const hotelData = JSON.parse(req.body.hotelData);
-      const username = req.session.user.username; // Assuming username is stored in session
+    const hotelData = JSON.parse(req.body.hotelData);
+    const username = req.session.user.username; // Assuming username is stored in session
 
-      // Extract address details from the nested structure
-      const { cityName, addressLineOne, stateCode, countryCode, zip } = hotelData.address;
+    // Insert data into hotel table
+    const hotelInsertQuery = `
+      INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
+    const hotelValues = [hotelData.areaName, hotelData.starRating, hotelData.address.addressLineOne, hotelData.address.cityName, 
+      hotelData.address.stateCode, hotelData.address.countryCode, hotelData.address.zip];
+    
+    const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
+    const hotelId = hotelInsertResult.id;
 
-      // Insert data into hotel table
-      const hotelInsertQuery = 'INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;';
-      const hotelValues = [hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
-      
-      const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
-      const hotelId = hotelInsertResult.id;
+    // Retrieve user_id using username
+    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+    // const userId = userIdResult.user_id;
 
-      // Retrieve user_id using username
-      const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-      const userId = userIdResult.user_id;
+    //not sure how to get planner id
+    // Insert data into planner_item table
+    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+    // await db.none(plannerInsertQuery, [plannerId, hotelId, 1]); //
 
-      // Insert data into planner_item table
-      const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-      await db.none(plannerInsertQuery, [userId, hotelId, 1]); // Assuming quantity is 1
 
       res.send('Hotel data submitted successfully');
   } catch (err) {
@@ -954,64 +968,6 @@ app.post('/submitHotelData', async (req, res) => {
       res.status(500).send('Error in submitting hotel data');
   }
 });
-
-// app.post('/submitFlightData', async (req, res) => {
-//   try {
-//       const flightData = JSON.parse(req.body.flightData);
-      
-//       // Insert data into flightsReturned table
-//       // const flightInsertQuery = 'INSERT INTO flightsReturned (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING flight_id;';
-//       // const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation, flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity, flightData.totalMinimumFare, flightData.city, flightData.numberOfConnections];
-      
-//       // const flightInsertResult = await db.one(flightInsertQuery, flightValues);
-
-//       // const userId = 
-//       // const flightId = flightInsertResult.flight_id;
-
-//       // // Insert data into cartItem table
-//       // const cartInsertQuery = 'INSERT INTO cartItem (user_id, flight_id) VALUES ($1, $2);';
-//       // const cartValues = [userId, flightId];
-//       // await db.none(cartInsertQuery, cartValues);
-//       res.send('Flight data submitted successfully');
-//       //res.redirect('pages/cartItem') do we want it to redirect to the home or cart page or something
-//   } catch (err) {
-//      console.error('Error in submitting flight data', err);
-//      res.status(500).send('Error in submitting flight data');
-
-//   }
-// });
-
-// Similar changes should be made to /submitHotelData
-
-// app.post('/submitHotelData', async (req, res) => {
-//   try {
-//       const hotelData = JSON.parse(req.body.hotelData);
-      
-//       // Extract address details from the nested structure
-//       const { cityName, addressLineOne, stateCode, countryCode, zip } = hotelData.address;
-
-//       const hotelInsertQuery = 'INSERT INTO hotel (name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING hotel_id;';
-//       const hotelValues = [hotelData.name, hotelData.areaName, hotelData.starRating, addressLineOne, cityName, stateCode, countryCode, zip];
-//       const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
-
-//       const userId =
-//       const hotelId = hotelInsertResult.hotel_id;
-
-//       // Insert data into cartItem table
-//       const cartInsertQuery = 'INSERT INTO cartItem (user_id, hotel_id) VALUES ($1, $2);';
-//       const cartValues = [userId, hotelId];
-//       await db.none(cartInsertQuery, cartValues);
-
-//       res.send('Hotel data submitted successfully');
-//   } catch (err) {
-//       console.error('Error in submitting hotel data', err);
-//       res.status(500).send('Error in submitting hotel data');
-//   }
-// });
-
-// add to cart {id, title, price, ifCarorFlightorHotel}
-// table cartitem {id, title, price, ifCarorFlightorHotel}
-// want info if(ifCarorFlightorHotel === car ) innerjoin with car using 
 
 app.post('/cartItem/add', async (req, res) => {
   const item_id = parseInt(req.body.item_id);

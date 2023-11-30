@@ -1,59 +1,128 @@
-<%- include ('../partials/header') %> 
-
+<%- include('../partials/header') %>
+<%- include('../partials/nav') %>
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Search Results</title>
 </head>
+
 <body>
     <h1>Search Results</h1>
     <div id="searchResultsContainer">
-        <% if(data.hotelsInfo && data.hotelsInfo.length > 0) { %>
-            <h2>Hotels</h2>
-
-            <% data.hotelsInfo.forEach(hotel => { %>
-                <form method="POST" action="/submitHotelData">
-                    <div class="card">
-                        <h2><%= hotel.name %></h2>
-                        <p>Star Rating: <%= hotel.starRating %></p>
-                        <p>Address: <%= hotel.address.addressLineOne %>, <%= hotel.address.cityName %></p>
-
-                        <input type="hidden" name="hotelData" value='<%= JSON.stringify(hotel) %>'>
-
-                        <% if(userLoggedIn) { %>
-                            <button type="submit">Add to Cart</button>
-                        <% } else { %>
-                            <p>Please login to add to cart.</p>
-                        <% } %>
-                    </div>
-                </form>
-            <% }); %>
+        <% if (data.hotelsInfo && data.hotelsInfo.length > 0) { %>
+        <h2>Hotels</h2>
+        <% data.hotelsInfo.forEach(hotel => { %>
+        <div class="card">
+            <h2>
+                <%= hotel.name %>
+            </h2>
+            <p>Star Rating:
+                <%= hotel.starRating %>
+            </p>
+            <p>Address:
+                <%= hotel.address.addressLineOne %>,
+                <%= hotel.address.cityName %>
+            </p>
+            <% if (user) { %>
+            <form method="POST" action="/submitHotelData">
+                <input type="hidden" name="hotelData"
+                    value='<%= JSON.stringify(hotel) %>'>
+                <button type="submit">Add to Cart</button>
+            </form>
+            <% } else { %>
+            <p>Please login to add to cart.</p>
+            <% } %>
+            <!-- New form for the Search Internet button -->
+            <form method="GET" action="/searchInternet">
+                <input type="hidden" name="searchQuery"
+                    value="<%= hotel.name %><%= hotel.areaName %>">
+                <button type="submit">Search Internet</button>
+            </form>
+        </div>
+        <% }); %>
+        
         <% } %>
+        <% if (data.flightsInfo && data.flightsInfo.length > 0) { %>
+        <h2>Flights</h2>
+        <% data.flightsInfo.forEach(flight => { %>
+        <div class="card">
+            <h2>
+                <%= flight.airline %>- Flight
+                <%= flight.flightNumber %>
+            </h2>
+            <div class="flight-info">
+                <p><strong>Departure: </strong>Leave on
+                    <%= flight.departureDate %>at
+                    <%= flight.departureTime %>from
+                    <%= flight.departureLocation %>(
+                    <%= flight.departureAirport %>)
+                </p>
+                <p><strong>Arrival: </strong>Arrive on
+                    <%= flight.arrivalDate %>at
+                    <%= flight.arrivalTime %>at
+                    <%= flight.arrivalLocation %>(
+                    <%= flight.arrivalAirport %>)
+                </p>
+                <p><strong>Duration: </strong>
+                    <%= flight.duration %>
+                </p>
+                <p><strong>Baggage Allowance: </strong></p>
+                <ul>
+                    <% if (flight.baggageAllowance && flight.baggageAllowance.length > 0) { %>
+                    <% flight.baggageAllowance.forEach(baggage => { %>
+                    <li>Baggage Type:
+                        <%= baggage.type %>
+                    </li>
+                    <% if (baggage.restrictions && baggage.restrictions[3] && baggage.restrictions[3].value !== 0) { %>
+                    <li>Restrictions:
+                        <ul>
+                            <li>
+                                <%= baggage.restrictions.type %>
+                                :
+                                <%= baggage.restrictions[3].value %>
+                                lbs
+                            </li>
+                        </ul>
+                    </li>
+                    <% } else { %>
+                    <li>Restrictions: None</li>
 
-        <% if(data.flightsInfo && data.flightsInfo.length > 0) { %>
-            <h2>Flights</h2>
-            <% data.flightsInfo.forEach(flight => { %>
-                <form method="POST" action="/submitFlightData">
-                    <div class="card">
-                        <h2><%= flight.airline %></h2>
-                        <p>Departure: <%= flight.departureTime %> from <%= flight.departureLocation %></p>
-                        <p>Arrival: <%= flight.arrivalTime %> at <%= flight.arrivalLocation %></p>
+                    
+                    <% } %>
+                    <% }); %>
+                    <% } else { %>
+                    <li>None</li>
 
-                        <input type="hidden" name="flightData" value='<%= JSON.stringify(flight) %>'>
-
-                        <% if(userLoggedIn) { %>
-                            <button type="submit">Add to Cart</button>
-                        <% } else { %>
-                            <p>Please login to add to cart.</p>
-                        <% } %>
-                    </div>
-                </form>
-            <% }); %>
+                    
+                    <% } %>
+                </ul>
+                <p><strong>Fare:</strong> $
+                    <%= flight.totalMinimumFare %>
+                </p>
+            </div>
+            <% if (user) { %>
+            <form method="POST" action="/submitFlightData">
+                <input type="hidden" name="flightData"
+                    value='<%= JSON.stringify(flight) %>'>
+                <button type="submit">Add to Cart</button>
+            </form>
+            <% } else { %>
+            <p>Please login to add to cart.</p>
+            <% } %>
+            <form method="GET" action="/searchInternet">
+                <input type="hidden" name="searchQuery"
+                    value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureTime %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                <button type="submit">Search Internet</button>
+            </form>
+        </div>
+        <% }); %>
+        
         <% } %>
-
-        <% if(!data.hotelsInfo && !data.flightsInfo) { %>
-            <p>No results found.</p>
+        <% if (!data.hotelsInfo && !data.flightsInfo) { %>
+        <p>No results found.</p> 
         <% } %>
     </div>
 </body>
+
 </html>
