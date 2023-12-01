@@ -11,14 +11,6 @@ CREATE TABLE "product" (
   "name" TEXT NOT NULL,
   "price" DECIMAL(10,2) NOT NULL
 );
-DROP TABLE IF EXISTS cars CASCADE;
-CREATE TABLE "cars" (
-  "id" INT PRIMARY KEY,
-  "year" CHAR (12),
-  "make" VARCHAR(50),
-  "model" VARCHAR(50),
-  "cars" ADD FOREIGN KEY ("id") REFERENCES "product" ("id")
-);
 DROP TABLE IF EXISTS flights CASCADE;
 CREATE TABLE "flights" (
   "id" INT PRIMARY KEY,

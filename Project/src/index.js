@@ -961,11 +961,10 @@ app.post('/submitHotelData', async (req, res) => {
 // table cartitem {id, title, price, ifCarorFlightorHotel}
 // want info if(ifCarorFlightorHotel === car ) innerjoin with car using 
 
-app.post('/cartItem/add', async (req, res) => {
-  const item_id = parseInt(req.body.item_id);
-  const ifCarorFlightorHotel = req.body.ifCarorFlightorHotel
-  if(ifCarorFlightorHotel === "hotel"){
-    db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
+app.post('/plannerItem/add', async (req, res) => {
+  const planner = parseInt(req.body.id);
+  if(){
+    db.one("INSERT INTO planner() VALUES (1$)", [item_id]);
   }
   db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
   try {
