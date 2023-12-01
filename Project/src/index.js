@@ -902,72 +902,72 @@ app.get('/cartItem', (req, res) => {
     res.render('pages/cart', { user: null});
   }
 });
-app.post('/submitFlightData', async (req, res) => {
-  try {
-    const flightData = JSON.parse(req.body.flightData);
-    const username = req.session.user.username;
+// app.post('/submitFlightData', async (req, res) => {
+//   try {
+//     const flightData = JSON.parse(req.body.flightData);
+//     const username = req.session.user.username;
 
-    // Insert data into flights table
-    const flightInsertQuery = `
-      INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, 
-      departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, flightNumber, duration, baggageAllowance) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id;`;
-    const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation,
-      flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity,
-      flightData.totalMinimumFare, flightData.flightNumber, flightData.duration, flightData.baggageAllowance];
+//     // Insert data into flights table
+//     const flightInsertQuery = `
+//       INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, 
+//       departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, flightNumber, duration, baggageAllowance) 
+//       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id;`;
+//     const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation,
+//       flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity,
+//       flightData.totalMinimumFare, flightData.flightNumber, flightData.duration, flightData.baggageAllowance];
     
-    const flightInsertResult = await db.one(flightInsertQuery, flightValues);
-    const flightId = flightInsertResult.id;
+//     const flightInsertResult = await db.one(flightInsertQuery, flightValues);
+//     const flightId = flightInsertResult.id;
 
-    // Retrieve user_id using username
-    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-    // const userId = userIdResult.user_id;
+//     // Retrieve user_id using username
+//     // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+//     // const userId = userIdResult.user_id;
 
-    // // Assuming planner_id is available or created
-    // const plannerId = await getOrCreatePlannerId(userId);
+//     // // Assuming planner_id is available or created
+//     // const plannerId = await getOrCreatePlannerId(userId);
 
-    // // Insert data into planner_item table
-    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-    // await db.none(plannerInsertQuery, [plannerId, flightId, 1]); // Assuming quantity is 1
+//     // // Insert data into planner_item table
+//     // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+//     // await db.none(plannerInsertQuery, [plannerId, flightId, 1]); // Assuming quantity is 1
 
-    res.send('Flight data submitted successfully');
-  } catch (err) {
-    console.error('Error in submitting flight data', err);
-    res.status(500).send('Error in submitting flight data');
-  }
-});
+//     res.send('Flight data submitted successfully');
+//   } catch (err) {
+//     console.error('Error in submitting flight data', err);
+//     res.status(500).send('Error in submitting flight data');
+//   }
+// });
 
-app.post('/submitHotelData', async (req, res) => {
-  try {
-    const hotelData = JSON.parse(req.body.hotelData);
-    const username = req.session.user.username; // Assuming username is stored in session
+// app.post('/submitHotelData', async (req, res) => {
+//   try {
+//     const hotelData = JSON.parse(req.body.hotelData);
+//     const username = req.session.user.username; // Assuming username is stored in session
 
-    // Insert data into hotel table
-    const hotelInsertQuery = `
-      INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
-    const hotelValues = [hotelData.areaName, hotelData.starRating, hotelData.address.addressLineOne, hotelData.address.cityName, 
-      hotelData.address.stateCode, hotelData.address.countryCode, hotelData.address.zip];
+//     // Insert data into hotel table
+//     const hotelInsertQuery = `
+//       INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) 
+//       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
+//     const hotelValues = [hotelData.areaName, hotelData.starRating, hotelData.address.addressLineOne, hotelData.address.cityName, 
+//       hotelData.address.stateCode, hotelData.address.countryCode, hotelData.address.zip];
     
-    const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
-    const hotelId = hotelInsertResult.id;
+//     const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
+//     const hotelId = hotelInsertResult.id;
 
-    // Retrieve user_id using username
-    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-    // const userId = userIdResult.user_id;
+//     // Retrieve user_id using username
+//     // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
+//     // const userId = userIdResult.user_id;
 
-    //not sure how to get planner id
-    // Insert data into planner_item table
-    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-    // await db.none(plannerInsertQuery, [plannerId, hotelId, 1]); //
+//     //not sure how to get planner id
+//     // Insert data into planner_item table
+//     // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
+//     // await db.none(plannerInsertQuery, [plannerId, hotelId, 1]); //
 
 
-      res.send('Hotel data submitted successfully');
-  } catch (err) {
-      console.error('Error in submitting hotel data', err);
-      res.status(500).send('Error in submitting hotel data');
-  }
-});
+//       res.send('Hotel data submitted successfully');
+//   } catch (err) {
+//       console.error('Error in submitting hotel data', err);
+//       res.status(500).send('Error in submitting hotel data');
+//   }
+// });
 
 app.post('/plannerItem/add', async (req, res) => {
   const { planner_id, product_id, quantity } = req.body;
