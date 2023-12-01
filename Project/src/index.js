@@ -1022,18 +1022,42 @@ app.get("/planner", async (req, res) => {
     const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}'`);
 
     if(user_planner == null) {
-      const errorMessage = "You haven't added any items. Add an item to view it in your planner!";
-      return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
+      res.render("pages/planner", {user: req.session.user});
     }
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
     let data = await db.any(query, user_planner);
-    res.render("pages/planner", data);
+    res.render("pages/planner", {user: req.session.user, data});
 
   } catch (error) { 
     console.log(error);
     const errorMessage = "Error loading planner.";
     return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
+  }
+});
+
+app.post("/planner/add", async (req, res) => {
+    const id = ljadbv;
+    const planner_id = lkjsdbv;
+    const event_title = req.body.event_title;
+    const time = req.body.time;
+    const date = req.body.date;
+    const location = req.body.location;
+    const decsription = req.body.description;
+
+    const query = `INSERT INTO planner_item (id, planner_id, event_title, time, date, location, description) 
+                    VALUES ($1, $2, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
+    let data = await db.any(query);
+
+  try {
+    res.render('pages/planner', {
+      message: `Successfully added event: ${event_title}`,
+      action:'add',
+    });
+  } catch (error) { 
+    console.log(error);
+    const errorMessage = "Error adding event.";
+    return res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
   }
 });
 
