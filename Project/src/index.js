@@ -1020,26 +1020,21 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
-    const user_planner = await db.oneOrNone(`SELECT * FROM planner WHERE username = '${req.session.user.username}'`);
+    const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}'`);
 
-    console.log(user_planner);
-
-    if(user_planner.length == 0) {
-      const errorMessage = "You haven't added any items. Add an item to view it here.";
-      res.redirect(`pages/planner?error=${encodeURIComponent(errorMessage)}`);
+    if(user_planner == null) {
+      const errorMessage = "You haven't added any items. Add an item to view it in your planner!";
+      return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
     }
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
-    let data = await db.any(query, user_planner.id);
-
-    console.log(query);
-
+    let data = await db.any(query, user_planner);
     res.render("pages/planner", data);
 
   } catch (error) { 
     console.log(error);
     const errorMessage = "Error loading planner.";
-    res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
+    return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
   }
 });
 
