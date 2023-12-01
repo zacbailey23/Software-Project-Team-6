@@ -969,21 +969,21 @@ app.post('/submitHotelData', async (req, res) => {
   }
 });
 
-app.post('/cartItem/add', async (req, res) => {
-  const item_id = parseInt(req.body.item_id);
-  const ifCarorFlightorHotel = req.body.ifCarorFlightorHotel
-  if(ifCarorFlightorHotel === "hotel"){
-    db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
-  }
-  db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
+app.post('/plannerItem/add', async (req, res) => {
+  const { planner_id, product_id, quantity } = req.body;
   try {
-    res.render('pages/cartItem', {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action:'add',
+    // Inserting values into the planner_item table
+    await db.one(
+      'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING id',
+      [planner_id, product_id, quantity]
+    );
+    res.render('pages/planner', {
+      plannerItem: product_id, 
+      message: `Successfully added item ${product_id} to planner`,
+      action: 'add',
     });
   } catch (err) {
-    res.render("pages/homepage", {
+    res.render('pages/homepage', {
       item: [],
       error: true,
       message: err.message,
@@ -991,16 +991,15 @@ app.post('/cartItem/add', async (req, res) => {
   }
 });
 
-
-app.post('/cartItem/delete', (req, res) => {
+app.post('/plannerItem/delete', (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  const query = ("DELETE cartItem(item_id) VALUES (1$)", [item_id]);
+  const query = ('DELETE plannerItem(id) VALUES (1$)', [id]);
   db.any(del);
   try {
-    res.render("pages/cartItem", {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action: "add",
+    res.render('pages/plannerItem', {
+      plannerItem: req.body.id, // Pass the added item to the cart for rendering purposes
+      message: `Successfully added item ${req.body.id} from planner`,
+      action: 'delete',
     });
   } catch (err) {
     res.render("pages/homepage", {
