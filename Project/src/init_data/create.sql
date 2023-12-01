@@ -42,7 +42,6 @@ CREATE TABLE flights (
   totalMinimumFare DECIMAL(10,2),
   flightNumber VARCHAR(10),
   duration VARCHAR(50),
-  
   FOREIGN KEY (id) REFERENCES product (id)
 );
 
