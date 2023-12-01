@@ -33,12 +33,25 @@
             <% } else { %>
             <p>Please login to add to cart.</p>
             <% } %>
+            
             <!-- New form for the Search Internet button -->
             <form method="GET" action="/searchInternet">
                 <input type="hidden" name="searchQuery"
                     value="<%= hotel.name %><%= hotel.areaName %>">
                 <button type="submit">Search Internet</button>
             </form>
+            <div>
+                <iframe
+                    width="600"
+                    height="450"
+                    style="border:0"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC88Vsv7RXCH64XQkrm3oN9jy9KBe07BVo
+                    &q=$hotel.cityName">
+                </iframe>
+            </div>
         </div>
         <% }); %>
         
