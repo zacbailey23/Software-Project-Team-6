@@ -25,8 +25,8 @@
                 <%= hotel.address.cityName %>
             </p>
             <% if (user) { %>
-            <form method="POST" action="/submitHotelData">
-                <input type="hidden" name="hotelData"
+            <form method="POST" action="/planner/add">
+                <input type="hidden" name="plannerData"
                     value='<%= JSON.stringify(hotel) %>'>
                 <button type="submit">Add to Cart</button>
             </form>
@@ -38,7 +38,7 @@
             <form method="GET" action="/searchInternet">
                 <input type="hidden" name="searchQuery"
                     value="<%= hotel.name %><%= hotel.areaName %>">
-                <button type="submit">Search Internet</button>
+                <button type="submit">Search</button>
             </form>
         </div>
         <div>
@@ -115,8 +115,8 @@
                 </p>
             </div>
             <% if (user) { %>
-            <form method="POST" action="/submitFlightData">
-                <input type="hidden" name="flightData"
+            <form method="POST" action="/planner/add">
+                <input type="hidden" name="plannerData"
                     value='<%= JSON.stringify(flight) %>'>
                 <button type="submit">Add to Cart</button>
             </form>
@@ -126,7 +126,7 @@
             <form method="GET" action="/searchInternet">
                 <input type="hidden" name="searchQuery"
                     value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureTime %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
-                <button type="submit">Search Internet</button>
+                <button type="submit">Search</button>
             </form>
         </div>
         <% }); %>
