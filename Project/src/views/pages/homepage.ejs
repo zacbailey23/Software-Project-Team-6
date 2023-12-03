@@ -107,7 +107,7 @@
                     </p>
                 </div>
                 <% if (user) { %>
-                <form action="/submitFlightData" method="POST">
+                <form action="/plannerItem/add" method="POST">
                     <input type="hidden" name="flightData"
                         value='<%= JSON.stringify(flight) %>'>
                     <button type="submit">Add to Planner</button>
@@ -142,7 +142,7 @@
                 <%= hotel.address.cityName %>
             </p>
             <% if (user) { %>
-            <form method="POST" action="/submitHotelData">
+            <form method="POST" action="/plannerItem/add">
                 <input type="hidden" name="hotelData"
                     value='<%= JSON.stringify(hotel) %>'>
                 <button type="submit">Add to Planner</button>
