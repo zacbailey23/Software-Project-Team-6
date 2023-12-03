@@ -5,3 +5,9 @@ footer{
 img {
     border-radius: 8px;
 }
+
+nav .nav-link{
+    background-color: whitesmoke;
+    border-radius: 10px;
+    border: 2px solid black;
+}
