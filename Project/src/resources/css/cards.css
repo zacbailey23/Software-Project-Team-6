@@ -10,6 +10,12 @@
   margin: auto;
 }
 
+.container button{
+  background-color: whitesmoke;
+  border-radius: 12px;
+  border: 1px solid black;
+}
+
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
