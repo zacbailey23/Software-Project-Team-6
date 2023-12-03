@@ -1,6 +1,6 @@
-# <Project Title>
 
-# Software-Project-Team-6
+
+# ezTravels
 
 ## Application Description
 Our website ezTravels is a simple yet useful travel planner with a variety of uses.  Through this application, the user can search for various flights and hotels for their trip and see their full itinerary in the planner tab. From the homepage, you can see popular destinations and filter search based on your preferences.  
