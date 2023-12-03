@@ -12,6 +12,18 @@
     <div id="searchResultsContainer">
         <% if (data.hotelsInfo && data.hotelsInfo.length > 0) { %>
         <h2>Hotels</h2>
+        <div>
+            <iframe
+                width="600"
+                height="450"
+                style="border:0"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCdwy9vIu0XKQGwtKLzOErCWSYnYqJ2jc4
+                &q=$hotel.cityName">
+            </iframe>
+        </div>
         <% data.hotelsInfo.forEach(hotel => { %>
         <div class="card">
             <h2>
@@ -40,18 +52,6 @@
                     value="<%= hotel.name %><%= hotel.areaName %>">
                 <button type="submit">Search</button>
             </form>
-        </div>
-        <div>
-            <iframe
-                width="600"
-                height="450"
-                style="border:0"
-                loading="lazy"
-                allowfullscreen
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyC88Vsv7RXCH64XQkrm3oN9jy9KBe07BVo
-                &q=$hotel.cityName">
-            </iframe>
         </div>
         <% }); %>
         
