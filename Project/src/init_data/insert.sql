@@ -20,6 +20,12 @@ VALUES
     ('noah', 'test'),
     ('andrew', 'test');
 
+INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+VALUES (1, 'pre-load title', '12:00', '12-03-2023', 'csel', 'pre-load test desc.');
+
+INSERT INTO planner (id, username)
+VALUES (1, new);
+
 -- INSERT INTO flightsReturned (flight_id, departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport,
 --     arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections)
 -- VALUES 
