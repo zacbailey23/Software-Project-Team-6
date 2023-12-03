@@ -123,20 +123,6 @@
                     <button type="submit">Search Internet</button>
                 </form>
             </div>
-            <% if (user) { %>
-                <form action="/planner/add" method="POST">
-                    <input type="hidden" name="plannerData"
-                        value='<%= JSON.stringify(flight) %>'>
-                    <button type="submit">Add to Planner</button>
-                </form>
-                <% } else { %>
-                <p>Please login to add to cart.</p>
-                <% } %>
-                <form method="GET" action="/searchInternet">
-                    <input type="hidden" name="searchQuery"
-                        value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
-                    <button class = "button" type="submit">Search Internet</button>
-                </form>
             </div>
             <% }) %>
         </div>
