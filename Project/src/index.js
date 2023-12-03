@@ -881,7 +881,7 @@ app.get('/cartItem', (req, res) => {
 });
 
 app.post('/plannerItem/add', async (req, res) => {
-  const planner_id = parseInt(req.body.id);
+  const planner_id = parseInt(req.body.planner_id);
   try {
     // Inserting values into the planner_item table
     const event_title = req.body.event_title;
@@ -891,21 +891,13 @@ app.post('/plannerItem/add', async (req, res) => {
     const description = req.body.description;
 
     const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
-                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+                    VALUES ($1, $2, $3, $4, $5, $6) `;
 
     const data = await db.one(query, [planner_id, event_title, time, date, location, description]);
 
-    res.render('pages/planner', {
-      plannerItem: data, // Use the returned data from the query
-      message: `Successfully added item ${data.planner_id} to planner`, // Change to use data.planner_id
-      action: 'add',
-    });
+    res.redirect('/planner');
   } catch (err) {
-    res.render('pages/homepage', {
-      item: [],
-      error: true,
-      message: err.message,
-    });
+    res.redirect('/homepage');
   }
 });
 
