@@ -11,41 +11,6 @@
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/button.css">
 </head>
-<style>
-    .container .card{
-        background-color: steelblue;
-        width: 320px;
-        padding: 20px;
-        border: 1px solid white;
-        border-radius: 7px;
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-    }
-    .flightimage{
-        
-        background-image: url(https://play-lh.googleusercontent.com/fLKdtQX0Prg2fPgQ_WjjRquWH7aykggKXwVEw9PFE9Ef4XukJtAz8P7CKt_N0GhTWRw=w240-h480-rw);
-        background-position: right;
-        background-size: cover;
-        height: 300px;
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.255);
-    }
-    .container button{
-        background-color: whitesmoke;
-        border-radius: 12px;
-        border: 1px solid black;
-    }
-
-    .hotelimage{
-        background-image: url(https://www.shutterstock.com/shutterstock/videos/25304531/thumb/10.jpg?ip=x480);
-        background-position: center;
-        background-size: cover;
-        height: 300px;
-        width: 100%;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.255);
-    }
-</style>
 <body>
     <form id="searchForm" action="/search" method="GET"
         onsubmit="return validateDateInput()">
@@ -175,7 +140,6 @@
             </div>
             <% }) %>
         </div>
-        <% }) %>
     </div>
     <% hotels.forEach(function(hotel) { %>
     <div class="hotel">

@@ -1,20 +1,36 @@
-.card {
+.container .card {
+  background-color: steelblue;
+  width: 320px;
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 7px;
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+  transition: 0.3s;
   flex: 1 0 auto;
   margin: auto;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
 }
 
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-.container {
-  padding: 2px 16px;
+.flightimage{
+        
+  background-image: url(https://play-lh.googleusercontent.com/fLKdtQX0Prg2fPgQ_WjjRquWH7aykggKXwVEw9PFE9Ef4XukJtAz8P7CKt_N0GhTWRw=w240-h480-rw);
+  background-position: right;
+  background-size: cover;
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.255);
 }
 
-.card-img-top {
-    width: 100%;
-    height: 15vw;
-    object-fit: cover;
+.hotelimage{
+  background-image: url(https://www.shutterstock.com/shutterstock/videos/25304531/thumb/10.jpg?ip=x480);
+  background-position: center;
+  background-size: cover;
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.255);
 }
