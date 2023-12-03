@@ -870,19 +870,9 @@ app.get('/logout', (req, res) => {
   res.render('pages/login');
 });
 
-app.get('/cartItem', (req, res) => {
-  if(req.session && req.session.user) {
-    res.render('pages/cart', { user: req.session.user});
-  } else {
-    // Handle the case where the session or user is not set
-    res.render('pages/cart', { user: null});
-  }
-});
-
 app.post('/plannerItem/add', async (req, res) => {
-  const planner_id = parseInt(req.body.id);
+  const planner_id = req.body.planner_id
   try {
-    // Inserting values into the planner_item table
     const event_title = req.body.event_title;
     const time = req.body.time;
     const date = req.body.date;
@@ -890,42 +880,32 @@ app.post('/plannerItem/add', async (req, res) => {
     const description = req.body.description;
 
     const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
-                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+                    VALUES ($1, $2, $3, $4, $5, $6)`;
 
     const data = await db.one(query, [planner_id, event_title, time, date, location, description]);
-
-    res.render('pages/planner', {
-      plannerItem: data, // Use the returned data from the query
-      message: `Successfully added item ${data.planner_id} to planner`, // Change to use data.planner_id
-      action: 'add',
-    });
+    res.redirect('/planner');
   } catch (err) {
-    res.render('pages/homepage', {
-      item: [],
-      error: true,
-      message: err.message,
-    });
+    res.redirect('/homepage');
   }
 });
 
-app.post('/plannerItem/delete', (req, res) => {
-  const item_id = parseInt(req.body.item_id);
-  const query = ('DELETE plannerItem(id) VALUES (1$)', [id]);
-  db.any(del);
-  try {
-    res.render('pages/plannerItem', {
-      plannerItem: req.body.id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.id} from planner`,
-      action: 'delete',
-    });
-  } catch (err) {
-    res.render("pages/homepage", {
-      item: [],
-      error: true,
-      message: err.message,
-    });
-  }
-})
+// app.post('/plannerItem/delete', (req, res) => {
+//   const item_id = parseInt(req.body.item_id);
+//   const query = ('DELETE plannerItem(id) VALUES (1$)', [id]);
+//   db.any(del);
+//     res.render('pages/plannerItem', {
+//       plannerItem: req.body.id, // Pass the added item to the cart for rendering purposes
+//       message: `Successfully added item ${req.body.id} from planner`,
+//       action: 'delete',
+//     });
+//   } catch (err) {
+//     res.render("pages/homepage", {
+//       item: [],
+//       error: true,
+//       message: err.message,
+//     });
+//   }
+// })
 //add item 
 //delete item
 //
@@ -942,7 +922,7 @@ app.get("/planner", async (req, res) => {
       return res.render("pages/planner", {user: req.session.user, data: null});
     }
 
-    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1' ORDER BY date DESC;`;
+    const query = `SELECT * FROM plannerItem WHERE plannerItem.id = '$1' ORDER BY date DESC;`;
     let items = await db.any(query, user_planner);
     res.render("pages/planner", {user: req.session.user, data: items});
 

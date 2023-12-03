@@ -72,7 +72,7 @@ CREATE TABLE planner (
 DROP TABLE IF EXISTS planner_item CASCADE;
 CREATE TABLE planner_item (
   -- id SERIAL PRIMARY KEY,
-  planner_id INT,
+  planner_id SERIAL PRIMARY KEY,
   event_title VARCHAR(50),
   time TIME,
   date DATE,

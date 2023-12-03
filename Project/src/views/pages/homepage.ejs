@@ -111,7 +111,7 @@
         </form>
 
         <% if (user) { %>
-        <form action="/planner/add" method="POST">
+        <form action="/plannerItem/add" method="POST">
             <input type="hidden" name="plannerData"
                 value='<%= JSON.stringify(flight) %>'>
             <button type="submit">Add to Planner</button>
