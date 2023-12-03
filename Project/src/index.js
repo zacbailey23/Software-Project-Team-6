@@ -173,7 +173,7 @@ async function fetchData(query) {
 
       },
       headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Key': process.env.Priceline_API_Key,
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
@@ -187,7 +187,7 @@ async function fetchData(query) {
         max_results: '30'
       },
       headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Key': process.env.Priceline_API_Key,
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
