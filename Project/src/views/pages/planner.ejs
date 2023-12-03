@@ -20,7 +20,7 @@
             </div>
             <div class="modal-body">
               
-              <form method="POST" action="/planner/add">
+              <form method="POST" action="/plannerItem/add">
                 <div class="mb-3">
                   <label for="event_title" class="form-label">Title</label>
                   <input type="text" class="form-control" id="event_title" name="event_title">
@@ -41,7 +41,7 @@
                   <label for="description" class="form-label">Description</label>
                   <input type="text" class="form-control" id="description" name="description">
                 </div>
-                <button type="submit" class="btn btn-primary" method="POST" action="/planner/add">Save changes</button>
+                <button type="submit" class="btn btn-primary" method="POST" action="/plannerItem/add">Save changes</button>
               </form>
 
 
@@ -57,7 +57,8 @@
                     <p class="card-text">
                       <%= planner_item.description %>
                     </p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
+                    <a method="POST" action="/plannerItem/delete" class="btn btn-primary">Delete</a>
                   </div>
                 </div>
 
