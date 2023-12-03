@@ -20,16 +20,29 @@ VALUES
     ('noah', 'test'),
     ('andrew', 'test');
 
--- INSERT INTO flightsReturned (flight_id, departureTime, departureLocation, arrivalTime, arrivalLocation, airline, departureAirport,
---     arrivalAirport, departureCity, arrivalCity, totalMinimumFare, city, numberOfConnections)
+INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, arrivalDate, departureDate, airline,
+departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, flightNumber, duration) 
+VALUES 
+('09:45', 'New York', '13:30', 'Los Angeles', '2024-01-01', '2024-01-01', 'American Airlines', 'JFK', 'LAX', 'New York', 'Los Angeles', 425.50, '78', '04:45:00'),
+('11:30', 'Los Angeles', '15:15', 'London', '2024-01-02', '2024-01-02', 'British Airways', 'LAX', 'LHR', 'Los Angeles','London', 725.75, '234','10:45:00'),
+('02:15', 'Dallas', '04:45', 'Tokyo', '2024-01-03', '2024-01-03', 'Japan Airlines', 'DFW', 'NRT', 'Dallas', 'Tokyo', 1090.00, '567', '12:30:00'),
+('08:00', 'Denver', '11:45', 'Sydney', '2024-01-04', '2024-01-04', 'Qantas', 'DEN', 'SYD', 'Denver', 'Sydney', 1300.25, '890', '14:45:00');
+('04:30', 'Seattle','06:15','Dubai','2024-01-05','2024-01-05','Emirates','SEA','DXB','Seattle','Dubai',1025.50,'123','15:45:00','CHECKED','WEIGHT','60 lbs'),
+('10:30', 'Chicago','14:00','Paris','2024-01-06','2024-01-06','Air France','ORD','CDG','Chicago','Paris',865.60,'345', '08:30:00','CHECKED','WEIGHT','62 lbs'),
+('03:45', 'San Francisco','05:30','Beijing','2024-01-07','2024-01-07','Air China','SFO','PEK','San Francisco','Beijing',925.40,'678','10:45:00','CHECKED','WEIGHT','57 lbs'),
+('07:15', 'Atlanta','09:30','Rome','2024-01-08','2024-01-08','Alitalia','ATL','FCO','Atlanta','Rome',780.75,'456','08:15:00','CHECKED','WEIGHT','64 lbs'),
+('13:00','Houston','15:15','Hong Kong','2024-01-09','2024-01-09','Cathay Pacific','IAH','HKG','Houston','Hong Kong',975.90,'789','15:15:00','CHECKED','WEIGHT','63 lbs'),
+('18:30','Miami','20:45','Dublin','2024-01-10','2024-01-10','Aer Lingus','MIA','DUB','Miami','Dublin',620.25,'890','07:15:00','CHECKED','WEIGHT','55 lbs');
+
+
 -- VALUES 
---     (1, "08:00:00", "New York", "11:00:00", "Los Angeles", "Delta Airlines", "JFK", "LAX", "New York", "Los Angeles", 250.00, "New York", 0),
---     (2, "10:30:00", "Chicago", "14:15:00", "Miami", "American Airlines", "ORD", "MIA", "Chicago", "Miami", 300.50, "Chicago", 0),
---     (3, "13:45:00", "San Francisco", "16:30:00", "Seattle", "United Airlines", "SFO", "SEA", "San Francisco", "Seattle", 180.75, "San Francisco", 0),
---     (4, "09:15:00", "Dallas", "12:30:00", "Denver", "Southwest Airlines", "DFW", "DEN", "Dallas", "Denver", 150.25, "Dallas", 0),
---     (5, "07:30:00", "Los Angeles", "10:45:00", "New York", "JetBlue Airways", "LAX", "JFK", "Los Angeles", "New York", 280.00, "Los Angeles", 0),
---     (6, "11:20:00", "Miami", "15:05:00", "Chicago", "American Airlines", "MIA", "ORD", "Miami", "Chicago", 320.75, "Miami", 0),
---     (7, "14:00:00", "Seattle", "17:45:00", "San Francisco", "United Airlines", "SEA", "SFO", "Seattle", "San Francisco", 190.50, "Seattle", 0),
+--     ("08:00:00", "New York", "11:00:00", "Los Angeles", "Delta Airlines", "JFK", "LAX", "New York", "Los Angeles", 250.00, "New York", 0),
+--     ("10:30:00", "Chicago", "14:15:00", "Miami", "American Airlines", "ORD", "MIA", "Chicago", "Miami", 300.50, "Chicago", 0),
+--     ("13:45:00", "San Francisco", "16:30:00", "Seattle", "United Airlines", "SFO", "SEA", "San Francisco", "Seattle", 180.75, "San Francisco", 0),
+--     ("09:15:00", "Dallas", "12:30:00", "Denver", "Southwest Airlines", "DFW", "DEN", "Dallas", "Denver", 150.25, "Dallas", 0),
+--     ("07:30:00", "Los Angeles", "10:45:00", "New York", "JetBlue Airways", "LAX", "JFK", "Los Angeles", "New York", 280.00, "Los Angeles", 0),
+--     ("11:20:00", "Miami", "15:05:00", "Chicago", "American Airlines", "MIA", "ORD", "Miami", "Chicago", 320.75, "Miami", 0),
+--     ("14:00:00", "Seattle", "17:45:00", "San Francisco", "United Airlines", "SEA", "SFO", "Seattle", "San Francisco", 190.50, "Seattle", 0),
 --     (8, "08:45:00", "Denver", "12:00:00", "Dallas", "Southwest Airlines", "DEN", "DFW", "Denver", "Dallas", 160.75, "Denver", 0),
 --     (9, "07:15:00", "New York", "10:15:00", "Los Angeles", "Delta Airlines", "JFK", "LAX", "New York", "Los Angeles", 265.50, "New York", 0),
 --     (10, "09:45:00", "Chicago", "13:30:00", "Miami", "American Airlines", "ORD", "MIA", "Chicago", "Miami", 310.25, "Chicago", 0),
@@ -103,4 +116,215 @@ VALUES
     (22,'The Ritz-Carlton, Denver', 'Downtown Denver', 4, 'Denver', '1881 Curtis St', 'CO', 'US', '80202'),
     (23,'The Langham, Chicago', 'River North', 4, 'Chicago', '330 N Wabash Ave', 'IL', 'US', '60611'),
     (24,'Four Seasons Hotel Denver', 'Downtown Denver', 5, 'Denver', '1111 14th St', 'CO', 'US', '80202');
-    
+
+INSERT INTO hotels_table (
+    id,
+    name,
+    areaName,
+    starRating,
+    cityName,
+    addressLineOne,
+    stateCode,
+    countryCode,
+    zip
+) VALUES 
+(
+    'Grand Hyatt New York',
+    'Midtown Manhattan',
+    4,
+    'New York',
+    '109 E 42nd St',
+    'NY',
+    'US',
+    '10017'
+),
+(
+    'Fontainebleau Miami Beach',
+    'Miami Beach',
+    5,
+    'Miami Beach',
+    '4441 Collins Ave',
+    'FL',
+    'US',
+    '33140'
+),
+(
+    'The Ritz-Carlton, Chicago',
+    'Magnificent Mile',
+    4,
+    'Chicago',
+    '160 E Pearson St',
+    'IL',
+    'US',
+    '60611'
+),
+(
+    'The Ritz-Carlton, Denver',
+    'Downtown Denver',
+    4,
+    'Denver',
+    '1881 Curtis St',
+    'CO',
+    'US',
+    '80202'
+),
+(
+    'The Ritz-Carlton, Los Angeles',
+    'Downtown Los Angeles',
+    4,
+    'Los Angeles',
+    '900 W Olympic Blvd',
+    'CA',
+    'US',
+    '90015'
+),
+(
+    'Fairmont San Francisco',
+    'Nob Hill',
+    5,
+    'San Francisco',
+    '950 Mason St',
+    'CA',
+    'US',
+    '94108'
+),
+(
+    'The Joule, Dallas',
+    'Downtown Dallas',
+    4,
+    'Dallas',
+    '1530 Main St',
+    'TX',
+    'US',
+    '75201'
+),
+(
+    'The Confidante Miami Beach',
+    'Miami Beach',
+    4,
+    'Miami Beach',
+    '4041 Collins Ave',
+    'FL',
+    'US',
+    '33140'
+),
+(
+    'The Langham, New York, Fifth Avenue',
+    'Midtown Manhattan',
+    5,
+    'New York',
+    '400 5th Ave',
+    'NY',
+    'US',
+    '10018'
+),
+(
+    'The Ritz-Carlton, Denver',
+    'Downtown Denver',
+    4,
+    'Denver',
+    '1881 Curtis St',
+    'CO',
+    'US',
+    '80202'
+),
+(
+    'The Langham, Chicago',
+    'River North',
+    4,
+    'Chicago',
+    '330 N Wabash Ave',
+    'IL',
+    'US',
+    '60611'
+),
+(
+    'Four Seasons Hotel Miami',
+    'Brickell',
+    5,
+    'Miami',
+    '1435 Brickell Ave',
+    'FL',
+    'US',
+    '33131'
+),
+(
+    'The Westin Bonaventure Hotel & Suites, Los Angeles',
+    'Downtown Los Angeles',
+    4,
+    'Los Angeles',
+    '404 S Figueroa St',
+    'CA',
+    'US',
+    '90071'
+),
+(
+    'Hyatt Regency San Francisco',
+    'Embarcadero',
+    4,
+    'San Francisco',
+    '5 Embarcadero Center',
+    'CA',
+    'US',
+    '94111'
+),
+(
+    'The Adolphus, Autograph Collection',
+    'Downtown Dallas',
+    4,
+    'Dallas',
+    '1321 Commerce St',
+    'TX',
+    'US',
+    '75202'
+),
+(
+    'Eden Roc Miami Beach',
+    'Miami Beach',
+    4,
+    'Miami Beach',
+    '4525 Collins Ave',
+    'FL',
+    'US',
+    '33140'
+),
+(
+    'The Langham, New York, Fifth Avenue',
+    'Midtown Manhattan',
+    5,
+    'New York',
+    '400 5th Ave',
+    'NY',
+    'US',
+    '10018'
+),
+(
+    'The Ritz-Carlton, Denver',
+    'Downtown Denver',
+    4,
+    'Denver',
+    '1881 Curtis St',
+    'CO',
+    'US',
+    '80202'
+),
+(
+    'The Langham, Chicago',
+    'River North',
+    4,
+    'Chicago',
+    '330 N Wabash Ave',
+    'IL',
+    'US',
+    '60611'
+),
+(
+    'Four Seasons Hotel Denver',
+    'Downtown Denver',
+    5,
+    'Denver',
+    '1111 14th St',
+    'CO',
+    'US',
+    '80202'
+);
