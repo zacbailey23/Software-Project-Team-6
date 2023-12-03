@@ -3,7 +3,7 @@
 # Software-Project-Team-6
 
 ## Application Description
--Our application is a simple yet useful travel planner with a variety of uses.  Through this application, the user can book flights, hotels, and cars for their trip and see their full itinerary in the planner tab. The home page shows the user popular destinations and allows the user to filter search based on what they are looking for. 
+Our website ezTravels is a simple yet useful travel planner with a variety of uses.  Through this application, the user can search for various flights and hotels for their trip and see their full itinerary in the planner tab. From the homepage, you can see popular destinations and filter search based on your preferences.  
 
 Github commit notes
 
@@ -28,9 +28,6 @@ git checkout <branch> #checks out a branch
 git branch <branch> #creates a branch 
 
 git log --all --graph --oneline 
-
-
-
 
 
 ## Contributors
@@ -66,8 +63,6 @@ Start the server
   docker compose up
 ```
 
-
-
 ## Prerequisites:
 
 
@@ -80,3 +75,4 @@ To run tests, run the following command
 ```
 
 ## Link to deployed application
+
