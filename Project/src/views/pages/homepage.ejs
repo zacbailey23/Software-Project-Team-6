@@ -4,10 +4,44 @@
 <!DOCTYPE html>
 <html>
 
-<head>
+<head>  
     <title>Travel Search</title>
 </head>
+<style>
+    .container .card{
+        background-color: steelblue;
+        width: 320px;
+        padding: 20px;
+        border: 1px solid white;
+        border-radius: 7px;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+    }
+    .flightimage{
+        
+        background-image: url(https://play-lh.googleusercontent.com/fLKdtQX0Prg2fPgQ_WjjRquWH7aykggKXwVEw9PFE9Ef4XukJtAz8P7CKt_N0GhTWRw=w240-h480-rw);
+        background-position: right;
+        background-size: cover;
+        height: 300px;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.255);
+    }
+    .container button{
+        background-color: whitesmoke;
+        border-radius: 12px;
+        border: 1px solid black;
+    }
 
+    .hotelimage{
+        background-image: url(https://www.shutterstock.com/shutterstock/videos/25304531/thumb/10.jpg?ip=x480);
+        background-position: center;
+        background-size: cover;
+        height: 300px;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.255);
+    }
+</style>
 <body>
     <form id="searchForm" action="/search" method="GET"
         onsubmit="return validateDateInput()">
@@ -50,106 +84,111 @@
             style="display: none;">Search</button>
     </form>
 
-    <div id="cardsContainer">
-        <% flights.forEach(function(flight) { %>
-        <div class="card">
-            <h2>
-                <%= flight.airline %>- Flight
-                <%= flight.flightNumber %>
-            </h2>
-            <div class="flight-info">
-                <p><strong>Date: </strong>
-                    <%= flight.departureDate %>
-                </p> 
-                <p><strong>Departure:</strong>
-                    <%= flight.departureTime %> from
-                    <%= flight.departureLocation %> (<%= flight.departureAirport %>)
-                </p>
-                <p><strong>Arrival:</strong>
-                    <%= flight.arrivalTime %> at
-                    <%= flight.arrivalLocation %> (<%= flight.arrivalAirport %>)
-                </p>
-                <p><strong>Duration:</strong>
-                    <%= flight.duration %>
-                </p>
-                <p><strong>Baggage Allowance:</strong></p>
-                <ul>
-                    <% if (flight.baggageAllowance && flight.baggageAllowance.length > 0) { %>
-                        <% flight.baggageAllowance.forEach(baggage => { %>
-                            <li>
-                                Baggage Type: <%= baggage.type %>
-                            </li>
-                            <li>
-                                Restrictions:
-                                <% if (baggage.restrictions && baggage.restrictions.length > 0) { %>
-                                    <ul>
-                                        <% baggage.restrictions.forEach(restriction => { %>
-                                            <li>
-                                                <%= restriction.type %>: <%= restriction.value %>
-                                            </li>
-                                        <% }); %>
-                                    </ul>
-                                <% } else { %>
-                                    None
-                                <% } %>
-                            </li>
-                        <% }); %>
-                    <% } else { %>
-                        <li>No baggage allowance information available.</li>
-                    <% } %>
-                </ul>
-                <p><strong>Fare:</strong> $
-                    <%= flight.totalMinimumFare %>
-                </p>
+    <% flights.forEach(function(flight) { %>
+    <div class="container">
+        <div class="flight_carousel" data-bs-ride="carousel">
+            <div class="card" id="flightcard">
+                <div class="flightimage"></div>
+                <h2>
+                    <%= flight.airline %>- Flight
+                    <%= flight.flightNumber %>
+                </h2>
+                <div class="flight-info">
+                    <p><strong>Date: </strong>
+                        <%= flight.departureDate %>
+                    </p> 
+                    <p><strong>Departure:</strong>
+                        <%= flight.departureTime %> from
+                        <%= flight.departureLocation %> (<%= flight.departureAirport %>)
+                    </p>
+                    <p><strong>Arrival:</strong>
+                        <%= flight.arrivalTime %> at
+                        <%= flight.arrivalLocation %> (<%= flight.arrivalAirport %>)
+                    </p>
+                    <p><strong>Duration:</strong>
+                        <%= flight.duration %>
+                    </p>
+                    <p><strong>Baggage Allowance:</strong></p>
+                    <ul>
+                        <% if (flight.baggageAllowance && flight.baggageAllowance.length > 0) { %>
+                            <% flight.baggageAllowance.forEach(baggage => { %>
+                                <li>
+                                    Baggage Type: <%= baggage.type %>
+                                </li>
+                                <li>
+                                    Restrictions:
+                                    <% if (baggage.restrictions && baggage.restrictions.length > 0) { %>
+                                        <ul>
+                                            <% baggage.restrictions.forEach(restriction => { %>
+                                                <li>
+                                                    <%= restriction.type %>: <%= restriction.value %>
+                                                </li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } else { %>
+                                        None
+                                    <% } %>
+                                </li>
+                            <% }); %>
+                        <% } else { %>
+                            <li>No baggage allowance information available.</li>
+                        <% } %>
+                    </ul>
+                    <p><strong>Fare:</strong> $
+                        <%= flight.totalMinimumFare %>
+                    </p>
+                </div>
+                <% if (user) { %>
+                <form action="/submitFlightData" method="POST">
+                    <input type="hidden" name="flightData"
+                        value='<%= JSON.stringify(flight) %>'>
+                    <button type="submit">Add to Planner</button>
+                </form>
+                <% } else { %>
+                <p>Please login to add to cart.</p>
+        
+                
+                <% } %>
+                <form method="GET" action="/searchInternet">
+                    <input type="hidden" name="searchQuery"
+                        value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                    <button type="submit">Search Internet</button>
+                </form>
             </div>
         </div>
-        <% if (user) { %>
-        <form action="/submitFlightData" method="POST">
-            <input type="hidden" name="flightData"
-                value='<%= JSON.stringify(flight) %>'>
-            <button type="submit">Add to Planner</button>
-        </form>
-        <% } else { %>
-        <p>Please login to add to cart.</p>
-
-        
-        <% } %>
-        <form method="GET" action="/searchInternet">
-            <input type="hidden" name="searchQuery"
-                value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
-            <button type="submit">Search Internet</button>
-        </form>
+        <% }) %>
     </div>
-    <% }) %>
     <% hotels.forEach(function(hotel) { %>
-    <div class="card">
-        <h2>
-            <%= hotel.name %>
-        </h2>
-        <p>Star Rating:
-            <%= hotel.starRating %>
-        </p>
-        <p>Address:
-            <%= hotel.address.addressLineOne %>,
-            <%= hotel.address.cityName %>
-        </p>
-        <% if (user) { %>
-        <form method="POST" action="/submitHotelData">
-            <input type="hidden" name="hotelData"
-                value='<%= JSON.stringify(hotel) %>'>
-            <button type="submit">Add to Planner</button>
-        </form>
-        <% } else { %>
-        <p>Please login to add to cart.</p>
-        <% } %>
-        <form method="GET" action="/searchInternet">
-
-            <input type="hidden" name="searchQuery"
-                value="<%= hotel.name %> in <%= hotel.areaName %>">
-            <button type="submit">Search Internet</button>
-        </form>
-    </div>
-    <% }) %>
+    <div class="hotel">
+        <div class="card">
+            <div class="hotelimage"></div>
+            <h2>
+                <%= hotel.name %>
+            </h2>
+            <p>Star Rating:
+                <%= hotel.starRating %>
+            </p>
+            <p>Address:
+                <%= hotel.address.addressLineOne %>,
+                <%= hotel.address.cityName %>
+            </p>
+            <% if (user) { %>
+            <form method="POST" action="/submitHotelData">
+                <input type="hidden" name="hotelData"
+                    value='<%= JSON.stringify(hotel) %>'>
+                <button type="submit">Add to Planner</button>
+            </form>
+            <% } else { %>
+            <p>Please login to add to cart.</p>
+            <% } %>
+            <form method="GET" action="/searchInternet">
+    
+                <input type="hidden" name="searchQuery"
+                    value="<%= hotel.name %> in <%= hotel.areaName %>">
+                <button type="submit">Search Internet</button>
+            </form>
+        </div>
+        <% }) %>
     </div>
 
     <div id="cardsContainer"></div>
