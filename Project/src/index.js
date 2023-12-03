@@ -252,9 +252,28 @@ app.get('/', (req, res) => {
 
   res.redirect('/homepage');
 });
+app.get('/homepage', async (req, res) => {
+  try {
+    // Fetch flight information from the database
+    const flights = await db.any('SELECT * FROM flights');
+    
+    // Fetch hotel information from the database
+    const hotels = await db.any('SELECT * FROM hotels');
+
+    if (req.session && req.session.user) {
+      res.render('pages/homepage', { user: req.session.user, flights: flights || [], hotels: hotels || [] });
+    } else {
+      res.render('pages/homepage', { user: null, flights: flights, hotels: hotels });
+    }
+  } catch (err) {
+    // Handle database error
+    res.render('pages/homepage', { user: null, flights: [], hotels: [], error: err.message });
+  }
+});
 
 app.get('/homepage', (req, res) => {
-  // Check if the session and user exist
+  // Check if the session and user exist\
+  
   const flightInfoArray = [
     {
       departureTime: "09:45",
@@ -865,23 +884,19 @@ const auth = (req, res, next) => {
   }
   next();
 };
+app.use(auth);
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.render('pages/login');
 });
 
-app.get('/cartItem', (req, res) => {
-  if(req.session && req.session.user) {
-    res.render('pages/cart', { user: req.session.user});
-  } else {
-    // Handle the case where the session or user is not set
-    res.render('pages/cart', { user: null});
-  }
-});
-
 app.post('/plannerItem/add', async (req, res) => {
-  const planner_id = parseInt(req.body.planner_id);
+  const plannerItem_id = parseInt(req.body.item_id); 
+  if(plannerItem_id == null)
+  {
+    INSERT 
+  }
   try {
     // Inserting values into the planner_item table
     const event_title = req.body.event_title;
@@ -890,10 +905,10 @@ app.post('/plannerItem/add', async (req, res) => {
     const location = req.body.location;
     const description = req.body.description;
 
-    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
-                    VALUES ($1, $2, $3, $4, $5, $6) `;
+    const query = `INSERT INTO planner_item (event_title, time, date, location, description) 
+                    VALUES ($1, $2, $3, $4, $5) `;
 
-    const data = await db.one(query, [planner_id, event_title, time, date, location, description]);
+    const data = await db.one(query, [event_title, time, date, location, description]);
 
     res.redirect('/planner');
   } catch (err) {
@@ -901,43 +916,37 @@ app.post('/plannerItem/add', async (req, res) => {
   }
 });
 
-app.post('/plannerItem/delete', (req, res) => {
-  const item_id = parseInt(req.body.item_id);
-  const query = ('DELETE plannerItem(id) VALUES (1$)', [id]);
-  db.any(del);
+app.post('/plannerItem/delete', async (req, res) => {
+  const planner_id = parseInt(req.body.item_id);
   try {
-    res.render('pages/plannerItem', {
-      plannerItem: req.body.id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.id} from planner`,
+    const query = 'DELETE planner_item WHERE id = (1$)';
+    await db.none(query, [item_id]);
+
+    res.render('/planner', {
+      plannerItem: planner_id,
+      message: 'Successfully added item ${req.body.id} from planner',
       action: 'delete',
     });
-  } catch (err) {
-    res.render("pages/homepage", {
-      item: [],
-      error: true,
-      message: err.message,
-    });
+  } catch (err){
+    res.redirect('/planner');
   }
+});
+
+app.post('/plannerItem/update' , async (req,res) => {
+  const item_id = parseInt(req.body.item_id)
 })
-//add item 
-//delete item
-//
 
-app.post("/cart", (req, res) => { })
-// Authentication Required
-app.use(auth);
-
-app.get("/planner", async (req, res) => {
+app.get('/planner', async (req, res) => {
   try {
     const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
 
     if(user_planner == null) {
-      return res.render("pages/planner", {user: req.session.user, data: null});
+      return res.render('pages/planner', {user: req.session.user, data: null});
     }
 
-    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1' ORDER BY date DESC;`;
+    const query = `SELECT * FROM planner_item WHERE planner_item.item_id = '$1' ORDER BY date DESC;`;
     let items = await db.any(query, user_planner);
-    res.render("pages/planner", {user: req.session.user, data: items});
+    res.render('pages/planner', {user: req.session.user, data: items});
 
   } catch (error) { 
     console.log(error);
@@ -946,34 +955,34 @@ app.get("/planner", async (req, res) => {
   }
 });
 
-app.post("/planner/add", async (req, res) => {
-    // const id = ljadbv;
-    const planner_id = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
-      if(planner_id == null) {
-        planner_id = 1;
-      }
+// app.post('planner/add', async (req, res) => {
+//     // const id = ljadbv;
+//     const planner_id = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
+//       if(planner_id == null) {
+//         planner_id = 1;
+//       }
     
-    const event_title = req.body.event_title;
-    const time = req.body.time;
-    const date = req.body.date;
-    const location = req.body.location;
-    const decsription = req.body.description;
+//     const event_title = req.body.event_title;
+//     const time = req.body.time;
+//     const date = req.body.date;
+//     const location = req.body.location;
+//     const decsription = req.body.description;
 
-    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
-                    VALUES (${planner_id}, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
-    let data = await db.any(query);
+//     const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+//                     VALUES (${planner_id}, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
+//     let data = await db.any(query);
 
-  try {
-    res.redirect('/planner', {
-      message: `Successfully added event: ${event_title}`,
-      action:'add',
-    });
-  } catch (error) { 
-    console.log(error);
-    const errorMessage = "Error adding event.";
-    return res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
-  }
-});
+//   try {
+//     res.redirect('/planner', {
+//       message: `Successfully added event: ${event_title}`,
+//       action:'add',
+//     });
+//   } catch (error) { 
+//     console.log(error);
+//     const errorMessage = "Error adding event.";
+//     return res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
+//   }
+// });
 
 
 // *****************************************************
