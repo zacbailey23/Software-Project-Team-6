@@ -928,15 +928,15 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
-    const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}'`);
+    const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
 
     if(user_planner == null) {
-      res.render("pages/planner", {user: req.session.user});
+      return res.render("pages/planner", {user: req.session.user, data: null});
     }
 
-    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
-    let data = await db.any(query, user_planner);
-    res.render("pages/planner", {user: req.session.user, data});
+    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1' ORDER BY date DESC;`;
+    let items = await db.any(query, user_planner);
+    res.render("pages/planner", {user: req.session.user, data: items});
 
   } catch (error) { 
     console.log(error);
@@ -946,20 +946,24 @@ app.get("/planner", async (req, res) => {
 });
 
 app.post("/planner/add", async (req, res) => {
-    const id = ljadbv;
-    const planner_id = lkjsdbv;
+    // const id = ljadbv;
+    const planner_id = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
+      if(planner_id == null) {
+        planner_id = 1;
+      }
+    
     const event_title = req.body.event_title;
     const time = req.body.time;
     const date = req.body.date;
     const location = req.body.location;
     const decsription = req.body.description;
 
-    const query = `INSERT INTO planner_item (id, planner_id, event_title, time, date, location, description) 
-                    VALUES ($1, $2, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
+    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+                    VALUES (${planner_id}, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
     let data = await db.any(query);
 
   try {
-    res.render('pages/planner', {
+    res.redirect('/planner', {
       message: `Successfully added event: ${event_title}`,
       action:'add',
     });
