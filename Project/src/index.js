@@ -121,6 +121,7 @@ function extractTopHotelsAndFlights(query, data) {
         let hotel = hotelsData[key];
         hotels.push({
           id: hotel.id,
+          image: hotel.thumbnail,
           name: hotel.hotel_name,
           areaName: hotel.area_name,
           starRating: hotel.star_rating || 'Not available',
@@ -878,17 +879,25 @@ app.get('/cartItem', (req, res) => {
     res.render('pages/cart', { user: null});
   }
 });
+
 app.post('/plannerItem/add', async (req, res) => {
-  const { planner_id, product_id, quantity } = req.body;
+  const planner_id = parseInt(req.body.id);
   try {
     // Inserting values into the planner_item table
-    await db.one(
-      'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING id',
-      [planner_id, product_id, quantity]
-    );
+    const event_title = req.body.event_title;
+    const time = req.body.time;
+    const date = req.body.date;
+    const location = req.body.location;
+    const description = req.body.description;
+
+    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+                    VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+
+    const data = await db.one(query, [planner_id, event_title, time, date, location, description]);
+
     res.render('pages/planner', {
-      plannerItem: product_id, 
-      message: `Successfully added item ${product_id} to planner`,
+      plannerItem: data, // Use the returned data from the query
+      message: `Successfully added item ${data.planner_id} to planner`, // Change to use data.planner_id
       action: 'add',
     });
   } catch (err) {
