@@ -2,42 +2,74 @@
 
 <main>
     <div class="container">
-
       <div class="col"><%- include ('../partials/message') %></div>
-      
-        <!-- sorting the data array -->
-        <% data.sort((a, b) => a.date - b.date); %>
-        
-        <!-- printing the data array -->
-        <% if (data) { %>
-          <% data.forEach( cartItem => { %>
-            <div class="row">
-              <div class="card">
-                  <div class="card-header">
-                    <%= cartItem.date %>
-                  </div>
+
+      <h1>Hello, <%= user.first_name %></h1>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        + Add Event
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Add an Event!</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              
+              <form method="POST" action="/planner/add">
+                <div class="mb-3">
+                  <label for="event_title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="event_title" name="event_title">
+                </div>
+                <div class="mb-3">
+                  <label for="time" class="form-label">Time</label>
+                  <input type="time" class="form-control" id="time" name="time">
+                </div>
+                <div class="mb-3">
+                  <label for="date" class="form-label">Date</label>
+                  <input type="date" class="form-control" id="date" name="date">
+                </div>
+                <div class="mb-3">
+                  <label for="location" class="form-label">Location</label>
+                  <input type="location" class="form-control" id="location" name="location">
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" id="description" name="description">
+                </div>
+                <button type="submit" class="btn btn-primary" method="POST" action="/planner/add">Save changes</button>
+              </form>
+
+
+              <!-- Pre-loading events -->
+              <div class="col"><%- include ('../partials/message') %></div>
+              <% if (data) { %>
+              <% data.forEach( planner_item => { %>
+
+                <div class="card">
+                  <h5 class="card-header"><%= planner_item.event_title %></h5>
                   <div class="card-body">
-                    <h5 class="card-title">
-                      <% if(flight_id) { %>
-                        Reservation Type: Flight
-                      <% } else if(hotel_id) {%>
-                        Reservation Type: Hotel
-                      <% } else if(car_id) {%>
-                        Reservation Type: Car
-                      <% } %>
-                    </h5>
+                    <h5 class="card-title"> <%= planner_item.date %> , <%= planner_item.time %> , <%= planner_item.location %></h5>
                     <p class="card-text">
-                      Location: <%= cartItem.location %> <br>
-                      Time: <%= cartItem.time %>
+                      <%= planner_item.description %>
                     </p>
-                    <a href="/cartItem" class="btn btn-primary"> See More Info </a>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
                   </div>
                 </div>
-          </div>
-        <% }); %>
-        <% }; %>
 
+              <% }); %>
+              <% }; %>
+
+            </div>
+          </div>
+        </div>
+      </div>
+        
     </div>
-  </main>
+</main>
 
 <%- include ('../partials/footer') %>

@@ -42,7 +42,6 @@ CREATE TABLE flights (
   totalMinimumFare DECIMAL(10,2),
   flightNumber VARCHAR(10),
   duration VARCHAR(50),
-  
   FOREIGN KEY (id) REFERENCES product (id)
 );
 
@@ -64,7 +63,6 @@ DROP TABLE IF EXISTS planner CASCADE;
 CREATE TABLE planner (
   id INT PRIMARY KEY, 
   username VARCHAR(50),
-  description TEXT,
   CONSTRAINT fk_users
         FOREIGN KEY (username)
         REFERENCES users (username)
@@ -73,14 +71,13 @@ CREATE TABLE planner (
 
 DROP TABLE IF EXISTS planner_item CASCADE;
 CREATE TABLE planner_item (
-  id SERIAL PRIMARY KEY,
+  -- id SERIAL PRIMARY KEY,
   planner_id INT,
-  product_id INT,
-  quantity INT,
-  CONSTRAINT fk_product
-        FOREIGN KEY (product_id)
-        REFERENCES product (id)
-        ON DELETE SET NULL,
+  event_title VARCHAR(50),
+  time TIME,
+  date DATE,
+  location VARCHAR(50),
+  description TEXT,
   CONSTRAINT fk_planner
         FOREIGN KEY (planner_id)
         REFERENCES planner (id)

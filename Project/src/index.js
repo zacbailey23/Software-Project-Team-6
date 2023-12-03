@@ -173,7 +173,7 @@ async function fetchData(query) {
 
       },
       headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Key': process.env.Priceline_API_Key,
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
@@ -187,7 +187,7 @@ async function fetchData(query) {
         max_results: '30'
       },
       headers: {
-        'X-RapidAPI-Key': '5a8c5b6274msh26b6560c7a72ed9p136754jsn7975b4a5af44',
+        'X-RapidAPI-Key': process.env.Priceline_API_Key,
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
@@ -823,30 +823,6 @@ app.post('/register', async (req, res) => {
   }
 });
 
-
-// app.post('/register', async (req, res) => {
-//   try {
-//     const hash = await bcrypt.hash(req.body.password, 10);
-//     // Include the new fields in the query
-//     const query = `
-//       INSERT INTO users (username, password, first_name, last_name, date_of_birth, location)
-//       VALUES ($1, $2, $3, $4, $5, $6)
-//     `;
-//     await db.none(query, [
-//       req.body.username, 
-//       hash, 
-//       req.body.first_name,
-//       req.body.last_name,
-//       req.body.date_of_birth,
-//       req.body.location
-//     ]);
-//     res.redirect('/login');
-//   } catch (error) {
-//     console.error('Error during registration:', error);
-//     res.redirect('/register');
-//   }
-// });
-
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
@@ -902,88 +878,21 @@ app.get('/cartItem', (req, res) => {
     res.render('pages/cart', { user: null});
   }
 });
-app.post('/submitFlightData', async (req, res) => {
+app.post('/plannerItem/add', async (req, res) => {
+  const { planner_id, product_id, quantity } = req.body;
   try {
-    const flightData = JSON.parse(req.body.flightData);
-    const username = req.session.user.username;
-
-    // Insert data into flights table
-    const flightInsertQuery = `
-      INSERT INTO flights (departureTime, departureLocation, arrivalTime, arrivalLocation, airline, 
-      departureAirport, arrivalAirport, departureCity, arrivalCity, totalMinimumFare, flightNumber, duration, baggageAllowance) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id;`;
-    const flightValues = [flightData.departureTime, flightData.departureLocation, flightData.arrivalTime, flightData.arrivalLocation,
-      flightData.airline, flightData.departureAirport, flightData.arrivalAirport, flightData.departureCity, flightData.arrivalCity,
-      flightData.totalMinimumFare, flightData.flightNumber, flightData.duration, flightData.baggageAllowance];
-    
-    const flightInsertResult = await db.one(flightInsertQuery, flightValues);
-    const flightId = flightInsertResult.id;
-
-    // Retrieve user_id using username
-    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-    // const userId = userIdResult.user_id;
-
-    // // Assuming planner_id is available or created
-    // const plannerId = await getOrCreatePlannerId(userId);
-
-    // // Insert data into planner_item table
-    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-    // await db.none(plannerInsertQuery, [plannerId, flightId, 1]); // Assuming quantity is 1
-
-    res.send('Flight data submitted successfully');
-  } catch (err) {
-    console.error('Error in submitting flight data', err);
-    res.status(500).send('Error in submitting flight data');
-  }
-});
-
-app.post('/submitHotelData', async (req, res) => {
-  try {
-    const hotelData = JSON.parse(req.body.hotelData);
-    const username = req.session.user.username; // Assuming username is stored in session
-
-    // Insert data into hotel table
-    const hotelInsertQuery = `
-      INSERT INTO hotel (areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id;`;
-    const hotelValues = [hotelData.areaName, hotelData.starRating, hotelData.address.addressLineOne, hotelData.address.cityName, 
-      hotelData.address.stateCode, hotelData.address.countryCode, hotelData.address.zip];
-    
-    const hotelInsertResult = await db.one(hotelInsertQuery, hotelValues);
-    const hotelId = hotelInsertResult.id;
-
-    // Retrieve user_id using username
-    // const userIdResult = await db.one('SELECT user_id FROM users WHERE username = $1', [username]);
-    // const userId = userIdResult.user_id;
-
-    //not sure how to get planner id
-    // Insert data into planner_item table
-    // const plannerInsertQuery = 'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3);';
-    // await db.none(plannerInsertQuery, [plannerId, hotelId, 1]); //
-
-
-      res.send('Hotel data submitted successfully');
-  } catch (err) {
-      console.error('Error in submitting hotel data', err);
-      res.status(500).send('Error in submitting hotel data');
-  }
-});
-
-app.post('/cartItem/add', async (req, res) => {
-  const item_id = parseInt(req.body.item_id);
-  const ifCarorFlightorHotel = req.body.ifCarorFlightorHotel
-  if(ifCarorFlightorHotel === "hotel"){
-    db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
-  }
-  db.one("INSERT INTO cartItem() VALUES (1$)", [item_id]);
-  try {
-    res.render('pages/cartItem', {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action:'add',
+    // Inserting values into the planner_item table
+    await db.one(
+      'INSERT INTO planner_item (planner_id, product_id, quantity) VALUES ($1, $2, $3) RETURNING id',
+      [planner_id, product_id, quantity]
+    );
+    res.render('pages/planner', {
+      plannerItem: product_id, 
+      message: `Successfully added item ${product_id} to planner`,
+      action: 'add',
     });
   } catch (err) {
-    res.render("pages/homepage", {
+    res.render('pages/homepage', {
       item: [],
       error: true,
       message: err.message,
@@ -991,16 +900,15 @@ app.post('/cartItem/add', async (req, res) => {
   }
 });
 
-
-app.post('/cartItem/delete', (req, res) => {
+app.post('/plannerItem/delete', (req, res) => {
   const item_id = parseInt(req.body.item_id);
-  const query = ("DELETE cartItem(item_id) VALUES (1$)", [item_id]);
+  const query = ('DELETE plannerItem(id) VALUES (1$)', [id]);
   db.any(del);
   try {
-    res.render("pages/cartItem", {
-      cartItem: req.body.item_id, // Pass the added item to the cart for rendering purposes
-      message: `Successfully added item ${req.body.item_id} to cart`,
-      action: "add",
+    res.render('pages/plannerItem', {
+      plannerItem: req.body.id, // Pass the added item to the cart for rendering purposes
+      message: `Successfully added item ${req.body.id} from planner`,
+      action: 'delete',
     });
   } catch (err) {
     res.render("pages/homepage", {
@@ -1020,26 +928,49 @@ app.use(auth);
 
 app.get("/planner", async (req, res) => {
   try {
-    const user_planner = await db.oneOrNone(`SELECT * FROM planner WHERE username = '${req.session.user.username}'`);
+    const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
 
-    console.log(user_planner);
-
-    if(user_planner.length == 0) {
-      const errorMessage = "You haven't added any items. Add an item to view it here.";
-      res.redirect(`pages/planner?error=${encodeURIComponent(errorMessage)}`);
+    if(user_planner == null) {
+      return res.render("pages/planner", {user: req.session.user, data: null});
     }
 
-    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1';`;
-    let data = await db.any(query, user_planner.id);
-
-    console.log(query);
-
-    res.render("pages/planner", data);
+    const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = '$1' ORDER BY date DESC;`;
+    let items = await db.any(query, user_planner);
+    res.render("pages/planner", {user: req.session.user, data: items});
 
   } catch (error) { 
     console.log(error);
     const errorMessage = "Error loading planner.";
-    res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
+    return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
+  }
+});
+
+app.post("/planner/add", async (req, res) => {
+    // const id = ljadbv;
+    const planner_id = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
+      if(planner_id == null) {
+        planner_id = 1;
+      }
+    
+    const event_title = req.body.event_title;
+    const time = req.body.time;
+    const date = req.body.date;
+    const location = req.body.location;
+    const decsription = req.body.description;
+
+    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+                    VALUES (${planner_id}, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
+    let data = await db.any(query);
+
+  try {
+    res.redirect('/planner', {
+      message: `Successfully added event: ${event_title}`,
+      action:'add',
+    });
+  } catch (error) { 
+    console.log(error);
+    const errorMessage = "Error adding event.";
+    return res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
   }
 });
 
