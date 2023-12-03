@@ -141,27 +141,32 @@
                     <%= flight.totalMinimumFare %>
                 </p>
             </div>
-            <% if (user) { %>
-                <form action="/submitFlightData" method="POST">
-                    <input type="hidden" name="flightData"
-                        value='<%= JSON.stringify(flight) %>'>
-                    <button class="button" type="submit">Add to Planner</button>
-                </form>
-                <% } else { %>
-                <p>Please login to add to cart.</p>
-        
-                
-                <% } %>
-                <form method="GET" action="/searchInternet">
-                    <input type="hidden" name="searchQuery"
-                        value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
-                    <button class="button" type="submit">Search Internet</button>
-                </form>
-
-            
         </div>
+
+
+
+        <!-- Here we want to create a form for the planner which then has this form built into it for the submit-->
+        <form >
+        </form>
+
+        <% if (user) { %>
+        <form action="/planner/add" method="POST">
+            <input type="hidden" name="plannerData"
+                value='<%= JSON.stringify(flight) %>'>
+            <button type="submit">Add to Planner</button>
+        </form>
+        <% } else { %>
+        <p>Please login to add to cart.</p>
+        <% } %>
+        <form method="GET" action="/searchInternet">
+            <input type="hidden" name="searchQuery"
+                value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+            <button type="submit">Search Internet</button>
+        </form>
     </div>
     <% }) %>
+
+
     <% hotels.forEach(function(hotel) { %>
     <div class="card">
         <h2>
@@ -174,9 +179,15 @@
             <%= hotel.address.addressLineOne %>,
             <%= hotel.address.cityName %>
         </p>
+
+
+        <!-- Here we want to create a form for the planner which then has this form built into it for the submit-->
+        <form >
+        </form>
+
         <% if (user) { %>
-        <form method="POST" action="/submitHotelData">
-            <input type="hidden" name="hotelData"
+        <form method="POST" action="/planner/add">
+            <input type="hidden" name="plannerData"
                 value='<%= JSON.stringify(hotel) %>'>
             <button class="button" type="submit">Add to Planner</button>
         </form>
@@ -184,7 +195,6 @@
         <p>Please login to add to cart.</p>
         <% } %>
         <form method="GET" action="/searchInternet">
-
             <input type="hidden" name="searchQuery"
                 value="<%= hotel.name %> in <%= hotel.areaName %>">
             <button class="button" type="submit">Search Internet</button>

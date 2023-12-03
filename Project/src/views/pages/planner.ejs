@@ -20,13 +20,49 @@
             </div>
             <div class="modal-body">
               
-              <form>
+              <form method="POST" action="/planner/add">
                 <div class="mb-3">
-                  <label for="event_title" class="form-label">Event Title</label>
-                  <input type="text" class="form-control" id="event_title">
+                  <label for="event_title" class="form-label">Title</label>
+                  <input type="text" class="form-control" id="event_title" name="event_title">
                 </div>
-                <button type="button" class="btn btn-primary" method="POST" action="/planner/add">Save changes</button>
+                <div class="mb-3">
+                  <label for="time" class="form-label">Time</label>
+                  <input type="time" class="form-control" id="time" name="time">
+                </div>
+                <div class="mb-3">
+                  <label for="date" class="form-label">Date</label>
+                  <input type="date" class="form-control" id="date" name="date">
+                </div>
+                <div class="mb-3">
+                  <label for="location" class="form-label">Location</label>
+                  <input type="location" class="form-control" id="location" name="location">
+                </div>
+                <div class="mb-3">
+                  <label for="description" class="form-label">Description</label>
+                  <input type="text" class="form-control" id="description" name="description">
+                </div>
+                <button type="submit" class="btn btn-primary" method="POST" action="/planner/add">Save changes</button>
               </form>
+
+
+              <!-- Pre-loading events -->
+              <div class="col"><%- include ('../partials/message') %></div>
+              <% if (data) { %>
+              <% data.forEach( planner_item => { %>
+
+                <div class="card">
+                  <h5 class="card-header"><%= planner_item.event_title %></h5>
+                  <div class="card-body">
+                    <h5 class="card-title"> <%= planner_item.date %> , <%= planner_item.time %> , <%= planner_item.location %></h5>
+                    <p class="card-text">
+                      <%= planner_item.description %>
+                    </p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                  </div>
+                </div>
+
+              <% }); %>
+              <% }; %>
 
             </div>
           </div>
