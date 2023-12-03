@@ -54,3 +54,5 @@ To run tests, run the following command
 
 ## Link to deployed application
 
+http://recitation-14-team-6.eastus.cloudapp.azure.com:3000
+
