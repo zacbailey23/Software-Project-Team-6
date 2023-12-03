@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../../css/cards.css">
     <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="../../css/button.css">
+    <link rel="stylesheet" href="../../css/search.css">
 </head>
 <body>
     <form id="searchForm" action="/search" method="GET"
@@ -23,33 +24,43 @@
         </select>
         <div id="flightFields" style="display: none;">
             <!-- Dropdown for Origin Airport Code -->
-            <label for="origin">Origin Airport Code:</label>
-            <select name="origin" id="origin">
-                <option value="" disabled selected>Select Airport Code</option>
-            </select>
+            <div class="search-element">
+                <label for="origin" style="font-weight: bold">Origin Airport Code:</label>
+                <select name="origin" id="origin">
+                    <option value="" disabled selected>Select Airport Code</option>
+                </select>
+            </div>
             <!-- Dropdown for Destination Airport Code -->
-            <label for="destination">Destination Airport Code:</label>
-            <select name="destination" id="destination">
-                <option value="" disabled selected>Select Airport Code</option>
-            </select>
+            <div class="search-element">
+                <label for="destination" style="font-weight: bold">Destination Airport Code:</label>
+                <select name="destination" id="destination">
+                    <option value="" disabled selected>Select Airport Code</option>
+                </select>
+            </div>
             <!-- Departure Date  -->
-            <label for="departureDate">Departure Date (YYYY-MM-DD):</label>
-            <input type="text" id="departureDate" name="departureDate"
-                placeholder="YYYY-MM-DD">
+            <div class="search-element">
+                <label for="departureDate" style="font-weight: bold">Departure Date (YYYY-MM-DD):</label>
+                <input type="text" id="departureDate" name="departureDate"
+                    placeholder="YYYY-MM-DD">    
+            </div>
             <!-- Cabin Class -->
-            <label for="cabinClass">Cabin Class:</label>
-            <select name="cabinClass" id="cabin_class">
-                <option value="economy" selected>Economy</option>
-                <option value="premium">Premium Economy</option>
-                <option value="business">Business</option>
-                <option value="first">First Class</option>
-            </select>
+            <div class="search-element">
+                <label for="cabinClass" style="font-weight: bold">Cabin Class:</label>
+                <select name="cabinClass" id="cabin_class">
+                    <option value="economy" selected>Economy</option>
+                    <option value="premium">Premium Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First Class</option>
+                </select>    
+            </div>
         </div>
         <!-- Hotel- fields -->
         <div id="hotelFields" style="display: none;">
-            <input type="text" name="location" placeholder="City">
+            <div class="search-element">
+                <input type="text" name="location" placeholder="City">    
+            </div>
         </div>
-        <button class="button" type="submit" id="submitBtn"
+        <button class="button_search" type="submit" id="submitBtn"
             style="display: none;">Search</button>
     </form>
     <% flights.forEach(function(flight) { %>

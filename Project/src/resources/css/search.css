@@ -1,0 +1,26 @@
+.button_search {
+    background-color: steelblue;
+    border-radius: 12px;
+    border: 1px solid whitesmoke;
+    color: whitesmoke;
+    padding: 9px 22px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition-duration: 0.4s;
+    float: inline-start;
+    position: relative;
+    top: 16px;
+    left: 14px;
+}
+
+.button_search:hover {
+    box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+.search-element {
+    font-family: roboto;
+    font-size: 18px;
+    padding-left: 16px;
+    padding-top: 16px;
+}
