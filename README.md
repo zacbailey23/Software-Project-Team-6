@@ -41,7 +41,8 @@ Start the server
 ```
 
 ## Prerequisites:
-
+- Docker / Docker compose 
+- Env file with API keys
 
 ## Running Tests
 
