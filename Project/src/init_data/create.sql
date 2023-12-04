@@ -55,10 +55,10 @@ CREATE TABLE planner (
 DROP TABLE IF EXISTS planner_item CASCADE;
 CREATE TABLE planner_item (
   item_id SERIAL PRIMARY KEY,
-  event_title VARCHAR(50),
+  event_title VARCHAR(255),
   time TIME,
   date DATE,
-  location VARCHAR(50),
+  location VARCHAR(255),
   description TEXT,
   planner_id INT,
   CONSTRAINT fk_planner

@@ -47,17 +47,17 @@
                             </iframe>
                         </div>
                         <% if (user) { %>
-                        <form method="POST" action="/plannerItem/add">
-                            <input type="hidden" name="plannerData"
+                        <form method='POST' action='/plannerItemHotel/add'>
+                            <input type='hidden' name='hotelData'
                                 value='<%= JSON.stringify(hotel) %>'>
-                            <button type="submit">Add to Cart</button>
+                            <button type='submit'>Add to Planner</button>
                         </form>
                         <% } else { %>
-                        <p>Please login to add to cart.</p>
+                        <p>Please login to add to planner.</p>
                             <% } %>
                         
                         <!-- New form for the Search Internet button -->
-                        <form method="GET" action="/searchInternet">
+                        <form method='GET' action='/searchInternet'>
                             <input type="hidden" name="searchQuery"
                                 value="<%= hotel.name %><%= hotel.areaname %>">
                             <button class="button" type="submit">Search</button>
@@ -139,9 +139,9 @@
                         </div>
                         <% if (user) { %>
                         <form method="POST" action="/plannerItem/add">
-                            <input type="hidden" name="plannerData"
+                            <input type="hidden" name="flightData"
                                 value='<%= JSON.stringify(flight) %>'>
-                            <button type="submit">Add to Cart</button>
+                            <button type="submit">Add to Planner</button>
                         </form>
                         <% } else { %>
                         <p>Please login to add to cart.</p>
