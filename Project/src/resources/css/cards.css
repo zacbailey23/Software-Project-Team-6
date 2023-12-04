@@ -1,4 +1,7 @@
 .container .card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   background-color: steelblue;
   width: 320px;
   padding: 20px;
@@ -8,6 +11,12 @@
   margin: auto;
   cursor: pointer;
   transition-duration: 0.4s;
+}
+
+.container .flight_carousel{
+  width: 30%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .container button{
@@ -35,6 +44,12 @@ button:hover {
   width: 100%;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.255);
+}
+
+.container .hotel{
+  width: 30%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
 .hotelimage{
