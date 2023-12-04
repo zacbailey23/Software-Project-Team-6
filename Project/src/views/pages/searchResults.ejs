@@ -17,6 +17,7 @@
 
             <% data.hotelsInfo.forEach(hotel => { %>
             <div class="card">
+                <div class="hotelimage"><%=hotel.image %></div>
                 <h2>
                     <%= hotel.name %>
                 </h2>
@@ -63,6 +64,7 @@
         <h2>Flights</h2>
         <% data.flightsInfo.forEach(flight => { %>
         <div class="card">
+            <div class="flightimage"></div>
             <h2>
                 <%= flight.airline %>- Flight
                 <%= flight.flightNumber %>

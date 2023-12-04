@@ -41,7 +41,8 @@
     gap: 0.5rem;
 }
 
-.container .card {
+
+#searchResultsContainer .card {
     background-color: steelblue;
     width: 320px;
     padding: 20px;
@@ -82,3 +83,7 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.255);
   }
+  
+  body{
+    background-color: teal;
+}
