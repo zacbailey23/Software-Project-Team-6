@@ -894,11 +894,11 @@ app.get('/logout', (req, res) => {
 app.post('/plannerItem/add', async (req, res) => {
   // const planner_id = parseInt(req.body.planner_id);
   var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
-  console.log(user_planner);
+  // console.log(user_planner);
   if(user_planner == null) {
     // assign a number
     user_planner = (await db.one(`SELECT COUNT(id) FROM planner;`));
-    console.log(user_planner.count);
+    // console.log(user_planner.count);
     let any = await db.one(`INSERT INTO planner (id, username) VALUES (${user_planner.count}, '${req.session.user.username}');`);
   }
 
@@ -910,15 +910,16 @@ app.post('/plannerItem/add', async (req, res) => {
     const location = req.body.location;
     const description = req.body.description;
 
-    const query = `INSERT INTO planner_item (event_title, time, date, location, description) 
-                    VALUES ($1, $2, $3, $4, $5) `;
+    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+                    VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    const data = await db.one(query, [user_planner.id, event_title, time, date, location, description]);
+    let data = await db.one(query, [user_planner.id, event_title, time, date, location, description]);
 
     res.redirect('/planner');
   } catch (err) {
+
     console.log(err);
-    res.redirect('/homepage');
+    res.redirect('/planner');
   }
 });
 

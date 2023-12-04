@@ -48,31 +48,21 @@
           </div>
         </div>
       </div>
-        
-      <!-- delete later, test -->
-      <div class="card">
-        <h5 class="card-header">test title</h5>
-        <div class="card-body">
-          <h5 class="card-title"> test date , test time , test loc </h5>
-          <p class="card-text">
-            test desc.
-          </p>
-          <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
-          <a method="POST" action="/plannerItem/delete" class="btn btn-primary">Delete</a>
-        </div>
-      </div>
 
       <!-- Pre-loading events -->
       <div class="col"><%- include ('../partials/message') %></div>
+
       <% if (data) { %>
       <% data.forEach( planner_item => { %>
 
         <div class="card">
-          <h5 class="card-header"><%= planner_item.event_title %></h5>
+          <h5 class="card-header"> <%= planner_item.event_title %> </h5>
           <div class="card-body">
-            <h5 class="card-title"> <%= planner_item.date %> , <%= planner_item.time %> , <%= planner_item.location %></h5>
+            <h5 class="card-title"> <%= planner_item.description %> </h5>
             <p class="card-text">
-              <%= planner_item.description %>
+              Date: <%= planner_item.date %> <br>
+              Time: <%= planner_item.time %> <br>
+              Location: <%= planner_item.location %>
             </p>
             <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
             <a method="POST" action="/plannerItem/delete" class="btn btn-primary">Delete</a>
