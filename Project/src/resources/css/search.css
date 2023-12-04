@@ -1,3 +1,20 @@
+.form-control{
+    width: 80%;
+    position: relative;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 9px 22px;
+
+}
+
 .button_search {
     background-color: steelblue;
     border-radius: 12px;
@@ -8,7 +25,6 @@
     font-size: 16px;
     cursor: pointer;
     transition-duration: 0.4s;
-    float: inline-start;
     position: relative;
     top: 16px;
     left: 14px;
@@ -19,7 +35,6 @@
 }
 
 .search-element {
-    font-family: roboto;
     font-size: 18px;
     padding-left: 16px;
     padding-top: 16px;

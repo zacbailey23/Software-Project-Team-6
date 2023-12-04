@@ -259,7 +259,6 @@ app.get('/', (req, res) => {
     
 //     // Fetch hotel information from the database
 //     const hotels = await db.any('SELECT * FROM hotels');
-
 //     if(req.session && req.session.user) {
 //       res.render('pages/homepage', { 
 //         user: req.session.user, 
@@ -282,7 +281,6 @@ app.get('/', (req, res) => {
 //       error: err.message,
 //     });
 //   }
-
 // });
 
 app.get('/homepage', (req, res) => {
