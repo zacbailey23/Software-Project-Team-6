@@ -1,9 +1,9 @@
 .form-control{
     width: 80%;
-    position: relative;
-    left: 50%;
-    right: auto;
-    transform: translateX(-50%);
+    /* position: relative;
+    left: 35%;
+    right: auto; */
+    /* transform: translateX(-50%); */
 
     display: flex;
     align-items: center;
@@ -36,8 +36,9 @@
 
 .search-element {
     font-size: 18px;
-    padding-left: 16px;
-    padding-top: 16px;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .container .card {

@@ -160,10 +160,10 @@ function handleSearchTypeChange(value) {
   submitBtn.style.display = 'block'; // Show the button
 
   if (queryType === 'flightSearchTwoWay') {
-    flightFields.style.display = 'block';
+    flightFields.style.display = 'flex';
     hotelFields.style.display = 'none';
   } else if (queryType === 'flightSearchOneWay') {
-    flightFields.style.display = 'block';
+    flightFields.style.display = 'flex';
     hotelFields.style.display = 'none';
   } else if (queryType === 'hotelSearch') {
     flightFields.style.display = 'none';
