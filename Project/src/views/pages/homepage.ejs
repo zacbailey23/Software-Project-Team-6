@@ -127,7 +127,7 @@
                         <% } %>
                     </ul>
                     <p><strong>Fare:</strong> $
-                        <%= flight.totalMinimumFare %>
+                        <%= flight.totalminimumfare %>
                     </p>
                 </div>
                 <% if (user) { %>
@@ -159,11 +159,11 @@
                 <%= hotel.name %>
             </h2>
             <p>Star Rating:
-                <%= hotel.starRating %>
+                <%= hotel.starrating %>
             </p>
             <p>Address:
-                <%= hotel.addressLineOne %>,
-                <%= hotel.cityName %>
+                <%= hotel.addresslineone %>,
+                <%= hotel.cityname %>
             </p>
             <% if (user) { %>
             <form method="POST" action="/plannerItem/add">
