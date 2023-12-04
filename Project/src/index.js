@@ -374,7 +374,7 @@ app.post('/plannerItem/add', async (req, res) => {
   try {
     // Inserting values into the planner_item table
     let flightData = JSON.parse(req.body.flightData)
-    console.log(flightData)
+    //console.log(flightData)
 
     const event_title = `${flightData.airline} - Flight ${flightData.flightnumber}`
     const date = flightData.departuredate;
@@ -384,7 +384,7 @@ app.post('/plannerItem/add', async (req, res) => {
     const arrivallocation = flightData.arrivalcity;
     const description = `Departure: ${departurelocation} at ${departuretime}`
 
-    console.log(event_title, "<- should be event title")
+    //console.log(event_title, "<- should be event title")
 
     const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
                     VALUES ($1, $2, $3, $4, $5, $6);`;

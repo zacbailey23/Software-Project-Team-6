@@ -28,11 +28,11 @@
                             <%= hotel.name %>
                         </h2>
                         <p>Star Rating:
-                            <%= hotel.starRating %>
+                            <%= hotel.starrating %>
                         </p>
                         <p>Address:
-                            <%= hotel.address.addressLineOne %>,
-                            <%= hotel.address.cityName %>
+                            <%= hotel.address.addresslineone %>,
+                            <%= hotel.address.cityname %>
                         </p>
                         <div>
                             <iframe
@@ -47,7 +47,7 @@
                             </iframe>
                         </div>
                         <% if (user) { %>
-                        <form method="POST" action="/planner/add">
+                        <form method="POST" action="/plannerItem/add">
                             <input type="hidden" name="plannerData"
                                 value='<%= JSON.stringify(hotel) %>'>
                             <button type="submit">Add to Cart</button>
@@ -59,7 +59,7 @@
                         <!-- New form for the Search Internet button -->
                         <form method="GET" action="/searchInternet">
                             <input type="hidden" name="searchQuery"
-                                value="<%= hotel.name %><%= hotel.areaName %>">
+                                value="<%= hotel.name %><%= hotel.areaname %>">
                             <button class="button" type="submit">Search</button>
                         </form>
                     </div>
@@ -85,20 +85,20 @@
                         <div class="flightimage"></div>
                         <h2>
                             <%= flight.airline %>- Flight
-                            <%= flight.flightNumber %>
+                            <%= flight.flightnumber %>
                         </h2>
                         <div class="flight-info">
                             <p><strong>Departure: </strong>Leave on
-                                <%= flight.departureDate %>at
-                                <%= flight.departureTime %>from
-                                <%= flight.departureLocation %>(
-                                <%= flight.departureAirport %>)
+                                <%= flight.departuredate %>at
+                                <%= flight.departuretime %>from
+                                <%= flight.departurelocation %>(
+                                <%= flight.departureairport %>)
                             </p>
                             <p><strong>Arrival: </strong>Arrive on
-                                <%= flight.arrivalDate %>at
-                                <%= flight.arrivalTime %>at
-                                <%= flight.arrivalLocation %>(
-                                <%= flight.arrivalAirport %>)
+                                <%= flight.arrivaldate %>at
+                                <%= flight.arrivaltime %>at
+                                <%= flight.arrivallocation %>(
+                                <%= flight.arrivalairport %>)
                             </p>
                             <p><strong>Duration: </strong>
                                 <%= flight.duration %>
@@ -138,7 +138,7 @@
                             </p>
                         </div>
                         <% if (user) { %>
-                        <form method="POST" action="/planner/add">
+                        <form method="POST" action="/plannerItem/add">
                             <input type="hidden" name="plannerData"
                                 value='<%= JSON.stringify(flight) %>'>
                             <button type="submit">Add to Cart</button>
@@ -148,7 +148,7 @@
                         <% } %>
                         <form method="GET" action="/searchInternet">
                             <input type="hidden" name="searchQuery"
-                                value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                                value="<%= flight.airline %> Flight <%= flight.flightnumber %> on <%= flight.departuredate %> from <%= flight.departureairport %> to <%= flight.arrivalairport %>">
                             <button class="button" type="submit">Search</button>
                         </form>
                     </div>
