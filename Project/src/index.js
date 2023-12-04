@@ -259,8 +259,6 @@ app.get('/homepage', async (req, res) => {
     
     // Fetch hotel information from the database
     const hotels = await db.any('SELECT * FROM hotels');
-    console.log(flights);
-    console.log(hotels);
     if(req.session && req.session.user) {
       res.render('pages/homepage', { 
         user: req.session.user, 
@@ -390,6 +388,43 @@ app.post('/plannerItem/add', async (req, res) => {
                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
     let data = await db.one(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
+
+    res.redirect('/planner');
+  } catch (err) {
+
+    console.log(err);
+    res.redirect('/planner');
+  }
+});
+
+app.post('/plannerItemHotel/add', async (req, res) => {
+  // const planner_id = parseInt(req.body.planner_id);
+  var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
+  // console.log(user_planner);
+  if(user_planner == null) {
+    // assign a number
+    user_planner = (await db.one(`SELECT COUNT(id) FROM planner;`));
+    // console.log(user_planner.count);
+    let any = await db.one(`INSERT INTO planner (id, username) VALUES (${user_planner.count}, '${req.session.user.username}');`);
+  }
+
+  try {
+    // Inserting values into the planner_item table
+    let hotelData = JSON.parse(req.body.hotelData)
+    console.log(hotelData)
+
+    const event_title = `${hotelData.name}`
+    const date = new Date().toDateString(); // TODO: Change to a proper
+    const time = "03:00";
+    const location = hotelData.cityname;
+    const description = `Hotel booking in ${hotelData.areaname}`
+
+    //console.log(event_title, "<- should be event title")
+
+    const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
+                    VALUES ($1, $2, $3, $4, $5, $6);`;
+
+    let data = await db.one(query, [event_title, time, date, location, description, user_planner.id]);
 
     res.redirect('/planner');
   } catch (err) {
