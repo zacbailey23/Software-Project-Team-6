@@ -12,7 +12,7 @@ button:hover {
 
 .card {
     background-color: steelblue;
-    width: 650px;
+    /* width: 650px; */
     padding: 20px;
     border: 1px solid white;
     border-radius: 7px;

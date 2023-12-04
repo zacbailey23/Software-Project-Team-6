@@ -25,9 +25,9 @@
     font-size: 16px;
     cursor: pointer;
     transition-duration: 0.4s;
-    position: relative;
-    top: 16px;
-    left: 14px;
+    /* position: relative;
+    top: 14px;
+    left: 14px; */
 }
 
 .button_search:hover {
