@@ -252,24 +252,24 @@ app.get('/', (req, res) => {
 
   res.redirect('/homepage');
 });
-app.get('/homepage', async (req, res) => {
-  try {
-    // Fetch flight information from the database
-    const flights = await db.any('SELECT * FROM flights');
+// app.get('/homepage', async (req, res) => {
+//   try {
+//     // Fetch flight information from the database
+//     const flights = await db.any('SELECT * FROM flights');
     
-    // Fetch hotel information from the database
-    const hotels = await db.any('SELECT * FROM hotels');
+//     // Fetch hotel information from the database
+//     const hotels = await db.any('SELECT * FROM hotels');
 
-    if (req.session && req.session.user) {
-      res.render('pages/homepage', { user: req.session.user, flights: flights || [], hotels: hotels || [] });
-    } else {
-      res.render('pages/homepage', { user: null, flights: flights, hotels: hotels });
-    }
-  } catch (err) {
-    // Handle database error
-    res.render('pages/homepage', { user: null, flights: [], hotels: [], error: err.message });
-  }
-});
+//     if (req.session && req.session.user) {
+//       res.render('pages/homepage', { user: req.session.user, flights: flights || [], hotels: hotels || [] });
+//     } else {
+//       res.render('pages/homepage', { user: null, flights: flights, hotels: hotels });
+//     }
+//   } catch (err) {
+//     // Handle database error
+//     res.render('pages/homepage', { user: null, flights: [], hotels: [], error: err.message });
+//   }
+// });
 
 app.get('/homepage', (req, res) => {
   // Check if the session and user exist\

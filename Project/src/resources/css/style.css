@@ -9,7 +9,12 @@ img {
 nav .nav-link{
     background-color: whitesmoke;
     border-radius: 10px;
+    padding: 9px 22px;
     border: 2px solid black;
+}
+
+nav .nav-link:hover{
+    box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.3);
 }
 
 body{
