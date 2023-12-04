@@ -252,36 +252,39 @@ app.get('/', (req, res) => {
 
   res.redirect('/homepage');
 });
-// app.get('/homepage', async (req, res) => {
-//   try {
-//     // Fetch flight information from the database
-//     const flights = await db.any('SELECT * FROM flights');
+app.get('/homepage', async (req, res) => {
+  try {
+    // Fetch flight information from the database
+    const flights = await db.any('SELECT * FROM flights');
     
-//     // Fetch hotel information from the database
-//     const hotels = await db.any('SELECT * FROM hotels');
-//     if(req.session && req.session.user) {
-//       res.render('pages/homepage', { 
-//         user: req.session.user, 
-//         flights: flights || [],
-//         hotels: hotels || [], 
-//       });
-//       } else {
-//       // Handle the case where the session or user is not set
-//       res.render('pages/homepage', { 
-//         user: null, 
-//         flights: flights, 
-//         hotels: hotels
-//       });
-//    }
-//   }catch(err){
-//     res.render('pages/homepage', {
-//       user: null, 
-//       flights: [], 
-//       hotels: [], 
-//       error: err.message,
-//     });
-//   }
-// });
+    // Fetch hotel information from the database
+    const hotels = await db.any('SELECT * FROM hotels');
+    console.log(flights);
+    console.log(hotels);
+    if(req.session && req.session.user) {
+      res.render('pages/homepage', { 
+        user: req.session.user, 
+        flights: flights || [],
+        hotels: hotels || [], 
+      });
+      } else {
+      // Handle the case where the session or user is not set
+      res.render('pages/homepage', { 
+        user: null, 
+        flights: flights, 
+        hotels: hotels,
+      });
+   }
+  }catch(err){
+    res.render('pages/homepage', {
+      user: null, 
+      flights: [], 
+      hotels: [], 
+      error: err.message,
+    });
+  }
+
+});
 
 app.get('/homepage', (req, res) => {
   // Check if the session and user exist\
@@ -850,7 +853,7 @@ app.post('/register', async (req, res) => {
     res.redirect('/login');
 
   } catch (error) { 
-    console.error('Error during registration:', error);
+    //console.error('Error during registration:', error);
     res.render('pages/register', { message: 'Error during registration. Please try again.' });
   }
 });
