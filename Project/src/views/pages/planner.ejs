@@ -65,7 +65,9 @@
               Location: <%= planner_item.location %>
             </p>
             <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
-            <a method="POST" action="/plannerItem/delete" class="btn btn-primary">Delete</a>
+            <form method="POST" action="/plannerItem/delete">
+              <button type="submit" method="POST" action="/plannerItem/delete" class="btn btn-primary" name="event_title" value="<%= planner_item.event_title %>">Delete</button>
+            </form>
           </div>
         </div>
 
