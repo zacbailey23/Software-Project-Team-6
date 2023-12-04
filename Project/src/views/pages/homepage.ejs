@@ -83,26 +83,26 @@
                 <div class="flightimage"></div>
                 <h2>
                     <%= flight.airline %>- Flight
-                    <%= flight.flightNumber %>
+                    <%= flight.flightnumber %>
                 </h2>
                 <div class="flight-info">
                     <p><strong>Date: </strong>
-                        <%= flight.departureDate %>
+                        <%= flight.departuredate %>
                     </p> 
                     <p><strong>Departure:</strong>
-                        <%= flight.departureTime %> from
-                        <%= flight.departureLocation %> (<%= flight.departureAirport %>)
+                        <%= flight.departuretime %> from
+                        <%= flight.departurelocation %> (<%= flight.departureairport %>)
                     </p>
                     <p><strong>Arrival:</strong>
-                        <%= flight.arrivalTime %> at
-                        <%= flight.arrivalLocation %> (<%= flight.arrivalAirport %>)
+                        <%= flight.arrivaltime %> at
+                        <%= flight.arrivallocation %> (<%= flight.arrivalairport %>)
                     </p>
                     <p><strong>Duration:</strong>
                         <%= flight.duration %>
                     </p>
                     <p><strong>Baggage Allowance:</strong></p>
                     <ul>
-                        <% if (flight.baggageAllowance && flight.baggageAllowance.length > 0) { %>
+                        <% if (flight.baggageAllowance && flight.baggageallowance.length > 0) { %>
                             <% flight.baggageAllowance.forEach(baggage => { %>
                                 <li>
                                     Baggage Type: <%= baggage.type %>
@@ -162,8 +162,8 @@
                 <%= hotel.starRating %>
             </p>
             <p>Address:
-                <%= hotel.address.addressLineOne %>,
-                <%= hotel.address.cityName %>
+                <%= hotel.addressLineOne %>,
+                <%= hotel.cityName %>
             </p>
             <% if (user) { %>
             <form method="POST" action="/plannerItem/add">
@@ -177,7 +177,7 @@
             <form method="GET" action="/searchInternet">
     
                 <input type="hidden" name="searchQuery"
-                    value="<%= hotel.name %> in <%= hotel.areaName %>">
+                    value="<%= hotels.name %> in <%= hotels.areaName %>">
                 <button type="submit">Search Internet</button>
             </form>
         </div>
