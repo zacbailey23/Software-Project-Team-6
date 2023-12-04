@@ -90,9 +90,9 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-    .send({username: 2 , password: '',})
+    .send({username: 2 , password: ''})
       .end((err, res) => {
-        expect(res).to.have.status(200);
+        res.text.should.include('Error during registration');
         //expect(res.body.message).to.equals('Username already exists');
         done();
       });
