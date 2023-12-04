@@ -398,6 +398,7 @@ app.post('/plannerItem/add', async (req, res) => {
 });
 
 app.post('/plannerItemHotel/add', async (req, res) => {
+  console.log("ASD",req.body.hotelData)
   // const planner_id = parseInt(req.body.planner_id);
   var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
   // console.log(user_planner);
@@ -416,8 +417,8 @@ app.post('/plannerItemHotel/add', async (req, res) => {
     const event_title = `${hotelData.name}`
     const date = new Date().toDateString(); // TODO: Change to a proper
     const time = "03:00";
-    const location = hotelData.cityname;
-    const description = `Hotel booking in ${hotelData.areaname}`
+    const location = hotelData.cityname ?? hotelData.address?.cityName;
+    const description = `Hotel booking in ${hotelData.areaname ?? hotelData.address?.stateCode}`
 
     //console.log(event_title, "<- should be event title")
 
