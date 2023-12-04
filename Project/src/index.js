@@ -355,7 +355,7 @@ app.use(auth);
 
 app.get('/logout', (req, res) => {
   req.session.destroy();
-  res.render('pages/login');
+  res.redirect('/homepage');
 });
 
 app.post('/plannerItem/add', async (req, res) => {

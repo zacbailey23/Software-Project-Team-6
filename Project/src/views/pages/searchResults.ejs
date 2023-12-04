@@ -34,7 +34,7 @@
                             <%= hotel.address.addresslineone %>,
                             <%= hotel.address.cityname %>
                         </p>
-                        <div>
+                        <!-- <div>
                             <iframe
                                 width="280"
                                 height="280"
@@ -45,7 +45,19 @@
                                 src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCdwy9vIu0XKQGwtKLzOErCWSYnYqJ2jc4
                                 &q=hotel.cityName+hotel.stateCode">
                             </iframe>
+                        </div> -->
+                        <div>
+                            <iframe
+                                width="280"
+                                height="280"
+                                style="border:0"
+                                loading="lazy"
+                                allowfullscreen
+                                referrerpolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCdwy9vIu0XKQGwtKLzOErCWSYnYqJ2jc4&q=<%= encodeURIComponent(hotel.address.addresslineone) %>,<%= encodeURIComponent(hotel.address.cityName) %>,<%= encodeURIComponent(hotel.address.stateCode) %>">
+                            </iframe>
                         </div>
+                        
                         <% if (user) { %>
                         <form method="POST" action="/plannerItem/add">
                             <input type="hidden" name="plannerData"
