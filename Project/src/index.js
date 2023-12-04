@@ -923,19 +923,21 @@ app.post('/plannerItem/add', async (req, res) => {
   }
 });
 
-app.post('/plannerItem/delete', async (req, res) => {
-  const planner_id = parseInt(req.body.item_id);
+app.delete('/plannerItem/delete', async (req, res) => {
+  console.log(req.body.event_title);
+  // const planner_id = parseInt(req.body.item_id);
   try {
-    const query = 'DELETE planner_item WHERE id = (1$)';
-    await db.none(query, [item_id]);
+    const query = `DELETE planner_item WHERE event_title = ${req.body.event_title};`;
+    await db.none(query);
 
     res.render('/planner', {
-      plannerItem: planner_id,
-      message: 'Successfully added item ${req.body.id} from planner',
-      action: 'delete',
+      message: 'Successfully deleted.',
+      action: 'delete', 
     });
+
   } catch (err){
-    res.redirect('/planner');
+    console.log(err);
+    return res.redirect('/planner');
   }
 });
 
