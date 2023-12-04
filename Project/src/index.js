@@ -183,7 +183,7 @@ async function fetchData(query) {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
-        string: query.location, // must be a city
+        string: query.hotelLocation, // must be a city
         get_hotels: 'true',
         max_results: '30'
       },
