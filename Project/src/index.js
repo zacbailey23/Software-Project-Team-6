@@ -121,7 +121,7 @@ function extractTopHotelsAndFlights(query, data) {
         let hotel = hotelsData[key];
         hotels.push({
           id: hotel.id,
-          image: hotel.thumbnail,
+          image: 'https:' + hotel.thumbnail,
           name: hotel.hotel_name,
           areaName: hotel.area_name,
           starRating: hotel.star_rating || 'Not available',
@@ -183,7 +183,7 @@ async function fetchData(query) {
       method: 'GET',
       url: 'https://priceline-com-provider.p.rapidapi.com/v2/hotels/autoSuggest',
       params: {
-        string: query.location, // must be a city
+        string: query.hotelLocation, // must be a city
         get_hotels: 'true',
         max_results: '30'
       },

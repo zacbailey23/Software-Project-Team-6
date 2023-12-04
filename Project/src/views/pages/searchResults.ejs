@@ -12,11 +12,13 @@
 <body>
     <h1>Search Results</h1>
     <div id="searchResultsContainer">
+        <% if (data && (data.hotelsInfo.length > 0 || data.flightsInfo.length > 0)) { %>
         <% if (data.hotelsInfo && data.hotelsInfo.length > 0) { %>
         <h2>Hotels</h2>
 
             <% data.hotelsInfo.forEach(hotel => { %>
             <div class="card">
+                <div class="hotelimage"><%=hotel.image %></div>
                 <h2>
                     <%= hotel.name %>
                 </h2>
@@ -63,6 +65,7 @@
         <h2>Flights</h2>
         <% data.flightsInfo.forEach(flight => { %>
         <div class="card">
+            <div class="flightimage"></div>
             <h2>
                 <%= flight.airline %>- Flight
                 <%= flight.flightNumber %>
@@ -128,7 +131,7 @@
             <% } %>
             <form method="GET" action="/searchInternet">
                 <input type="hidden" name="searchQuery"
-                    value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureTime %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                    value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
                 <button class="button" type="submit">Search</button>
             </form>
         </div>
@@ -138,6 +141,9 @@
         <% if (!data.hotelsInfo && !data.flightsInfo) { %>
         <p>No results found.</p> 
         <% } %>
+        <% } else { %>
+            <p>No results found.</p>
+            <% } %>
     </div>
 </body>
 
