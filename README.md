@@ -5,21 +5,29 @@
 ## Application Description
 Our website ezTravels is a simple yet useful travel planner with a variety of uses.  Through this application, the user can search for various flights and hotels for their trip and see their full itinerary in the planner tab. From the homepage, you can see popular destinations and filter search based on your preferences.  
 
-
-
 ## Contributors
 - Zac Bailey
 - Noah Pritchard
 - Andrew Johnston
 - Audra McDermott
 - Hana Burroughs
-- Joshua Sun 
+- Joshua Sun
+  
 ## Technology Stack
 
 **Client:** EJS, JavaScript, CSS
 
-**Server:** Node JS, PostgreSQL
+**Server:** Node JS
 
+**Deployment:** Azure, Docker
+
+**Database:** Postgre SQL
+
+**External APIs:** RapidAPi Priceline.com, Google maps
+
+**Testing:** Mocha, Chai
+
+**IDE**: VScode
 
 ## Run Locally
 

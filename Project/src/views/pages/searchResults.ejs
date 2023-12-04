@@ -12,6 +12,7 @@
 <body>
     <h1>Search Results</h1>
     <div id="searchResultsContainer">
+        <% if (data && (data.hotelsInfo.length > 0 || data.flightsInfo.length > 0)) { %>
         <% if (data.hotelsInfo && data.hotelsInfo.length > 0) { %>
             <h2>Hotels</h2>
             <% let hotelCounter = 0; %>
@@ -148,7 +149,7 @@
                         <% } %>
                         <form method="GET" action="/searchInternet">
                             <input type="hidden" name="searchQuery"
-                                value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureTime %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                                value="<%= flight.airline %> Flight <%= flight.flightNumber %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
                             <button class="button" type="submit">Search</button>
                         </form>
                     </div>
@@ -164,6 +165,9 @@
         <% if (!data.hotelsInfo && !data.flightsInfo) { %>
         <p>No results found.</p> 
         <% } %>
+        <% } else { %>
+            <p>No results found.</p>
+            <% } %>
     </div>
 </body>
 

@@ -121,7 +121,7 @@ function extractTopHotelsAndFlights(query, data) {
         let hotel = hotelsData[key];
         hotels.push({
           id: hotel.id,
-          image: hotel.thumbnail,
+          image: 'https:' + hotel.thumbnail,
           name: hotel.hotel_name,
           areaName: hotel.area_name,
           starRating: hotel.star_rating || 'Not available',
