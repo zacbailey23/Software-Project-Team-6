@@ -15,48 +15,48 @@
         <% if (data.hotelsInfo && data.hotelsInfo.length > 0) { %>
         <h2>Hotels</h2>
 
-        <% data.hotelsInfo.forEach(hotel => { %>
-        <div class="card">
-            <h2>
-                <%= hotel.name %>
-            </h2>
-            <p>Star Rating:
-                <%= hotel.starRating %>
-            </p>
-            <p>Address:
-                <%= hotel.address.addressLineOne %>,
-                <%= hotel.address.cityName %>
-            </p>
-            <% if (user) { %>
-            <form method="POST" action="/planner/add">
-                <input type="hidden" name="plannerData"
-                    value='<%= JSON.stringify(hotel) %>'>
-                <button type="submit">Add to Cart</button>
-            </form>
-            <% } else { %>
-            <p>Please login to add to cart.</p>
-                <% } %>
-            <div>
-                <iframe
-                    width="600"
-                    height="450"
-                    style="border:0"
-                    loading="lazy"
-                    allowfullscreen
-                    referrerpolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCdwy9vIu0XKQGwtKLzOErCWSYnYqJ2jc4
-                    &q=hotel.cityName+hotel.stateCode">
-                </iframe>
+            <% data.hotelsInfo.forEach(hotel => { %>
+            <div class="card">
+                <h2>
+                    <%= hotel.name %>
+                </h2>
+                <p>Star Rating:
+                    <%= hotel.starRating %>
+                </p>
+                <p>Address:
+                    <%= hotel.address.addressLineOne %>,
+                    <%= hotel.address.cityName %>
+                </p>
+                <% if (user) { %>
+                <form method="POST" action="/planner/add">
+                    <input type="hidden" name="plannerData"
+                        value='<%= JSON.stringify(hotel) %>'>
+                    <button type="submit">Add to Cart</button>
+                </form>
+                <% } else { %>
+                <p>Please login to add to cart.</p>
+                    <% } %>
+                <div>
+                    <iframe
+                        width="600"
+                        height="450"
+                        style="border:0"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade"
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCdwy9vIu0XKQGwtKLzOErCWSYnYqJ2jc4
+                        &q=hotel.cityName+hotel.stateCode">
+                    </iframe>
+                </div>
+                
+                <!-- New form for the Search Internet button -->
+                <form method="GET" action="/searchInternet">
+                    <input type="hidden" name="searchQuery"
+                        value="<%= hotel.name %><%= hotel.areaName %>">
+                    <button class="button" type="submit">Search</button>
+                </form>
             </div>
-            
-            <!-- New form for the Search Internet button -->
-            <form method="GET" action="/searchInternet">
-                <input type="hidden" name="searchQuery"
-                    value="<%= hotel.name %><%= hotel.areaName %>">
-                <button class="button" type="submit">Search</button>
-            </form>
-        </div>
-        <% }); %>
+            <% }); %>
         
         <% } %>
         <% if (data.flightsInfo && data.flightsInfo.length > 0) { %>
