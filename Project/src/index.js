@@ -373,16 +373,23 @@ app.post('/plannerItem/add', async (req, res) => {
 
   try {
     // Inserting values into the planner_item table
-    const event_title = req.body.event_title;
-    const time = req.body.time;
-    const date = req.body.date;
-    const location = req.body.location;
-    const description = req.body.description;
+    let flightData = JSON.parse(req.body.flightData)
+    console.log(flightData)
 
-    const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
+    const event_title = `${flightData.airline} - Flight ${flightData.flightnumber}`
+    const date = flightData.departuredate;
+    const departuretime = flightData.departuretime;
+    const arrivaltime = flightData.arrivaltime;
+    const departurelocation = flightData.departurecity;
+    const arrivallocation = flightData.arrivalcity;
+    const description = `Departure: ${departurelocation} at ${departuretime}`
+
+    console.log(event_title, "<- should be event title")
+
+    const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    let data = await db.one(query, [user_planner.id, event_title, time, date, location, description]);
+    let data = await db.one(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
 
     res.redirect('/planner');
   } catch (err) {
@@ -429,6 +436,7 @@ app.get('/planner', async (req, res) => {
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = ${user_planner.id} ORDER BY date DESC;`;
     let items = await db.any(query);
+    console.log(items);
     res.render("pages/planner", {user: req.session.user, data: items});
 
   } catch (error) { 
