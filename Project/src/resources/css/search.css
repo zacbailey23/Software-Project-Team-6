@@ -43,6 +43,11 @@
 
 
 #searchResultsContainer .card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    box-sizing: border-box;   
     background-color: steelblue;
     width: 320px;
     padding: 20px;
