@@ -180,7 +180,7 @@
                                 <%= hotel.cityname %>
                             </p>
                             <% if (user) { %>
-                            <form method="POST" action="/plannerItem/add">
+                            <form method="POST" action="/plannerItemHotel/add">
                                 <input type="hidden" name="hotelData"
                                     value='<%= JSON.stringify(hotel) %>'>
                                 <button type="submit">Add to Planner</button>
