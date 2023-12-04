@@ -76,114 +76,132 @@
         <button class="button_search" type="submit" id="submitBtn"
             style="display: none;">Search</button>
     </form>
-    <% flights.forEach(function(flight) { %>
+
     <div class="container">
-        <div class="flight_carousel" data-bs-ride="carousel">
-            <div class="card" id="flightcard">
-                <div class="flightimage"></div>
-                <h2>
-                    <%= flight.airline %>- Flight
-                    <%= flight.flightnumber %>
-                </h2>
-                <div class="flight-info">
-                    <p><strong>Date: </strong>
-                        <%= flight.departuredate %>
-                    </p> 
-                    <p><strong>Departure:</strong>
-                        <%= flight.departuretime %> from
-                        <%= flight.departurelocation %> (<%= flight.departureairport %>)
-                    </p>
-                    <p><strong>Arrival:</strong>
-                        <%= flight.arrivaltime %> at
-                        <%= flight.arrivallocation %> (<%= flight.arrivalairport %>)
-                    </p>
-                    <p><strong>Duration:</strong>
-                        <%= flight.duration %>
-                    </p>
-                    <p><strong>Baggage Allowance:</strong></p>
-                    <ul>
-                        <% if (flight.baggageAllowance && flight.baggageallowance.length > 0) { %>
-                            <% flight.baggageAllowance.forEach(baggage => { %>
-                                <li>
-                                    Baggage Type: <%= baggage.type %>
-                                </li>
-                                <li>
-                                    Restrictions:
-                                    <% if (baggage.restrictions && baggage.restrictions.length > 0) { %>
-                                        <ul>
-                                            <% baggage.restrictions.forEach(restriction => { %>
+            <% flights.forEach(function(flight, index) { %>
+                <% if (index % 3 === 0) { %>
+                    <!-- Start a new row for every 3 cards -->
+                    <div class="row">
+                <% } %>
+                    <div class="col-md-4">
+                        <div class="flight_carousel" data-bs-ride="carousel">
+                            <div class="card" id="flightcard">
+                                <div class="flightimage"></div>
+                                <h2>
+                                    <%= flight.airline %>- Flight
+                                    <%= flight.flightnumber %>
+                                </h2>
+                                <div class="flight-info">
+                                    <p><strong>Date: </strong>
+                                        <%= flight.departuredate %>
+                                    </p> 
+                                    <p><strong>Departure:</strong>
+                                        <%= flight.departuretime %> from
+                                        <%= flight.departurelocation %> (<%= flight.departureairport %>)
+                                    </p>
+                                    <p><strong>Arrival:</strong>
+                                        <%= flight.arrivaltime %> at
+                                        <%= flight.arrivallocation %> (<%= flight.arrivalairport %>)
+                                    </p>
+                                    <p><strong>Duration:</strong>
+                                        <%= flight.duration %>
+                                    </p>
+                                    <p><strong>Baggage Allowance:</strong></p>
+                                    <ul>
+                                        <% if (flight.baggageAllowance && flight.baggageallowance.length > 0) { %>
+                                            <% flight.baggageAllowance.forEach(baggage => { %>
                                                 <li>
-                                                    <%= restriction.type %>: <%= restriction.value %>
+                                                    Baggage Type: <%= baggage.type %>
+                                                </li>
+                                                <li>
+                                                    Restrictions:
+                                                    <% if (baggage.restrictions && baggage.restrictions.length > 0) { %>
+                                                        <ul>
+                                                            <% baggage.restrictions.forEach(restriction => { %>
+                                                                <li>
+                                                                    <%= restriction.type %>: <%= restriction.value %>
+                                                                </li>
+                                                            <% }); %>
+                                                        </ul>
+                                                    <% } else { %>
+                                                        None
+                                                    <% } %>
                                                 </li>
                                             <% }); %>
-                                        </ul>
-                                    <% } else { %>
-                                        None
-                                    <% } %>
-                                </li>
-                            <% }); %>
-                        <% } else { %>
-                            <li>No baggage allowance information available.</li>
-                        <% } %>
-                    </ul>
-                    <p><strong>Fare:</strong> $
-                        <%= flight.totalMinimumFare %>
-                    </p>
-                </div>
-                <% if (user) { %>
-                <form action="/plannerItem/add" method="POST">
-                    <input type="hidden" name="flightData"
-                        value='<%= JSON.stringify(flight) %>'>
-                    <button type="submit">Add to Planner</button>
-                </form>
-                <% } else { %>
-                <p>Please login to add to cart.</p>
-        
-                
+                                        <% } else { %>
+                                            <li>No baggage allowance information available.</li>
+                                        <% } %>
+                                    </ul>
+                                    <p><strong>Fare:</strong> $
+                                        <%= flight.totalMinimumFare %>
+                                    </p>
+                                </div>
+                                <% if (user) { %>
+                                <form action="/plannerItem/add" method="POST">
+                                    <input type="hidden" name="flightData"
+                                        value='<%= JSON.stringify(flight) %>'>
+                                    <button type="submit">Add to Planner</button>
+                                </form>
+                                <% } else { %>
+                                <p>Please login to add to cart.</p>
+                        
+                                
+                                <% } %>
+                                <form method="GET" action="/searchInternet">
+                                    <input type="hidden" name="searchQuery"
+                                        value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
+                                    <button type="submit">Search Internet</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <% if ((index + 1) % 3 === 0 || index === flights.length - 1) { %>
+                    <!-- Close the row after every 3 cards or at the end of the loop -->
+                    </div>
                 <% } %>
-                <form method="GET" action="/searchInternet">
-                    <input type="hidden" name="searchQuery"
-                        value="<%= flight.airline %> on <%= flight.departureDate %> from <%= flight.departureAirport %> to <%= flight.arrivalAirport %>">
-                    <button type="submit">Search Internet</button>
-                </form>
-            </div>
-            </div>
             <% }) %>
-        </div>
-    </div>
-    <% hotels.forEach(function(hotel) { %>
-    <div class="hotel">
-        <div class="card">
-            <div class="hotelimage"></div>
-            <h2>
-                <%= hotel.name %>
-            </h2>
-            <p>Star Rating:
-                <%= hotel.starRating %>
-            </p>
-            <p>Address:
-                <%= hotel.addressLineOne %>,
-                <%= hotel.cityName %>
-            </p>
-            <% if (user) { %>
-            <form method="POST" action="/plannerItem/add">
-                <input type="hidden" name="hotelData"
-                    value='<%= JSON.stringify(hotel) %>'>
-                <button type="submit">Add to Planner</button>
-            </form>
-            <% } else { %>
-            <p>Please login to add to cart.</p>
+        <% hotels.forEach(function(hotel, index) { %>
+            <% if (index % 3 === 0) { %>
+                <!-- Start a new row for every 3 cards -->
+                <div class="row">
             <% } %>
-            <form method="GET" action="/searchInternet">
-    
-                <input type="hidden" name="searchQuery"
-                    value="<%= hotels.name %> in <%= hotels.areaName %>">
-                <button type="submit">Search Internet</button>
-            </form>
-        </div>
+                <div class="hotel">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="hotelimage"></div>
+                            <h2>
+                                <%= hotel.name %>
+                            </h2>
+                            <p>Star Rating:
+                                <%= hotel.starRating %>
+                            </p>
+                            <p>Address:
+                                <%= hotel.addressLineOne %>,
+                                <%= hotel.cityName %>
+                            </p>
+                            <% if (user) { %>
+                            <form method="POST" action="/plannerItem/add">
+                                <input type="hidden" name="hotelData"
+                                    value='<%= JSON.stringify(hotel) %>'>
+                                <button type="submit">Add to Planner</button>
+                            </form>
+                            <% } else { %>
+                            <p>Please login to add to cart.</p>
+                            <% } %>
+                            <form method="GET" action="/searchInternet">
+                    
+                                <input type="hidden" name="searchQuery"
+                                    value="<%= hotels.name %> in <%= hotels.areaName %>">
+                                <button type="submit">Search Internet</button>
+                            </form>
+                        </div>
+                    </div>
+                </div> 
+            <% if ((index + 1) % 3 === 0 || index === hotel.length - 1) { %>
+                <!-- Close the row after every 3 cards or at the end of the loop -->
+                </div>
+            <% } %>  
         <% }) %>
-    </div>
-
     <div id="cardsContainer"></div>
     <div id="searchResultsContainer"></div>
 
