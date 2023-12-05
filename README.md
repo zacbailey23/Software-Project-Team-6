@@ -42,11 +42,29 @@ Go to the project directory
 ```bash
   cd my-project
 ```
+Navigate to the Project folder
+```bash
+  cd Software-Project-Team-6/Project
+```
+Ensure you have a rapidAPI Priceline.com key, can be aquired at https://rapidapi.com/tipsters/api/priceline-com-provider
+
+To run this project, you will need to add the following environment variables to your .env file
+
+# database credentials
+
+POSTGRES_USER="postgres"
+
+POSTGRES_PASSWORD="pwd"
+
+POSTGRES_DB="users_db"
+
+Priceline_API_Key= `API_KEY`
 
 Start the server
 ```bash
   docker compose up
 ```
+Go to localhost:3000
 
 ## Prerequisites:
 - Docker / Docker compose 
