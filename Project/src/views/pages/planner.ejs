@@ -74,16 +74,8 @@
             </p>
             <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
             <form method="POST" action="/plannerItem/delete">
-              <button type="submit" method="POST" action="/plannerItem/delete" class="btn btn-primary" name="event_title" value="<%= planner_item.event_title %>">Delete console.log(planner_item.event_title) </button>
+              <button type="submit" method="POST" action="/plannerItem/delete" class="btn btn-primary" name="event_title" value="<%= planner_item.event_title %>">Delete </button>
             </form>
-            <% if (planner_item.description.include("Departure") ) { %>
-              
-              <form method="GET" action="/searchInternet">
-                <input type="hidden" name="searchQuery"
-                    value="<%= flight.airline %> on <%= flight.departuredate %> from <%= flight.departureairport %> to <%= flight.arrivalairport %>">
-                <button type="submit">Search Internet</button>
-              </form>
-            <% } %>
             
 
           </div>
