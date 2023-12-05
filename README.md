@@ -50,7 +50,7 @@ Ensure you have a rapidAPI Priceline.com key, can be aquired at https://rapidapi
 
 To run this project, you will need to add the following environment variables to your .env file
 
-# database credentials
+### database credentials
 
 POSTGRES_USER="postgres"
 
