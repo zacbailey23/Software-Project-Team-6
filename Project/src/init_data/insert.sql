@@ -77,21 +77,10 @@ VALUES
 
 
 -- INSERT INTO hotel (id, name, areaName, starRating, addressLineOne, cityName, stateCode, countryCode, zip)
--- VALUES 
-    -- ('Hotel del Coronado', 'Coronado', 4, '1500 Orange Ave', 'Coronado', 'CA', 'USA', '92118'),
-    -- ('Arizona Inn', 'Downtown Tucson', 5, '2200 E Elm St', 'Tucson', 'AZ', 'USA', '85719'),
-    -- ('Four Seasons Resort Hualalai', 'Kailua-Kona', 5, '72-100 Kaupulehu Drive', 'Kailua-Kona', 'HI', 'USA', '96740'),
-    -- ('Denver Marriott Tech Center', 'Downtown Denver', 4, '4900 S Syracuse St', 'Denver', 'CO', 'USA', '80237'),
-    -- ('Grand Hyatt New York', 'Midtown Manhattan', 4, 'New York', '109 E 42nd St', 'NY', 'US', '10017'),
-    -- ('Fontainebleau Miami Beach', 'Miami Beach', 5, 'Miami Beach', '4441 Collins Ave', 'FL', 'US', '33140'),
-    -- ('The Ritz-Carlton, Chicago', 'Magnificent Mile', 4, 'Chicago', '160 E Pearson St', 'IL', 'US', '60611'),
-    -- ('The Ritz-Carlton, Denver', 'Downtown Denver', 4, 'Denver', '1881 Curtis St', 'CO', 'US','80202'),
-    -- ('The Ritz-Carlton, Los Angeles','Downtown Los Angeles', 4, 'Los Angeles','900 W Olympic Blvd', 'CA', 'US', '90015'),
-    -- ('Fairmont San Francisco', 'Nob Hill', 5, 'San Francisco', '950 Mason St', 'CA', 'US', '94108'),
+-- VALUES
     -- ('The Joule, Dallas','Downtown Dallas', 4, 'Dallas', '1530 Main St', 'TX', 'US', '75201'),
     -- ('The Confidante Miami Beach', 'Miami Beach', 4, 'Miami Beach', '4041 Collins Ave', 'FL', 'US', '33140'),
     -- ('The Langham, New York, Fifth Avenue', 'Midtown Manhattan', 5, 'New York', '400 5th Ave', 'NY', 'US', '10018'),
-    -- ('The Ritz-Carlton, Denver', 'Downtown Denver', 4, 'Denver', '1881 Curtis St', 'CO', 'US', '80202'),
     -- ('The Langham, Chicago', 'River North', 4, 'Chicago','330 N Wabash Ave', 'IL', 'US', '60611'),
     -- ('Four Seasons Hotel Miami', 'Brickell', 5, 'Miami', '1435 Brickell Ave', 'FL', 'US', '33131'),
     -- ('The Westin Bonaventure Hotel & Suites, Los Angeles', 'Downtown Los Angeles', 4, 'Los Angeles', '404 S Figueroa St', 'CA', 'US', '90071'),
@@ -125,3 +114,7 @@ VALUES
 ('The Ritz-Carlton, Denver','Downtown Denver',4,'Denver','1881 Curtis St','CO','US','80202'),
 ('The Langham, Chicago','River North',4,'Chicago','330 N Wabash Ave','IL','US','60611'),
 ('Four Seasons Hotel Denver','Downtown Denver',5,'Denver','1111 14th St','CO','US','80202');
+('Hotel del Coronado', 'Coronado', 4, '1500 Orange Ave', 'Coronado', 'CA', 'USA', '92118'),
+('Arizona Inn', 'Downtown Tucson', 5, '2200 E Elm St', 'Tucson', 'AZ', 'USA', '85719'),
+('Four Seasons Resort Hualalai', 'Kailua-Kona', 5, '72-100 Kaupulehu Drive', 'Kailua-Kona', 'HI', 'USA', '96740'),
+('Denver Marriott Tech Center', 'Downtown Denver', 4, '4900 S Syracuse St', 'Denver', 'CO', 'USA', '80237'),
