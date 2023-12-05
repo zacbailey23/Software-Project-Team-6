@@ -372,14 +372,14 @@ app.post('/plannerItem/add', async (req, res) => {
   try {
     // Inserting values into the planner_item table
     let flightData = JSON.parse(req.body.flightData)
-    //console.log(flightData)
+    console.log("here", flightData)
 
-    const event_title = `${flightData.airline} - Flight ${flightData.flightnumber}`
-    const date = flightData.departuredate;
-    const departuretime = flightData.departuretime;
-    const arrivaltime = flightData.arrivaltime;
-    const departurelocation = flightData.departurecity;
-    const arrivallocation = flightData.arrivalcity;
+    const event_title = `${flightData.airline} - Flight ${flightData.flightnumber ?? flightData.flightNumber}`
+    const date = flightData.departuredate ?? flightData.departureDate;
+    const departuretime = flightData.departuretime ?? flightData.departureTime;
+    const arrivaltime = flightData.arrivaltime ?? flightData.arrivalTime;
+    const departurelocation = flightData.departurecity ?? flightData.departureCity;
+    const arrivallocation = flightData.arrivalcity ?? flightData.arrivalCity;
     const description = `Departure: ${departurelocation} at ${departuretime}`
 
     //console.log(event_title, "<- should be event title")
@@ -387,7 +387,7 @@ app.post('/plannerItem/add', async (req, res) => {
     const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    let data = await db.one(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
+    await db.none(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
 
     res.redirect('/planner');
   } catch (err) {
@@ -412,7 +412,6 @@ app.post('/plannerItemHotel/add', async (req, res) => {
   try {
     // Inserting values into the planner_item table
     let hotelData = JSON.parse(req.body.hotelData)
-    console.log(hotelData)
 
     const event_title = `${hotelData.name}`
     const date = new Date().toDateString(); // TODO: Change to a proper
@@ -425,7 +424,7 @@ app.post('/plannerItemHotel/add', async (req, res) => {
     const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    let data = await db.one(query, [event_title, time, date, location, description, user_planner.id]);
+    await db.none(query, [event_title, time, date, location, description, user_planner.id]);
 
     res.redirect('/planner');
   } catch (err) {
@@ -478,36 +477,6 @@ app.get('/planner', async (req, res) => {
     return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
   }
 });
-
-// app.post("/planner/add", async (req, res) => {
-//     // const id = ljadbv;
-//     const planner_id = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
-//       if(planner_id == null) {
-//         planner_id = 1;
-//       }
-    
-//     const event_title = req.body.event_title;
-//     const time = req.body.time;
-//     const date = req.body.date;
-//     const location = req.body.location;
-//     const decsription = req.body.description;
-
-//     const query = `INSERT INTO planner_item (planner_id, event_title, time, date, location, description) 
-//                     VALUES (${planner_id}, ${event_title}, ${time}, ${date}, ${location}, ${decsription});`;
-//     let data = await db.any(query);
-
-//   try {
-//     res.redirect('/planner', {
-//       message: `Successfully added event: ${event_title}`,
-//       action:'add',
-//     });
-//   } catch (error) { 
-//     console.log(error);
-//     const errorMessage = "Error adding event.";
-//     return res.redirect(`/planner?error=${encodeURIComponent(errorMessage)}`);
-//   }
-// });
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
