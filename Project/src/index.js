@@ -397,6 +397,13 @@ app.post('/plannerItem/add', async (req, res) => {
   }
 });
 
+function toLowerCaseKeys(obj) {
+  return Object.keys(obj).reduce((accumulator, key) => {
+      accumulator[key.toLowerCase()] = obj[key];
+      return accumulator;
+  }, {});
+}
+
 app.post('/plannerItemHotel/add', async (req, res) => {
   console.log("ASD",req.body.hotelData)
   // const planner_id = parseInt(req.body.planner_id);
@@ -411,7 +418,7 @@ app.post('/plannerItemHotel/add', async (req, res) => {
 
   try {
     // Inserting values into the planner_item table
-    let hotelData = JSON.parse(req.body.hotelData)
+    let hotelData = toLowerCaseKeys(JSON.parse(req.body.hotelData))
 
     const event_title = `${hotelData.name}`
     const date = new Date().toDateString(); // TODO: Change to a proper
