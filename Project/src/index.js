@@ -457,11 +457,11 @@ app.post('/plannerItem/delete', async (req, res) => {
   }
 });
 
-app.post('/plannerItem/update' , async (req,res) => {
-  const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
-  const item_id = parseInt(req.body.item_id)
+// app.post('/plannerItem/update' , async (req,res) => {
+//   const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
+//   const item_id = parseInt(req.body.item_id)
 
-});
+// });
 
 app.get('/planner', async (req, res) => {
   try {
@@ -473,7 +473,7 @@ app.get('/planner', async (req, res) => {
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = ${user_planner.id} ORDER BY date DESC;`;
     let items = await db.any(query);
-    console.log(items);
+    //console.log(items);
     res.render("pages/planner", {user: req.session.user, data: items});
 
   } catch (error) { 
