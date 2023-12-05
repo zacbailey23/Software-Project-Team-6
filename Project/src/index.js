@@ -372,7 +372,6 @@ app.post('/plannerItem/add', async (req, res) => {
   try {
     // Inserting values into the planner_item table
     let flightData = JSON.parse(req.body.flightData)
-    console.log("here", flightData)
 
     const event_title = `${flightData.airline} - Flight ${flightData.flightnumber ?? flightData.flightNumber}`
     const date = flightData.departuredate ?? flightData.departureDate;
@@ -405,7 +404,6 @@ function toLowerCaseKeys(obj) {
 }
 
 app.post('/plannerItemHotel/add', async (req, res) => {
-  console.log("ASD",req.body.hotelData)
   // const planner_id = parseInt(req.body.planner_id);
   var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
   // console.log(user_planner);
