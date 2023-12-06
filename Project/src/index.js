@@ -69,7 +69,7 @@ app.use(
 
 
 function extractTopHotelsAndFlights(query, data) {
-  const maxFlights = 50; // Move this constant outside of the sub-functions as it's used in multiple places
+  const maxFlights = 75; // Move this constant outside of the sub-functions as it's used in multiple places
 
   // Function to extract flight information
   function extractFlightInformation(itineraries) {
@@ -169,7 +169,7 @@ async function fetchData(query) {
         destination_airport_code: query.destination,
         cabin_class: query.cabinClass,
         origin_airport_code: query.origin,
-        number_of_itineraries: '50',
+        number_of_itineraries: '75',
         currency: 'USD'
 
       },
@@ -371,7 +371,7 @@ app.post('/plannerItem/add', async (req, res) => {
 
   try {
     // Inserting values into the planner_item table
-    let flightData = JSON.parse(req.body.flightData)
+    let flightData = toLowerCaseKeys(JSON.parse(req.body.flightData))
     console.log("here", flightData)
 
     const event_title = `${flightData.airline} - Flight ${flightData.flightnumber ?? flightData.flightNumber}`
