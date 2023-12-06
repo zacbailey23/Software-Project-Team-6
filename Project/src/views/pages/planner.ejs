@@ -61,28 +61,31 @@
       <div class="col"><%- include ('../partials/message') %></div>
 
       <% if (data) { %>
-      <% data.forEach( planner_item => { %>
-
-        <div class="card">
-          <h5 class="card-header"> <%= planner_item.event_title %> </h5>
-          <div class="card-body">
-            <h5 class="card-title"> <%= planner_item.description %> </h5>
-            <p class="card-text">
-              Date: <%= planner_item.date %> <br>
-              Time: <%= planner_item.time %> <br>
-              Location: <%= planner_item.location %>
-            </p>
-            <!-- <a method="PUT" action="/planner/update" class="btn btn-primary">Update</a> -->
-            <form method="POST" action="/plannerItem/delete">
-              <button type="submit" method="POST" action="/plannerItem/delete" class="btn btn-primary" name="event_title" value="<%= planner_item.event_title %>">Delete </button>
-            </form>
-            
-
+        <% data.forEach(planner_item => { %>
+      
+          <div class="card">
+            <h5 class="card-header"> <%= planner_item.event_title %> </h5>
+            <div class="card-body">
+              <h5 class="card-title"> <%= planner_item.description %> </h5>
+              <p class="card-text">
+                <% if (planner_item.date) { %>
+                  Date: <%= planner_item.date %> <br>
+                <% } %>
+                <% if (planner_item.time) { %>
+                  Time: <%= planner_item.time %> <br>
+                <% } %>
+                <% if (planner_item.location) { %>
+                  Location: <%= planner_item.location %>
+                <% } %>
+              </p>
+              <form method="POST" action="/plannerItem/delete">
+                <button type="submit" method="POST" action="/plannerItem/delete" class="btn btn-primary" name="event_title" value="<%= planner_item.event_title %>">Delete </button>
+              </form>
+            </div>
           </div>
-        </div>
-
-      <% }); %>
-      <% }; %>
+      
+        <% }); %>
+      <% } %>
 
 
     </div>

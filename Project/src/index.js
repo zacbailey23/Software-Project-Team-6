@@ -81,7 +81,7 @@ function extractTopHotelsAndFlights(query, data) {
       })
       .map(itinerary => {
         const firstFlight = itinerary.slice_data.slice_0.flight_data['flight_0'];
-  
+
         // Extracting baggage allowances
         let baggageAllowances = firstFlight.baggage_allowances.map(baggage => {
           return {
@@ -90,7 +90,7 @@ function extractTopHotelsAndFlights(query, data) {
             restrictions: baggage.restrictions // This might contain size, weight limits, etc.
           };
         });
-  
+
         return {
           departureTime: itinerary.slice_data.slice_0.departure.datetime.time_12h,
           departureDate: itinerary.slice_data.slice_0.departure.datetime.date,
@@ -107,11 +107,11 @@ function extractTopHotelsAndFlights(query, data) {
           flightNumber: firstFlight.info.flight_number,
           duration: firstFlight.info.duration,
           baggageAllowance: baggageAllowances
-          
+
         };
       });
   }
-  
+
 
   // Function to extract hotel information
   function extractHotelInformation(hotelsData) {
@@ -192,7 +192,7 @@ async function fetchData(query) {
         'X-RapidAPI-Host': 'priceline-com-provider.p.rapidapi.com'
       }
     };
-  } 
+  }
   try {
     const response = await axios.request(options);
     return response.data;
@@ -222,11 +222,11 @@ app.get('/search', async (req, res) => {
     templateData.flightsInfo = results;
   }
   // Render the EJS template with the extracted  data
-  if(req.session && req.session.user) {
-    res.render('pages/searchResults', { data: templateData, user: req.session.user});
+  if (req.session && req.session.user) {
+    res.render('pages/searchResults', { data: templateData, user: req.session.user });
   } else {
     // Handle the case where the session or user is not set
-    res.render('pages/searchResults', { data: templateData, user: null});
+    res.render('pages/searchResults', { data: templateData, user: null });
   }
 });
 
@@ -234,7 +234,7 @@ app.get('/search', async (req, res) => {
 app.get('/searchInternet', (req, res) => {
   const searchQuery = req.query.searchQuery;
   if (!searchQuery) {
-      return res.status(400).send('A search query is required.');
+    return res.status(400).send('A search query is required.');
   }
 
   // Construct the Google search URL
@@ -256,28 +256,28 @@ app.get('/homepage', async (req, res) => {
   try {
     // Fetch flight information from the database
     const flights = await db.any('SELECT * FROM flights');
-    
+
     // Fetch hotel information from the database
     const hotels = await db.any('SELECT * FROM hotels');
-    if(req.session && req.session.user) {
-      res.render('pages/homepage', { 
-        user: req.session.user, 
+    if (req.session && req.session.user) {
+      res.render('pages/homepage', {
+        user: req.session.user,
         flights: flights || [],
-        hotels: hotels || [], 
+        hotels: hotels || [],
       });
-      } else {
+    } else {
       // Handle the case where the session or user is not set
-      res.render('pages/homepage', { 
-        user: null, 
-        flights: flights, 
+      res.render('pages/homepage', {
+        user: null,
+        flights: flights,
         hotels: hotels,
       });
-   }
-  }catch(err){
+    }
+  } catch (err) {
     res.render('pages/homepage', {
-      user: null, 
-      flights: [], 
-      hotels: [], 
+      user: null,
+      flights: [],
+      hotels: [],
       error: err.message,
     });
   }
@@ -304,7 +304,7 @@ app.post('/register', async (req, res) => {
     await db.none(query, [req.body.username, hash, req.body.date_of_birth, req.body.email, req.body.phone, req.body.first_name, req.body.last_name, req.body.location]);
     res.redirect('/login');
 
-  } catch (error) { 
+  } catch (error) {
     //console.error('Error during registration:', error);
     res.render('pages/register', { message: 'Error during registration. Please try again.' });
   }
@@ -362,33 +362,48 @@ app.post('/plannerItem/add', async (req, res) => {
   // const planner_id = parseInt(req.body.planner_id);
   var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
   // console.log(user_planner);
-  if(user_planner == null) {
-    // assign a number
+  if (user_planner == null) {
     user_planner = (await db.one(`SELECT COUNT(id) FROM planner;`));
-    // console.log(user_planner.count);
-    let any = await db.one(`INSERT INTO planner (id, username) VALUES (${user_planner.count}, '${req.session.user.username}');`);
+    // Use db.one if you want to return the id of the newly inserted planner
+    let newPlanner = await db.one(`INSERT INTO planner (id, username) VALUES (${user_planner.count}, '${req.session.user.username}') RETURNING id;`);
+    user_planner = { id: newPlanner.id };
   }
 
   try {
     // Inserting values into the planner_item table
-    let flightData = toLowerCaseKeys(JSON.parse(req.body.flightData))
-    console.log("here", flightData)
+    if (req.body.flightData === undefined) {
 
-    const event_title = `${flightData.airline} - Flight ${flightData.flightnumber ?? flightData.flightNumber}`
-    const date = flightData.departuredate ?? flightData.departureDate;
-    const departuretime = flightData.departuretime ?? flightData.departureTime;
-    const arrivaltime = flightData.arrivaltime ?? flightData.arrivalTime;
-    const departurelocation = flightData.departurecity ?? flightData.departureCity;
-    const arrivallocation = flightData.arrivalcity ?? flightData.arrivalCity;
-    const description = `Departure: ${departurelocation} at ${departuretime}`
+      const event_title = req.body.event_title;
+      const date = req.body.date || null; 
+      const departuretime = req.body.departuretime || null;
+      const arrivaltime = req.body.arrivaltime || null; 
+      const departurelocation = req.body.departurelocation || null;
+      const arrivallocation = req.body.arrivallocation || null;
+      const description = req.body.description || null;
 
-    //console.log(event_title, "<- should be event title")
+      // Inserting values into the planner_item table
+      const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
+                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
+      await db.none(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
+    }
+    else {
+      let flightData = toLowerCaseKeys(JSON.parse(req.body.flightData))
+      const event_title = `${flightData.airline} - Flight ${flightData.flightnumber ?? flightData.flightNumber}`
+      const date = flightData.departuredate ?? flightData.departureDate;
+      const departuretime = flightData.departuretime ?? flightData.departureTime;
+      const arrivaltime = flightData.arrivaltime ?? flightData.arrivalTime;
+      const departurelocation = flightData.departurecity ?? flightData.departureCity;
+      const arrivallocation = flightData.arrivalcity ?? flightData.arrivalCity;
+      const description = `Departure: ${departurelocation} at ${departuretime}`
+
+      //console.log(event_title, "<- should be event title")
+
+      const query = `INSERT INTO planner_item (event_title, time, date, location, description, planner_id) 
                     VALUES ($1, $2, $3, $4, $5, $6);`;
 
-    await db.none(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
-
+      await db.none(query, [event_title, arrivaltime, date, arrivallocation, description, user_planner.id]);
+    }
     res.redirect('/planner');
   } catch (err) {
 
@@ -399,8 +414,8 @@ app.post('/plannerItem/add', async (req, res) => {
 
 function toLowerCaseKeys(obj) {
   return Object.keys(obj).reduce((accumulator, key) => {
-      accumulator[key.toLowerCase()] = obj[key];
-      return accumulator;
+    accumulator[key.toLowerCase()] = obj[key];
+    return accumulator;
   }, {});
 }
 
@@ -408,7 +423,7 @@ app.post('/plannerItemHotel/add', async (req, res) => {
   // const planner_id = parseInt(req.body.planner_id);
   var user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
   // console.log(user_planner);
-  if(user_planner == null) {
+  if (user_planner == null) {
     // assign a number
     user_planner = (await db.one(`SELECT COUNT(id) FROM planner;`));
     // console.log(user_planner.count);
@@ -449,10 +464,10 @@ app.post('/plannerItem/delete', async (req, res) => {
 
     res.redirect('/planner', {
       message: 'Successfully deleted.',
-      action: 'delete', 
+      action: 'delete',
     });
 
-  } catch (err){
+  } catch (err) {
     console.log(err);
     return res.redirect('/planner');
   }
@@ -468,16 +483,16 @@ app.get('/planner', async (req, res) => {
   try {
     const user_planner = await db.oneOrNone(`SELECT id FROM planner WHERE username = '${req.session.user.username}';`);
 
-    if(user_planner == null) {
-      return res.render('pages/planner', {user: req.session.user, data: null});
+    if (user_planner == null) {
+      return res.render('pages/planner', { user: req.session.user, data: null });
     }
 
     const query = `SELECT * FROM planner_item WHERE planner_item.planner_id = ${user_planner.id} ORDER BY date DESC;`;
     let items = await db.any(query);
     //console.log(items);
-    res.render("pages/planner", {user: req.session.user, data: items});
+    res.render("pages/planner", { user: req.session.user, data: items });
 
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     const errorMessage = "Error loading planner.";
     return res.redirect(`/homepage?error=${encodeURIComponent(errorMessage)}`);
