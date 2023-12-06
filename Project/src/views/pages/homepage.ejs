@@ -143,7 +143,7 @@
                                     <button type="submit">Add to Planner</button>
                                 </form>
                                 <% } else { %>
-                                <p>Please login to add to cart.</p>
+                                <p>Please login to add to the planner.</p>
                         
                                 
                                 <% } %>
@@ -186,12 +186,12 @@
                                 <button type="submit">Add to Planner</button>
                             </form>
                             <% } else { %>
-                            <p>Please login to add to cart.</p>
+                            <p>Please login to add to planner.</p>
                             <% } %>
                             <form method="GET" action="/searchInternet">
                     
                                 <input type="hidden" name="searchQuery"
-                                    value="<%= hotels.name %> in <%= hotels.areaname %>">
+                                    value="<%= hotel.name %> in <%= hotel.areaname %>">
                                 <button type="submit">Search Internet</button>
                             </form>
                         </div>
