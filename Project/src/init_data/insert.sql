@@ -113,8 +113,8 @@ VALUES
 ('The Langham, New York, Fifth Avenue','Midtown Manhattan',5,'New York','400 5th Ave','NY','US','10018'),
 ('The Ritz-Carlton, Denver','Downtown Denver',4,'Denver','1881 Curtis St','CO','US','80202'),
 ('The Langham, Chicago','River North',4,'Chicago','330 N Wabash Ave','IL','US','60611'),
-('Four Seasons Hotel Denver','Downtown Denver',5,'Denver','1111 14th St','CO','US','80202');
+('Four Seasons Hotel Denver','Downtown Denver',5,'Denver','1111 14th St','CO','US','80202'),
 ('Hotel del Coronado', 'Coronado', 4, '1500 Orange Ave', 'Coronado', 'CA', 'USA', '92118'),
 ('Arizona Inn', 'Downtown Tucson', 5, '2200 E Elm St', 'Tucson', 'AZ', 'USA', '85719'),
 ('Four Seasons Resort Hualalai', 'Kailua-Kona', 5, '72-100 Kaupulehu Drive', 'Kailua-Kona', 'HI', 'USA', '96740'),
-('Denver Marriott Tech Center', 'Downtown Denver', 4, '4900 S Syracuse St', 'Denver', 'CO', 'USA', '80237'),
+('Denver Marriott Tech Center', 'Downtown Denver', 4, '4900 S Syracuse St', 'Denver', 'CO', 'USA', '80237');
