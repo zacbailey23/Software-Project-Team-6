@@ -1,0 +1,16 @@
+Meeting 4:
+
+Make sure our presentation is within the 10 minutes!
+- Presentation overall looks good
+    - In the beginning (first slide) make sure we introduce ourselves 
+    - Try to give our group number also 
+    - Say the ratings part and why things are bad or good. 
+        - Take more time to talk about what we use Priceline and map api’s for and why we have given it the ratings we have
+        - In architecture diagram say what we are using the API’s for. 
+            - Using to look up stuff for location 
+        - Api’s aren’t in your server, we are communicating with them (line from web server to google maps. Like google doesn’t sql query our data base so have that outside of it 
+    - for challenges these were mostly good 
+        - Cart 
+        - Try to contextualize the challenges a little bit (at this point we don’t know what you mean by cart)
+        - Be creative in how you frame it. We got rid of the cart for the better and a lot of airplane tickets you can’t buy from a single place ever
+            - “Originally planning to do this, but as a customer you wouldn’t even get good prices this way” wasn’t a useful feature so we didn’t include it.
