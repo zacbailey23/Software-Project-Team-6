@@ -79,3 +79,7 @@ To run tests, run the following command
 
 http://recitation-14-team-6.eastus.cloudapp.azure.com:3000
 
+## Video Demo
+
+https://drive.google.com/file/d/1HayYj_rWBVCCgaDFqeVuY0vp-zhc1jhT/view?usp=drive_link
+
